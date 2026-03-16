@@ -12,11 +12,15 @@ export default function Header() {
 
                 {/* Menu */}
                 <nav className="hidden md:flex items-center gap-10 text-gray-600 font-medium">
-                    <Link to={"/"}><a href="#" className="hover:text-blue-600 transition">Trang chủ</a></Link>
-                    <Link to={"/exam"}><a href="#" className="hover:text-blue-600 transition">Kỳ thi</a></Link>
-                    <a href="#" className="hover:text-blue-600 transition">Tra cứu kết quả</a>
+                    <Link to="/" className="hover:text-blue-600 transition">
+                        Trang chủ
+                    </Link>
+                    <Link to="/major" className="hover:text-blue-600 transition">
+                        Tra cứu ngành
+                    </Link>
+                    <a href="#" className="hover:text-blue-600 transition">Đăng ký nguyện vọng</a>
+                    <a href="#" className="hover:text-blue-600 transition">Kết quả xét tuyển</a>
                     <a href="#" className="hover:text-blue-600 transition">Hướng dẫn</a>
-                    <a href="#" className="hover:text-blue-600 transition">Liên hệ</a>
                 </nav>
 
                 {/* Buttons */}

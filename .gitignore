@@ -24,3 +24,5 @@ hs_err_pid*
 replay_pid*
 /admin-desktop/nbproject/private/
 /admin-desktop/build/
+/user-controls/nbproject/private/
+/user-controls/build/

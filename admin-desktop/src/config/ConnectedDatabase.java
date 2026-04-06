@@ -9,7 +9,11 @@ public class ConnectedDatabase {
         Connection c = null;
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            String url = "jdbc:mysql://localhost:3306/exam_management_system?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8";
+            String url = "jdbc:mysql://localhost:3306/exam_management_system"
+                    + "?useSSL=false"
+                    + "&allowPublicKeyRetrieval=true"
+                    + "&serverTimezone=UTC"
+                    + "&characterEncoding=UTF-8";
             String username = "root";
             String password = "root";
             c = DriverManager.getConnection(url, username, password);

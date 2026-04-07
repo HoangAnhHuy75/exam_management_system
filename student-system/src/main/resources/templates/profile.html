@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style th:replace="~{header :: header-style}"></style>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <!-- CSS Profile -->
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body style="margin:0; padding:0; display:flex; flex-direction:column; min-height:100vh;">
+
+<!-- ==================== HEADER ==================== -->
+<header th:replace="~{header :: header}"
+        th:with="activePage='profile', portalName=${portalName}"></header>
+
+<!-- ==================== PROFILE CONTENT ==================== -->
+<div class="profile-wrap">
+    <div class="profile-content">
+        <div class="profile-container">
+
+            <!-- Card trái -->
+            <div class="profile-card-left">
+                <div class="avatar-container">
+                    <img th:src="${student != null and student.gioiTinh != null} ?
+              (${student.gioiTinh.toLowerCase() == 'nam'} ?
+                @{/images/avatar-boy.jpg} :
+                (${student.gioiTinh.toLowerCase() == 'nữ'} ?
+                  @{/images/avatar-girl.jpg} :
+                  @{/images/avatar-default.jpg})) :
+              @{/images/avatar-default.jpg}"
+                         alt="avatar" />
+                    <div class="verification-badge" th:text="${verificationStatus} ?: 'ĐÃ XÁC THỰC'">
+                        ĐÃ XÁC THỰC
+                    </div>
+                </div>
+                <h2 th:text="(${student?.ho} ?: '') + ' ' + (${student?.ten} ?: '')"></h2>
+            </div>
+
+            <!-- Card phải -->
+            <div class="profile-card-right">
+                <div class="card-header">
+                    <h3>Thông tin định danh</h3>
+                    <button class="edit-btn" onclick="alert('Chỉnh sửa thông tin');">
+                        <i data-lucide="pencil"></i>
+                        <span>Chỉnh sửa</span>
+                    </button>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-field">
+                        <label>HỌ VÀ TÊN</label>
+                        <div class="value" th:text="(${student?.ho} ?: '') + ' ' + (${student?.ten} ?: '')">Nguyễn Văn A</div>
+                    </div>
+                    <div class="info-field">
+                        <label>SỐ CCCD</label>
+                        <div class="value" th:text="${student?.cccd} ?: ''"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>NGÀY SINH</label>
+                        <div class="value" th:text="${student?.ngaySinh ?: ''}"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>GIỚI TÍNH</label>
+                        <div class="value" th:text="${student?.gioiTinh ?: ''}"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>KHU VỰC</label>
+                        <div class="value" th:text="${student?.khuVuc ?: ''}"></div>
+                    </div>
+                    <div class="info-field">
+                        <label>ĐỐI TƯỢNG</label>
+                        <div class="value" th:text="${student?.doiTuong ?: ''}"></div>
+                    </div>
+                </div>
+
+                <div class="note-section">
+                    ℹ️ Thông tin này được đồng bộ từ hệ thống dữ liệu quốc gia.
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Script -->
+<script th:replace="~{header :: header-script}"></script>
+
+<script>
+    lucide.createIcons();
+    window.addEventListener('load', function() {
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        }
+    });
+</script>
+</body>
+</html>

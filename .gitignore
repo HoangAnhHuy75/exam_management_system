@@ -26,3 +26,5 @@ replay_pid*
 /admin-desktop/build/
 /user-controls/nbproject/private/
 /user-controls/build/
+/admin_desktop/target/
+/admin/target/

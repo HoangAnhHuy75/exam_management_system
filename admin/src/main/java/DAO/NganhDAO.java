@@ -45,22 +45,6 @@ public class NganhDAO {
         }
     }
 
-    // Map manganh -> tennganh
-    public HashMap<String, String> nganhMap() {
-        HashMap<String, String> map = new HashMap<>();
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<Object[]> query = session.createQuery(
-                    "SELECT n.maNganh, n.tenNganh FROM NganhDTO n", Object[].class);
-
-            for (Object[] row : query.list()) {
-                map.put((String) row[0], (String) row[1]);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
-    }
-
     // Lưu danh sách ngành vào DB
     public void insertList(List<NganhDTO> list) {
         Transaction tx = null;

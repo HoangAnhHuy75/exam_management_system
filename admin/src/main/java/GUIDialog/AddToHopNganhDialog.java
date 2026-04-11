@@ -23,6 +23,8 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
     ToHopNganhBUS th_ng_bus = new ToHopNganhBUS();
+    HashMap<String, String> nganhMap = nganhBus.nganhMap();
+    HashMap<String,String> tohopMap = tohopBus.tohopMap();
     /**
      * Creates new form AddToHopNganhDialog
      */
@@ -37,20 +39,135 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     public void khoiTao(){
         setUpCBB();
         loadCombobox();
+        tudong_check();
+        disableAllCheckbox();
     }
     public void loadCombobox(){
-        HashMap<String, String> nganhMap = nganhBus.nganhMap();
-        for(String manganh : nganhMap.keySet()){
-            major_cbb.addItem(nganhMap.get(manganh));
+
+        for(String tenNganh : nganhMap.keySet()){
+            major_cbb.addItem(tenNganh);
         }
-        HashMap<String,String> tohopMap = tohopBus.tohopMap();
-        for(String maTH : tohopMap.keySet()){
-            combination_cbb.addItem(tohopMap.get(maTH));
+        for(String tenTH : tohopMap.keySet()){
+            combination_cbb.addItem(tenTH);
         }
+        jComboBox1.addItem("Chọn môn 1");
+        jComboBox2.addItem("Chọn môn 2");
+        jComboBox3.addItem("Chọn môn 3");
+        String[] subjects = {"N1", "TO", "LI", "HO", "SI", "VA", "SU", "DI", "TI", "KTPL", "CNCN", "CNNN", "NK1", "NK2", "NK3", "NK4", "NK5", "NK6"};
+        for (String s : subjects) {
+            jComboBox1.addItem(s);
+            jComboBox2.addItem(s);
+            jComboBox3.addItem(s);
+        }
+    }
+    private void resetCheckbox() {
+        jcb_toan.setSelected(false);
+        jcb_li.setSelected(false);
+        jcb_hoa.setSelected(false);
+        jcb_sinh.setSelected(false);
+        jcb_van.setSelected(false);
+        jcb_anh.setSelected(false);
+        jcb_su.setSelected(false);
+        jcb_dia.setSelected(false);
+        jcb_tin.setSelected(false);
+        jcb_ktpl.setSelected(false);
+        jcb_khac.setSelected(false);
+    }
+
+    private void autoTickSubject(ToHopNganhDTO t, String... mons) {
+        for (String mon : mons) {
+            if (mon == null) {
+                continue;
+            }
+
+            switch (mon) {
+                case "TO":
+                    t.setTO(1);
+                    jcb_toan.setSelected(true);
+                    break;
+                case "LI":
+                    t.setLI(1);
+                    jcb_li.setSelected(true);
+                    break;
+                case "HO":
+                    t.setHO(1);
+                    jcb_hoa.setSelected(true);
+                    break;
+                case "SI":
+                    t.setSI(1);
+                    jcb_sinh.setSelected(true);
+                    break;
+                case "VA":
+                    t.setVA(1);
+                    jcb_van.setSelected(true);
+                    break;
+                case "N1":
+                    t.setN1(1);
+                    jcb_anh.setSelected(true);
+                    break;
+                case "SU":
+                    t.setSU(1);
+                    jcb_su.setSelected(true);
+                    break;
+                case "DI":
+                    t.setDI(1);
+                    jcb_dia.setSelected(true);
+                    break;
+                case "TI":
+                    t.setTI(1);
+                    jcb_tin.setSelected(true);
+                    break;
+                case "KTPL":
+                    t.setKTPL(1);
+                    jcb_ktpl.setSelected(true);
+                    break;
+                case "NK1":
+                case "NK2":
+                case "NK3":
+                case "NK4":
+                case "NK5":
+                case "NK6":
+                    t.setKHAC(1);
+                    jcb_khac.setSelected(true);
+                    break;
+            }
+        }
+    }
+
+    private void disableAllCheckbox() {
+        jcb_toan.setEnabled(false);
+        jcb_li.setEnabled(false);
+        jcb_hoa.setEnabled(false);
+        jcb_sinh.setEnabled(false);
+        jcb_van.setEnabled(false);
+        jcb_anh.setEnabled(false);
+        jcb_su.setEnabled(false);
+        jcb_dia.setEnabled(false);
+        jcb_tin.setEnabled(false);
+        jcb_ktpl.setEnabled(false);
+        jcb_khac.setEnabled(false);
+    }
+    private void updateCheckboxUI() {
+        resetCheckbox();
+
+        String mon1 = (String) jComboBox1.getSelectedItem();
+        String mon2 = (String) jComboBox2.getSelectedItem();
+        String mon3 = (String) jComboBox3.getSelectedItem();
+
+        // chỉ để update UI nên truyền DTO rỗng
+        autoTickSubject(new ToHopNganhDTO(), mon1, mon2, mon3);
+    }
+    public void tudong_check() {
+        jComboBox1.addActionListener(e -> updateCheckboxUI());
+        jComboBox2.addActionListener(e -> updateCheckboxUI());
+        jComboBox3.addActionListener(e -> updateCheckboxUI());
     }
     public void setUpCBB(){
         cbb_design.setUpComBoBox(major_cbb);
         cbb_design.setUpComBoBox(combination_cbb);
+        cbb_design.setUpComBoBox(jComboBox1);
+        cbb_design.setUpComBoBox(jComboBox2);
+        cbb_design.setUpComBoBox(jComboBox3);
     }
 
     /**
@@ -70,17 +187,14 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         major_cbb = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         combination_cbb = new javax.swing.JComboBox<>();
-        jtf_mon1 = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jtf_hs_mon1 = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jtf_mon2 = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jtf_hs_mon2 = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
         jtf_hs_mon3 = new javax.swing.JTextField();
-        jtf_mon3 = new javax.swing.JTextField();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -105,6 +219,9 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         jcb_ktpl = new javax.swing.JCheckBox();
         jPanel13 = new javax.swing.JPanel();
         jcb_van = new javax.swing.JCheckBox();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jComboBox3 = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -143,52 +260,46 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
 
         jLabel3.setText("Ngành");
         jPanel2.add(jLabel3);
-        jLabel3.setBounds(30, 20, 36, 16);
+        jLabel3.setBounds(60, 20, 36, 16);
 
         jPanel2.add(major_cbb);
-        major_cbb.setBounds(30, 40, 240, 30);
+        major_cbb.setBounds(60, 40, 240, 30);
 
         jLabel4.setText("Tổ hợp");
         jPanel2.add(jLabel4);
-        jLabel4.setBounds(360, 20, 50, 16);
+        jLabel4.setBounds(380, 20, 50, 16);
         jPanel2.add(combination_cbb);
-        combination_cbb.setBounds(360, 40, 230, 30);
-        jPanel2.add(jtf_mon1);
-        jtf_mon1.setBounds(30, 120, 240, 30);
+        combination_cbb.setBounds(380, 40, 230, 30);
 
         jLabel5.setText("Môn 1");
         jPanel2.add(jLabel5);
-        jLabel5.setBounds(30, 100, 40, 16);
+        jLabel5.setBounds(60, 100, 40, 16);
         jPanel2.add(jtf_hs_mon1);
-        jtf_hs_mon1.setBounds(360, 120, 230, 30);
+        jtf_hs_mon1.setBounds(380, 120, 230, 30);
 
         jLabel6.setText("Hệ số môn 1");
         jPanel2.add(jLabel6);
-        jLabel6.setBounds(360, 100, 80, 16);
-        jPanel2.add(jtf_mon2);
-        jtf_mon2.setBounds(30, 200, 240, 30);
+        jLabel6.setBounds(380, 100, 80, 16);
 
         jLabel7.setText("Môn 2");
         jPanel2.add(jLabel7);
-        jLabel7.setBounds(30, 180, 40, 16);
+        jLabel7.setBounds(60, 180, 40, 16);
         jPanel2.add(jtf_hs_mon2);
-        jtf_hs_mon2.setBounds(360, 200, 230, 30);
+        jtf_hs_mon2.setBounds(380, 200, 230, 30);
 
         jLabel8.setText("Hệ số môn 2");
         jPanel2.add(jLabel8);
-        jLabel8.setBounds(360, 180, 80, 16);
+        jLabel8.setBounds(380, 180, 80, 16);
 
         jLabel9.setText("Môn 3");
         jPanel2.add(jLabel9);
-        jLabel9.setBounds(30, 260, 40, 16);
+        jLabel9.setBounds(60, 260, 40, 16);
         jPanel2.add(jtf_hs_mon3);
-        jtf_hs_mon3.setBounds(360, 280, 230, 30);
-        jPanel2.add(jtf_mon3);
-        jtf_mon3.setBounds(30, 280, 240, 30);
+        jtf_hs_mon3.setBounds(380, 280, 230, 30);
 
         jLabel10.setText("Hệ số môn 3");
         jPanel2.add(jLabel10);
-        jLabel10.setBounds(360, 260, 70, 16);
+        jLabel10.setBounds(380, 260, 70, 16);
 
         jLabel11.setText("Môn trong tổ hợp");
         jPanel2.add(jLabel11);
@@ -436,6 +547,15 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jPanel13);
         jPanel13.setBounds(460, 370, 110, 40);
 
+        jPanel2.add(jComboBox1);
+        jComboBox1.setBounds(60, 120, 240, 30);
+
+        jPanel2.add(jComboBox2);
+        jComboBox2.setBounds(60, 200, 240, 30);
+
+        jPanel2.add(jComboBox3);
+        jComboBox3.setBounds(60, 280, 240, 30);
+
         jButton1.setBackground(new java.awt.Color(255, 0, 0));
         jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
@@ -462,8 +582,8 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(328, 328, 328)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(320, 320, 320)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(27, 27, 27)
                 .addComponent(jButton2)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -478,10 +598,10 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 470, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -493,23 +613,102 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            // ===== LẤY DATA TỪ FORM =====
+            // ===== 1. KIỂM TRA DỮ LIỆU NHẬP =====
+
+            // Kiểm tra chọn ngành
+            if (major_cbb.getSelectedItem() == null || major_cbb.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Ngành!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                major_cbb.requestFocus();
+                return;
+            }
+
+            // Kiểm tra chọn tổ hợp
+            if (combination_cbb.getSelectedItem() == null || combination_cbb.getSelectedIndex() == -1) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Tổ hợp!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                combination_cbb.requestFocus();
+                return;
+            }
+
+            // Kiểm tra chọn môn 1
+            // Kiểm tra 3 môn không được trùng nhau
+            String mon1 = (String) jComboBox1.getSelectedItem();
+            String mon2 = (String) jComboBox2.getSelectedItem();
+            String mon3 = (String) jComboBox3.getSelectedItem();
+            if (jComboBox1.getSelectedItem() == null || mon1.equals("Chọn môn 1")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Môn 1!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                jComboBox1.requestFocus();
+                return;
+            }
+
+            // Kiểm tra chọn môn 2
+            if (jComboBox2.getSelectedItem() == null || mon2.equals("Chọn môn 2")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Môn 2!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                jComboBox2.requestFocus();
+                return;
+            }
+
+            // Kiểm tra chọn môn 3
+            if (jComboBox3.getSelectedItem() == null || mon3.equals("Chọn môn 3")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn Môn 3!", "Cảnh báo", javax.swing.JOptionPane.WARNING_MESSAGE);
+                jComboBox3.requestFocus();
+                return;
+            }
+
+
+            if (mon1.equals(mon2) || mon1.equals(mon3) || mon2.equals(mon3)) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Các môn trong tổ hợp không được trùng nhau!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Kiểm tra hệ số môn 1 (phải là số nguyên dương)
+            int hsmon1 = 0, hsmon2 = 0, hsmon3 = 0;
+            try {
+                hsmon1 = Integer.parseInt(jtf_hs_mon1.getText().trim());
+                if (hsmon1 <= 0 || hsmon1 > 10) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Hệ số môn 1 phải là số nguyên dương (1-10)!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+                jtf_hs_mon1.requestFocus();
+                jtf_hs_mon1.selectAll();
+                return;
+            }
+
+            // Kiểm tra hệ số môn 2
+            try {
+                hsmon2 = Integer.parseInt(jtf_hs_mon2.getText().trim());
+                if (hsmon2 <= 0 || hsmon2 > 10) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Hệ số môn 2 phải là số nguyên dương (1-10)!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+                jtf_hs_mon2.requestFocus();
+                jtf_hs_mon2.selectAll();
+                return;
+            }
+
+            // Kiểm tra hệ số môn 3
+            try {
+                hsmon3 = Integer.parseInt(jtf_hs_mon3.getText().trim());
+                if (hsmon3 <= 0 || hsmon3 > 10) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException e) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Hệ số môn 3 phải là số nguyên dương (1-10)!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
+                jtf_hs_mon3.requestFocus();
+                jtf_hs_mon3.selectAll();
+                return;
+            }
+
+            // ===== 2. KIỂM TRA TRÙNG LẶP =====
             String tennganh = (String) major_cbb.getSelectedItem();
-            String manganh = nganhBus.getMaNganhByTenNganh(tennganh);
+            String manganh = nganhMap.get(tennganh);
 
             String tenTH = (String) combination_cbb.getSelectedItem();
-            String maTH = tohopBus.getMaTHByTenTH(tenTH);
+            String maTH = tohopMap.get(tenTH);
 
-            String mon1 = jtf_mon1.getText();
-            int hsmon1 = Integer.parseInt(jtf_hs_mon1.getText());
 
-            String mon2 = jtf_mon2.getText();
-            int hsmon2 = Integer.parseInt(jtf_hs_mon2.getText());
-
-            String mon3 = jtf_mon3.getText();
-            int hsmon3 = Integer.parseInt(jtf_hs_mon3.getText());
-
-            // ===== TẠO DTO =====
+            // ===== 3. TẠO DTO =====
             ToHopNganhDTO t = new ToHopNganhDTO();
             t.setManganh(manganh);
             t.setMatohop(maTH);
@@ -526,35 +725,59 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
             // ===== AUTO KEY =====
             t.setTb_keys(manganh + "_" + maTH);
 
-            // ===== CHECKBOX =====
-            t.setTO(jcb_toan.isSelected() ? 1 : 0);
-            t.setLI(jcb_li.isSelected() ? 1 : 0);
-            t.setHO(jcb_hoa.isSelected() ? 1 : 0);
-            t.setSI(jcb_sinh.isSelected() ? 1 : 0);
-            t.setVA(jcb_van.isSelected() ? 1 : 0);
-            t.setN1(jcb_anh.isSelected() ? 1 : 0);
-            t.setSU(jcb_su.isSelected() ? 1 : 0);
-            t.setDI(jcb_dia.isSelected() ? 1 : 0);
-            t.setTI(jcb_tin.isSelected() ? 1 : 0);
-            t.setKTPL(jcb_ktpl.isSelected() ? 1 : 0);
-            t.setKHAC(jcb_khac.isSelected() ? 1 : 0);
+            // ===== CHECKBOX (chỉ tick những môn có trong tổ hợp) =====
+            // Reset tất cả về 0 trước
+            // reset DTO
+            t.setTO(0);
+            t.setLI(0);
+            t.setHO(0);
+            t.setSI(0);
+            t.setVA(0);
+            t.setN1(0);
+            t.setSU(0);
+            t.setDI(0);
+            t.setTI(0);
+            t.setKTPL(0);
+            t.setKHAC(0);
 
-            // ===== DOLECH (nếu có) =====
-            t.setDolech(BigDecimal.ZERO); // hoặc null tùy bạn
+// reset UI
+            resetCheckbox();
+
+// auto tick theo môn đã chọn
+            autoTickSubject(t, mon1, mon2, mon3);
+
+            // HOẶC nếu bạn muốn dùng checkbox do người dùng chọn (bỏ comment đoạn dưới và comment đoạn autoTickSubject)
+            /*
+        t.setTO(jcb_toan.isSelected() ? 1 : 0);
+        t.setLI(jcb_li.isSelected() ? 1 : 0);
+        t.setHO(jcb_hoa.isSelected() ? 1 : 0);
+        t.setSI(jcb_sinh.isSelected() ? 1 : 0);
+        t.setVA(jcb_van.isSelected() ? 1 : 0);
+        t.setN1(jcb_anh.isSelected() ? 1 : 0);
+        t.setSU(jcb_su.isSelected() ? 1 : 0);
+        t.setDI(jcb_dia.isSelected() ? 1 : 0);
+        t.setTI(jcb_tin.isSelected() ? 1 : 0);
+        t.setKTPL(jcb_ktpl.isSelected() ? 1 : 0);
+        t.setKHAC(jcb_khac.isSelected() ? 1 : 0);
+             */
+            // ===== DOLECH (mặc định 0) =====
+            t.setDolech(BigDecimal.ZERO);
 
             // ===== INSERT =====
             int result = th_ng_bus.insert(t);
 
-            if (result == 1) {
+            if (result > 0) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Thêm thành công!");
-                toh_ng_Panel.dataTable(th_ng_bus.getAll());// reload bảng
+                toh_ng_Panel.dataTable(th_ng_bus.getAll());
                 this.dispose();
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this, "Thêm thất bại!");
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Cặp Ngành \"" + tennganh + "\" và Tổ hợp \"" + tenTH + "\" đã tồn tại!\nVui lòng chọn cặp khác.",
+                        "Trùng lặp", javax.swing.JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi dữ liệu!");
+            javax.swing.JOptionPane.showMessageDialog(this, "Lỗi dữ liệu: " + e.getMessage(), "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -568,6 +791,9 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> combination_cbb;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
+    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
@@ -606,9 +832,6 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtf_hs_mon1;
     private javax.swing.JTextField jtf_hs_mon2;
     private javax.swing.JTextField jtf_hs_mon3;
-    private javax.swing.JTextField jtf_mon1;
-    private javax.swing.JTextField jtf_mon2;
-    private javax.swing.JTextField jtf_mon3;
     private javax.swing.JComboBox<String> major_cbb;
     // End of variables declaration//GEN-END:variables
 }

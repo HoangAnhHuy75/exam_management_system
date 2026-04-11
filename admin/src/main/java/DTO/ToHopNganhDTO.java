@@ -1,12 +1,15 @@
 package DTO;
 
-import javax.persistence.*;
-import java.io.Serializable;
+
+
 import java.math.BigDecimal;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.*; 
 
 @Entity
 @Table(name = "xt_tohop_nganh") // đổi theo tên bảng DB của bạn
-public class ToHopNganhDTO implements Serializable {
+public class ToHopNganhDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,7 +48,7 @@ public class ToHopNganhDTO implements Serializable {
     @Column(name = "N1")
     private Integer N1;
 
-    @Column(name = "TO")
+    @Column(name = "`TO`")
     private Integer TO;
 
     @Column(name = "LI")

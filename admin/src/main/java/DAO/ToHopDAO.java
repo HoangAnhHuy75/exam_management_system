@@ -8,7 +8,6 @@ import org.hibernate.query.Query;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -23,6 +22,24 @@ public class ToHopDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+    
+    public int update(ToHopDTO t) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            session.update(t); 
+
+            transaction.commit();
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            return 0;
         }
     }
 
@@ -84,19 +101,5 @@ public class ToHopDAO {
             e.printStackTrace();
         }
         return list;
-    }
-
-    // Lấy map matohop -> tentohop
-    public HashMap<String, String> tohopMap() {
-        HashMap<String, String> map = new HashMap<>();
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<ToHopDTO> query = session.createQuery("FROM ToHopDTO", ToHopDTO.class);
-            for (ToHopDTO t : query.list()) {
-                map.put(t.getMatohop(), t.getTentohop());
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return map;
     }
 }

@@ -26,7 +26,23 @@ public class ToHopBUS {
         int success = tohopDao.insert(th); // insert vào DB
         return success;
     }
+    
+    public int update(ToHopDTO t) {
+        for (ToHopDTO th : tohopDao.getAllToHop()) {
+            // bỏ qua chính nó
+            if (th.getIdtohop() != t.getIdtohop() && th.getMatohop().equalsIgnoreCase(t.getMatohop())) {
+                return 0; 
+            }
+        }
 
+        return tohopDao.update(t);
+    }
+    public int getIdbyIndex(int index){
+        ArrayList<ToHopDTO> list = tohopDao.getAllToHop();
+        if(index >=0 && index < list.size())
+            return list.get(index).getIdtohop();
+        return -1;
+    }
     // Lấy danh sách tên tổ hợp không trùng (nếu có tổ hợp trùng tên)
     public ArrayList<String> getListTenToHopDistinct() {
         ArrayList<String> listTen = new ArrayList<>();
@@ -87,20 +103,17 @@ public class ToHopBUS {
     public HashMap<String, String> tohopMap() {
         HashMap<String, String> map = new HashMap<>();
         for (ToHopDTO th : tohopDao.getAllToHop()) {
-            map.put(th.getMatohop(), th.getTentohop());
+            map.put(th.getTentohop(), th.getMatohop());
         }
         return map;
     }
 
     // Tìm kiếm theo mã và tên
-    public ArrayList<ToHopDTO> timkiem(String maTH, String tenTH) {
+    public ArrayList<ToHopDTO> timkiem(String text) {
         ArrayList<ToHopDTO> result = new ArrayList<>();
-        String ma = maTH != null ? maTH.toLowerCase() : "";
-        String ten = tenTH != null ? tenTH.toLowerCase() : "";
+        String textFind = text.toLowerCase();
         for (ToHopDTO th : tohopDao.getAllToHop()) {
-            boolean matchMa = ma.isEmpty() || th.getMatohop().toLowerCase().contains(ma);
-            boolean matchTen = ten.isEmpty() || th.getTentohop().toLowerCase().contains(ten);
-            if (matchMa && matchTen) {
+            if (th.getMatohop().toLowerCase().contains(textFind) || th.getTentohop().toLowerCase().contains(textFind)) {
                 result.add(th);
             }
         }

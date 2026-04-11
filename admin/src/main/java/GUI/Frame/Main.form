@@ -148,11 +148,17 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x110;i&#x1ec3;m Thi"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_diemthiActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_diemcong">
               <Properties>
                 <Property name="text" type="java.lang.String" value="&#x110;i&#x1ec3;m C&#x1ed9;ng"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_diemcongActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JButton" name="btn_nvxt">
               <Properties>

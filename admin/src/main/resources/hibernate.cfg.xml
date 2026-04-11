@@ -9,7 +9,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/exam_management_system</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">root</property>
+        <property name="hibernate.connection.password">123456</property>
 
         <!-- Hibernate properties -->
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
@@ -19,5 +19,7 @@
         <mapping class="DTO.NganhDTO"/>
         <mapping class="DTO.ToHopDTO"/>
         <mapping class="DTO.ToHopNganhDTO"/>
+        <mapping class="DTO.DiemThiDTO"/>
+        <mapping class="DTO.DiemCongDTO"/>
     </session-factory>
 </hibernate-configuration>

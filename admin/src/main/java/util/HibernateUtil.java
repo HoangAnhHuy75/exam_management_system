@@ -18,7 +18,9 @@ public class HibernateUtil {
 
                 // 2. Tạo Metadata và SessionFactory
                 sessionFactory = new MetadataSources(registry)
-                        .addAnnotatedClass(DTO.NganhDTO.class) // thêm entity
+                        .addAnnotatedClass(DTO.NganhDTO.class)
+                        .addAnnotatedClass(DTO.ToHopDTO.class)           // ✅ THÊM DÒNG NÀY
+                        .addAnnotatedClass(DTO.ToHopNganhDTO.class)   // thêm entity
                         .buildMetadata()
                         .buildSessionFactory();
 

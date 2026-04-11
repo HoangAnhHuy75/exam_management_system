@@ -36,9 +36,30 @@ public class AddNganhDialog extends javax.swing.JDialog {
         khoiTao();
     }
 
-    public void khoiTao(){
+    public void khoiTao() {
         setUpCombobox();
         loadCbb();
+        toggleInputs();
+    }
+
+    public void toggleInputs() {
+        if (!jcheck_tuyenthang.isSelected()) {
+            jtf_sltt.setText("");
+        }
+        if (!jcheck_dgnl.isSelected()) {
+            jtf_dgnl.setText("");
+        }
+        if (!jcheck_thpt.isSelected()) {
+            jtf_thpt.setText("");
+        }
+        if (!jcheck_vsat.isSelected()) {
+            jtf_vsat.setText("");
+        }
+
+        jtf_sltt.setEnabled(jcheck_tuyenthang.isSelected());
+        jtf_dgnl.setEnabled(jcheck_dgnl.isSelected());
+        jtf_thpt.setEnabled(jcheck_thpt.isSelected());
+        jtf_vsat.setEnabled(jcheck_vsat.isSelected());
     }
     public void setUpCombobox(){
         cbb_design.setUpComBoBox(cbb_tohopgoc);
@@ -141,18 +162,38 @@ public class AddNganhDialog extends javax.swing.JDialog {
         cbb_tohopgoc.setBounds(120, 150, 150, 33);
 
         jcheck_dgnl.setText("ĐGNL");
+        jcheck_dgnl.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcheck_dgnlActionPerformed(evt);
+            }
+        });
         jPanel2.add(jcheck_dgnl);
         jcheck_dgnl.setBounds(150, 330, 97, 36);
 
         jcheck_tuyenthang.setText("Tuyển thẳng");
+        jcheck_tuyenthang.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcheck_tuyenthangActionPerformed(evt);
+            }
+        });
         jPanel2.add(jcheck_tuyenthang);
         jcheck_tuyenthang.setBounds(30, 330, 97, 36);
 
         jcheck_vsat.setText("VSAT");
+        jcheck_vsat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcheck_vsatActionPerformed(evt);
+            }
+        });
         jPanel2.add(jcheck_vsat);
         jcheck_vsat.setBounds(410, 330, 92, 36);
 
         jcheck_thpt.setText("THPT");
+        jcheck_thpt.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcheck_thptActionPerformed(evt);
+            }
+        });
         jPanel2.add(jcheck_thpt);
         jcheck_thpt.setBounds(280, 330, 95, 36);
 
@@ -233,54 +274,92 @@ public class AddNganhDialog extends javax.swing.JDialog {
         String tennganh = jtf_tennganh.getText().trim();
         String tohopgoc = (String) cbb_tohopgoc.getSelectedItem();
 
-        // 1. Check rỗng
-        if (manganh.isEmpty() || tennganh.isEmpty() || tohopgoc == null) {
+        // ===== 1. CHECK RỖNG =====
+        if (manganh.isEmpty() || tennganh.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
             return;
         }
+        if (tohopgoc == null || tohopgoc.equals("Chọn tổ hợp gốc")) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tổ hợp gốc!");
+            return;
+        }
 
-        int chitieu, slthpt, slvsat, sltt, sldgnl;
+        // ===== 2. CHECK TRÙNG =====
+        if (nganhBus.checkDup(manganh)) {
+            JOptionPane.showMessageDialog(this, "Mã ngành đã tồn tại!");
+            return;
+        }
+
+        int chitieu;
+        int slthpt = 0, slvsat = 0, sltt = 0, sldgnl = 0;
         BigDecimal diemsan;
 
         try {
-            // 2. Parse số (bắt lỗi luôn)
             chitieu = Integer.parseInt(jtf_chitieu.getText().trim());
-            slthpt = Integer.parseInt(jtf_thpt.getText().trim());
-            slvsat = Integer.parseInt(jtf_vsat.getText().trim());
-            sltt = Integer.parseInt(jtf_sltt.getText().trim());
-            sldgnl = Integer.parseInt(jtf_dgnl.getText().trim());
+
+            // ===== 3. CHỈ PARSE KHI CHECKBOX ĐƯỢC CHỌN =====
+            if (jcheck_thpt.isSelected()) {
+                slthpt = Integer.parseInt(jtf_thpt.getText().trim());
+            }
+
+            if (jcheck_vsat.isSelected()) {
+                slvsat = Integer.parseInt(jtf_vsat.getText().trim());
+            }
+
+            if (jcheck_tuyenthang.isSelected()) {
+                sltt = Integer.parseInt(jtf_sltt.getText().trim());
+            }
+
+            if (jcheck_dgnl.isSelected()) {
+                sldgnl = Integer.parseInt(jtf_dgnl.getText().trim());
+            }
 
             diemsan = new BigDecimal(jtf_diemsan.getText().trim());
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số!");
             return;
         }
 
-        // 3. Check số âm
+        // ===== 4. CHECK ÂM =====
         if (chitieu < 0 || slthpt < 0 || slvsat < 0 || sltt < 0 || sldgnl < 0) {
             JOptionPane.showMessageDialog(this, "Số lượng không được âm!");
             return;
         }
 
-        // 4. Check điểm hợp lệ
-        if (diemsan.compareTo(BigDecimal.ZERO) < 0 || diemsan.compareTo(new BigDecimal("30")) > 0) {
+        // ===== 5. CHECK ĐIỂM =====
+        if (diemsan.compareTo(BigDecimal.ZERO) < 0
+                || diemsan.compareTo(new BigDecimal("30")) > 0) {
             JOptionPane.showMessageDialog(this, "Điểm sàn phải từ 0 → 30!");
             return;
         }
 
-        // 5. Check tổng chỉ tiêu (nâng cao)
+        // ===== 6. CHECK TỔNG =====
         if (slthpt + slvsat + sltt + sldgnl > chitieu) {
-            JOptionPane.showMessageDialog(this, "Tổng số lượng phương thức vượt chỉ tiêu!");
+            JOptionPane.showMessageDialog(this, "Tổng số lượng vượt chỉ tiêu!");
             return;
         }
+        
+        if (slthpt + slvsat + sltt + sldgnl < chitieu) {
+            JOptionPane.showMessageDialog(this, "Tổng số lượng không đúng với chỉ tiêu!");
+            return;
+        }
+
+        // ===== 7. LẤY MÃ TỔ HỢP =====
         String maTH = tohopBus.getMaTHByTenTH(tohopgoc);
-        //Tạo DTO
+        if (maTH == null) {
+            JOptionPane.showMessageDialog(this, "Tổ hợp không hợp lệ!");
+            return;
+        }
+
+        // ===== 8. TẠO DTO =====
         NganhDTO nganhDto = new NganhDTO();
         nganhDto.setMaNganh(manganh.toUpperCase());
         nganhDto.setTenNganh(tennganh);
         nganhDto.setNChiTieu(chitieu);
         nganhDto.setNDiemSan(diemsan);
         nganhDto.setNToHopGoc(maTH);
+
         nganhDto.setSlDGNL(sldgnl);
         nganhDto.setSlTHPT(slthpt);
         nganhDto.setSlXTT(sltt);
@@ -291,29 +370,35 @@ public class AddNganhDialog extends javax.swing.JDialog {
         nganhDto.setNTHPT(jcheck_thpt.isSelected() ? "Y" : "N");
         nganhDto.setNVSAT(jcheck_vsat.isSelected() ? "Y" : "N");
 
-        //Insert
+        // ===== 9. INSERT =====
         if (nganhBus.insert(nganhDto) == 1) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Thêm ngành thành công!",
-                    "Thông báo",
-                    JOptionPane.INFORMATION_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Thêm ngành thành công!");
             nganhPanel.dataTable(nganhBus.getListN());
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "Ngành đã tồn tại!",
-                    "Thông báo",
-                    JOptionPane.WARNING_MESSAGE
-            );
+            JOptionPane.showMessageDialog(this, "Thêm thất bại!");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jcheck_tuyenthangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_tuyenthangActionPerformed
+        toggleInputs();
+    }//GEN-LAST:event_jcheck_tuyenthangActionPerformed
+
+    private void jcheck_dgnlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_dgnlActionPerformed
+        toggleInputs();
+    }//GEN-LAST:event_jcheck_dgnlActionPerformed
+
+    private void jcheck_thptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_thptActionPerformed
+        toggleInputs();
+    }//GEN-LAST:event_jcheck_thptActionPerformed
+
+    private void jcheck_vsatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_vsatActionPerformed
+        toggleInputs();
+    }//GEN-LAST:event_jcheck_vsatActionPerformed
 
     /**
      * @param args the command line arguments

@@ -8,32 +8,41 @@ import BUS.ToHopBUS;
 import DTO.ToHopDTO;
 import GUI.Panel.TohopPanel;
 import util.Combobox_design;
+import util.JTextF_design;
 
 /**
  *
  * @author kiman
  */
-public class AddToHopDialog extends javax.swing.JDialog {
+public class UpdateToHopDialog extends javax.swing.JDialog {
+    TohopPanel tohopPanel = new TohopPanel();
+    ToHopDTO tohopDto;
     ToHopBUS tohopBus = new ToHopBUS();
-    TohopPanel tohopPanel;
     Combobox_design cbb_design = new Combobox_design();
+    JTextF_design jtf_design = new JTextF_design();
     /**
-     * Creates new form AddToHopDialog
+     * Creates new form UpdateToHopDialog
      */
-    public AddToHopDialog(java.awt.Frame parent, boolean modal, TohopPanel tohopPanel) {
+    public UpdateToHopDialog(java.awt.Frame parent, boolean modal, TohopPanel tohopPanel, ToHopDTO tohopDto) {
         super(parent, modal);
         initComponents();
-        this.tohopPanel = tohopPanel;
+        this.setTitle("Cập nhật tổ hợp");
         this.setLocationRelativeTo(null);
-        this.setTitle("Thêm tổ hợp");
+        this.tohopDto= tohopDto;
+        this.tohopPanel = tohopPanel;
         khoiTao();
+        jTextField1.setText(tohopDto.getMatohop());
+        jTextField2.setText(tohopDto.getTentohop());
+        jComboBox1.setSelectedItem(tohopDto.getMon1());
+        jComboBox2.setSelectedItem(tohopDto.getMon2());
+        jComboBox3.setSelectedItem(tohopDto.getMon3());
     }
     public void khoiTao(){
         setUpCbb();
+        setUpJTF();
         loadCbb();
-        
     }
-    public void loadCbb(){
+     public void loadCbb(){
         String[] subjects = {"N1","TO","VA","LI","HO","SI","SU","DI","TI","KTPL","NK1","NK2","NK3","NK4","NK5","NK6"};
         for(String s : subjects){
             jComboBox1.addItem(s);
@@ -46,8 +55,11 @@ public class AddToHopDialog extends javax.swing.JDialog {
         cbb_design.setUpComBoBox(jComboBox2);
         cbb_design.setUpComBoBox(jComboBox3);
     }
+    public void setUpJTF(){
+        jtf_design.setUpJTF(jTextField1);
+        jtf_design.setUpJTF(jTextField2);
+    }
 
-    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -80,7 +92,7 @@ public class AddToHopDialog extends javax.swing.JDialog {
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 204, 0));
-        jLabel1.setText("Thêm tổ hợp");
+        jLabel1.setText("Cập nhật tổ hợp");
 
         jLabel2.setText("Quản lý tuyển sinh / danh mục");
 
@@ -130,7 +142,7 @@ public class AddToHopDialog extends javax.swing.JDialog {
         jButton2.setBackground(new java.awt.Color(51, 204, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Lưu thông tin");
+        jButton2.setText("Cập nhật");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -158,13 +170,10 @@ public class AddToHopDialog extends javax.swing.JDialog {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel5)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(35, 35, 35)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(44, 44, 44)
-                                .addComponent(jLabel6))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(35, 35, 35)
-                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6))
                         .addGap(39, 39, 39)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel7)
@@ -172,7 +181,7 @@ public class AddToHopDialog extends javax.swing.JDialog {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton2)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(114, 114, 114)))
                 .addContainerGap(35, Short.MAX_VALUE))
         );
@@ -184,10 +193,10 @@ public class AddToHopDialog extends javax.swing.JDialog {
                     .addComponent(jLabel3)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 45, Short.MAX_VALUE)
                     .addComponent(jTextField1))
-                .addGap(58, 58, 58)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
@@ -236,44 +245,43 @@ public class AddToHopDialog extends javax.swing.JDialog {
         String mon3 = (String) jComboBox3.getSelectedItem();
         if (maTH.isEmpty() || tenTH.isEmpty() || mon1 == null || mon2 == null || mon3 == null) {
             javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Vui lòng nhập đầy đủ thông tin!",
-                    "Cảnh báo",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
+                this,
+                "Vui lòng nhập đầy đủ thông tin!",
+                "Cảnh báo",
+                javax.swing.JOptionPane.WARNING_MESSAGE
             );
             return;
         }
 
         if (mon1.equals(mon2) || mon1.equals(mon3) || mon2.equals(mon3)) {
             javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Các môn trong tổ hợp không được trùng nhau!",
-                    "Cảnh báo",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
+                this,
+                "Các môn trong tổ hợp không được trùng nhau!",
+                "Cảnh báo",
+                javax.swing.JOptionPane.WARNING_MESSAGE
             );
             return;
         }
-        ToHopDTO tohopDTO = new ToHopDTO();
-        tohopDTO.setMatohop(maTH);
-        tohopDTO.setTentohop(tenTH);
-        tohopDTO.setMon1(mon1);
-        tohopDTO.setMon2(mon2);
-        tohopDTO.setMon3(mon3);
-        if (tohopBus.insert(tohopDTO) == 1) {
+        tohopDto.setMatohop(maTH);
+        tohopDto.setTentohop(tenTH);
+        tohopDto.setMon1(mon1);
+        tohopDto.setMon2(mon2);
+        tohopDto.setMon3(mon3);
+        if (tohopBus.update(tohopDto) == 1) {
             javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Thêm thành công!",
-                    "Thông báo",
-                    javax.swing.JOptionPane.INFORMATION_MESSAGE
+                this,
+                "Cập nhật thành công!",
+                "Thông báo",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE
             );
             tohopPanel.dataTable(tohopBus.getListTH());
             this.dispose();
         } else {
             javax.swing.JOptionPane.showMessageDialog(
-                    this,
-                    "Tổ hợp đã tồn tại!",
-                    "Thông báo",
-                    javax.swing.JOptionPane.WARNING_MESSAGE
+                this,
+                "Tổ hợp đã tồn tại!",
+                "Thông báo",
+                javax.swing.JOptionPane.WARNING_MESSAGE
             );
         }
     }//GEN-LAST:event_jButton2ActionPerformed

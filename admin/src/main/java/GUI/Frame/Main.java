@@ -5,8 +5,8 @@
 package GUI.Frame;
 
 import GUI.Panel.NganhPanel;
+import GUI.Panel.ThiSinhPanel;
 import GUI.Panel.ToHopNganhPanel;
-//import GUI.Panel.ToHop_Nganh_Panel;
 import GUI.Panel.TohopPanel;
 import GUI.Panel.TrangChuPanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -32,20 +32,25 @@ public class Main extends javax.swing.JFrame {
     NganhPanel nganhPanel = new NganhPanel();
     TohopPanel toHopPanel = new TohopPanel();
     ToHopNganhPanel tohop_nganh_panel = new ToHopNganhPanel();
+    ThiSinhPanel thisinhPanel = new ThiSinhPanel();
     JButton[] btns = new JButton[8];
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     public Main() {
         initComponents();
+        this.setTitle("Quản lý xét tuyển thí sinh");
+        this.setLocationRelativeTo(null);
         khoiTao();
         main.add(trangChuPanel, "TrangChu");
         main.add(nganhPanel, "Nganh");
         main.add(toHopPanel, "ToHop");
         main.add(tohop_nganh_panel, "ToHop_Nganh");
+        main.add(thisinhPanel, "ThiSinh");
         nganhPanel.setVisible(false);
         toHopPanel.setVisible(false);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
+        thisinhPanel.setVisible(false);
     }
 
     public void khoiTao() {
@@ -217,6 +222,11 @@ public class Main extends javax.swing.JFrame {
         });
 
         btn_thisinh.setText("Thí Sinh");
+        btn_thisinh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_thisinhActionPerformed(evt);
+            }
+        });
 
         btn_diemthi.setText("Điểm Thi");
 
@@ -329,6 +339,7 @@ public class Main extends javax.swing.JFrame {
         toHopPanel.setVisible(false);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
+        thisinhPanel.setVisible(false);
     }//GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
@@ -336,6 +347,7 @@ public class Main extends javax.swing.JFrame {
         toHopPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
         trangChuPanel.setVisible(true);
+        thisinhPanel.setVisible(false);
     }//GEN-LAST:event_btn_homeActionPerformed
 
     private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combinationActionPerformed
@@ -343,6 +355,7 @@ public class Main extends javax.swing.JFrame {
         toHopPanel.setVisible(true);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
+        thisinhPanel.setVisible(false);
     }//GEN-LAST:event_btn_combinationActionPerformed
 
     private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combination_majorActionPerformed
@@ -350,7 +363,16 @@ public class Main extends javax.swing.JFrame {
         toHopPanel.setVisible(false);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(true);
+        thisinhPanel.setVisible(false);
     }//GEN-LAST:event_btn_combination_majorActionPerformed
+
+    private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_thisinhActionPerformed
+        nganhPanel.setVisible(false);
+        toHopPanel.setVisible(false);
+        trangChuPanel.setVisible(false);
+        tohop_nganh_panel.setVisible(false);
+        thisinhPanel.setVisible(true);
+    }//GEN-LAST:event_btn_thisinhActionPerformed
 
     /**
      * @param args the command line arguments

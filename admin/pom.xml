@@ -81,18 +81,30 @@
             <artifactId>jsvg</artifactId>
             <version>1.7.0</version>
         </dependency>
-
-<dependency>
-    <groupId>com.formdev</groupId>
-    <artifactId>flatlaf-extras</artifactId>
-    <version>3.5.4</version>
-    <exclusions>
-     <exclusion>
-      <groupId>com.github.weisj</groupId>
-      <artifactId>jsvg</artifactId>
-     </exclusion>
-    </exclusions>
-</dependency>
+        
+        <dependency>
+            <groupId>org.swinglabs.swingx</groupId>
+            <artifactId>swingx-all</artifactId>
+            <version>1.6.5-1</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.toedter</groupId>
+            <artifactId>jcalendar</artifactId>
+            <version>1.4</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.5.4</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.weisj</groupId>
+                    <artifactId>jsvg</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     
         <!-- FlatLaf Extras - Hỗ trợ SVG icons -->
     

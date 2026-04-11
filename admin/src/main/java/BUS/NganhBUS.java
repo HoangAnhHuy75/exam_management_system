@@ -35,7 +35,11 @@ public class NganhBUS {
 
     // Map manganh -> tennganh
     public HashMap<String, String> nganhMap() {
-        return nganhDao.nganhMap();
+        HashMap<String, String> nganhMap = new HashMap<>();
+        for (NganhDTO ng : nganhDao.getAllNganh()) {
+            nganhMap.put(ng.getTenNganh(), ng.getMaNganh());
+        }
+        return nganhMap;
     }
 
     // Tìm mã ngành theo tên ngành
@@ -127,7 +131,7 @@ public class NganhBUS {
         return listToHopGoc;
     }
     // Tìm kiếm nâng cao
-    public ArrayList<NganhDTO> timKiem(String ptxt, String thg, String maNganh, String tenNganh) {
+    public ArrayList<NganhDTO> timKiem(String ptxt, String thg) {
         ArrayList<NganhDTO> result = new ArrayList<>();
         for (NganhDTO n : nganhDao.getAllNganh()) {
             boolean matchPT = ptxt.equals("Tất cả")
@@ -137,11 +141,19 @@ public class NganhBUS {
                     || (ptxt.equals("VSAT") && "Y".equalsIgnoreCase(n.getNVSAT()));
 
             boolean matchTHG = thg.equals("Tất cả") || thg.equals(n.getNToHopGoc());
-            boolean matchMa = maNganh == null || maNganh.isEmpty() || n.getMaNganh().toLowerCase().contains(maNganh.toLowerCase());
-            boolean matchTen = tenNganh == null || tenNganh.isEmpty() || n.getTenNganh().toLowerCase().contains(tenNganh.toLowerCase());
-
-            if (matchPT && matchTHG && matchMa && matchTen) {
+            if (matchPT && matchTHG) {
                 result.add(n);
+            }
+        }
+        return result;
+    }
+    
+    public ArrayList<NganhDTO> timkiemText(String text){
+        String textFind = text.toLowerCase();
+        ArrayList<NganhDTO> result = new ArrayList<>();
+        for(NganhDTO ng : nganhDao.getAllNganh()){
+            if(ng.getMaNganh().toLowerCase().contains(textFind) || ng.getTenNganh().toLowerCase().contains(textFind)){
+                result.add(ng);
             }
         }
         return result;

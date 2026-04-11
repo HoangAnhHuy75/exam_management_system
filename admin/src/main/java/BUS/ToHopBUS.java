@@ -99,6 +99,18 @@ public class ToHopBUS {
         return null;
     }
 
+    public String getTenTHByMaTH(String maTH) {
+        if (maTH == null) {
+            return null;
+        }
+        for (ToHopDTO th : tohopDao.getAllToHop()) {
+            if (maTH.equalsIgnoreCase(th.getMatohop())) {
+                return th.getTentohop();
+            }
+        }
+        return null;
+    }
+
     // Map matohop -> tentohop
     public HashMap<String, String> tohopMap() {
         HashMap<String, String> map = new HashMap<>();

@@ -121,6 +121,8 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_update = new javax.swing.JButton();
         btn_delete = new javax.swing.JButton();
 
+        setBackground(new java.awt.Color(204, 204, 204));
+
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setText("HỆ THỐNG /");

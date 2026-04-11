@@ -45,6 +45,24 @@ public class ToHopNganhDAO {
             return 0;
         }
     }
+    
+    public int update(ToHopNganhDTO t) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            session.update(t);
+
+            transaction.commit();
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction != null) {
+                transaction.rollback();
+            }
+            return 0;
+        }
+    }
 
     // Thêm list
     public void insertList(List<ToHopNganhDTO> list) {

@@ -31,16 +31,21 @@ public class UpdateToHopDialog extends javax.swing.JDialog {
         this.tohopDto= tohopDto;
         this.tohopPanel = tohopPanel;
         khoiTao();
+       
+    }
+    public void khoiTao() {
+        setUpCbb();
+        setUpJTF();
+        loadCbb();
+        setData();
+    }
+
+    public void setData() {
         jTextField1.setText(tohopDto.getMatohop());
         jTextField2.setText(tohopDto.getTentohop());
         jComboBox1.setSelectedItem(tohopDto.getMon1());
         jComboBox2.setSelectedItem(tohopDto.getMon2());
         jComboBox3.setSelectedItem(tohopDto.getMon3());
-    }
-    public void khoiTao(){
-        setUpCbb();
-        setUpJTF();
-        loadCbb();
     }
      public void loadCbb(){
         String[] subjects = {"N1","TO","VA","LI","HO","SI","SU","DI","TI","KTPL","NK1","NK2","NK3","NK4","NK5","NK6"};
@@ -88,7 +93,7 @@ public class UpdateToHopDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(51, 204, 0));
@@ -117,7 +122,7 @@ public class UpdateToHopDialog extends javax.swing.JDialog {
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel3.setText("Mã tổ hợp");
 

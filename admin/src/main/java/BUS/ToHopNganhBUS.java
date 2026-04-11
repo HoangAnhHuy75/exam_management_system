@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ToHopNganhBUS {
-
+    private NganhBUS nganhBus = new NganhBUS();
     private ToHopNganhDAO tohopnganhDao = new ToHopNganhDAO();
     private ArrayList<ToHopNganhDTO> tohopnganhList = new ArrayList<>();
 
@@ -24,6 +24,23 @@ public class ToHopNganhBUS {
         }
         int success = tohopnganhDao.insert(t);
         return success;
+    }
+    
+    public int update(ToHopNganhDTO tohopnganh) {
+        for (ToHopNganhDTO thn : tohopnganhDao.getAll()) {
+            // bỏ qua chính nó
+            if (thn.getId() != tohopnganh.getId() && thn.getTb_keys().equalsIgnoreCase(tohopnganh.getTb_keys())) {
+                return 0;
+            }
+        }
+        return tohopnganhDao.update(tohopnganh);
+    }
+    
+     public int getIdbyIndex(int index){
+        ArrayList<ToHopNganhDTO> list = tohopnganhDao.getAll();
+        if(index >=0 && index < list.size())
+            return list.get(index).getId();
+        return -1;
     }
 
     // Import Excel (nếu sau này bạn có)
@@ -101,6 +118,20 @@ public class ToHopNganhBUS {
             boolean matchTH = th.isEmpty() || t.getMatohop().toLowerCase().contains(th);
 
             if (matchMN && matchTH) {
+                result.add(t);
+            }
+        }
+
+        return result;
+    }
+    
+    public ArrayList<ToHopNganhDTO> timkiemText(String text) {
+        String textFind = text.toLowerCase();
+        ArrayList<ToHopNganhDTO> result = new ArrayList<>();
+
+        for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
+            String tenNganh = nganhBus.getTenNganhByMaNganh(t.getManganh());
+            if (t.getManganh().toLowerCase().contains(textFind) || t.getMatohop().toLowerCase().contains(textFind) || tenNganh.toLowerCase().contains(textFind)) {
                 result.add(t);
             }
         }

@@ -33,26 +33,29 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
         this.thisinhPanel = thisinhPanel;
         this.thisinh=thisinh;
         khoiTao();
+        
+    }
+    public void khoiTao() {
+        setUpCbb();
+        setData();
+    }
+    public void setData() {
         jtf_cccd.setText(thisinh.getCccd());
         jtf_hoten.setText(thisinh.getHoTen());
         jtf_sbd.setText(thisinh.getSobaodanh());
         jtf_sdt.setText(thisinh.getDienThoai());
 
         jcalendar_ns.setDate(thisinh.getNgaySinh());
-        if(thisinh.getDoiTuong().equals("")){
+        if (thisinh.getDoiTuong().equals("")) {
             cbb_doituong.setSelectedItem("Không");
-        }else{
-             cbb_doituong.setSelectedItem(thisinh.getDoiTuong());
+        } else {
+            cbb_doituong.setSelectedItem(thisinh.getDoiTuong());
         }
         cbb_kv.setSelectedItem(thisinh.getKhuVuc());
         cbb_noisinh.setSelectedItem(thisinh.getNoiSinh());
         cbb_gt.setSelectedItem(thisinh.getGioiTinh());
         jtf_email.setText(thisinh.getEmail());
     }
-    public void khoiTao() {
-        setUpCbb();
-    }
-
     public void setUpCbb() {
         cbb_design.setUpComBoBox(cbb_gt);
         cbb_design.setUpComBoBox(cbb_doituong);
@@ -85,7 +88,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        logo_edit = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jtf_cccd = new javax.swing.JTextField();
@@ -112,7 +115,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("CẬP NHẬT THÍ SINH");
@@ -123,7 +126,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(28, 28, 28)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(logo_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -133,7 +136,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logo_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addContainerGap(18, Short.MAX_VALUE))
         );
@@ -304,12 +307,13 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_cancelActionPerformed
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
-        String cccd = jtf_cccd.getText();
+        String cccd = jtf_cccd.getText().trim();
+        String sbd = jtf_sbd.getText().trim();
         String hoten = jtf_hoten.getText();
         String doituong = (String) cbb_doituong.getSelectedItem();
         String gioitinh = (String) cbb_gt.getSelectedItem();
-        String dt = jtf_sdt.getText();
-        String email = jtf_email.getText();
+        String dt = jtf_sdt.getText().trim();
+        String email = jtf_email.getText().trim();
         String noisinh = (String) cbb_noisinh.getSelectedItem();
         String khuvuc = (String) cbb_kv.getSelectedItem();
         if (cccd == null || cccd.trim().isEmpty() || cccd.length() != 12) {
@@ -326,6 +330,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh");
             return;
         }
+        
 
         // Lấy năm
         Calendar cal = Calendar.getInstance();
@@ -337,6 +342,20 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             javax.swing.JOptionPane.showMessageDialog(this, "Năm sinh phải <= 2008");
             return;
         }
+        
+        if (!dt.equals("")) {
+            if (!dt.matches("^0\\d{9}$")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Số điện thoại không đúng định dạng");
+                return;
+            }
+        }
+        if (!email.equals("")) {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Email không đúng định dạng");
+                return;
+            }
+        }
+        
         if (noisinh == null || noisinh.trim().isEmpty() || noisinh.equals("Tất cả")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn nơi sinh");
             return;
@@ -354,6 +373,7 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             return;
         }
         thisinh.setCccd(cccd);
+        thisinh.setSobaodanh(sbd);
         thisinh.setTen(hoten);
         thisinh.setNgaySinh(ngaysinh);
         thisinh.setGioiTinh(gioitinh);
@@ -385,7 +405,6 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
     private javax.swing.JComboBox<String> cbb_gt;
     private javax.swing.JComboBox<String> cbb_kv;
     private javax.swing.JComboBox<String> cbb_noisinh;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -404,5 +423,6 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtf_hoten;
     private javax.swing.JTextField jtf_sbd;
     private javax.swing.JTextField jtf_sdt;
+    private javax.swing.JLabel logo_edit;
     // End of variables declaration//GEN-END:variables
 }

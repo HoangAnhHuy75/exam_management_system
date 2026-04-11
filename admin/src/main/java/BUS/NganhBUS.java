@@ -26,6 +26,18 @@ public class NganhBUS {
         nganhList = nganhDao.getAllNganh();
         return nganhList;
     }
+    
+    public int update(NganhDTO n) {
+        for (NganhDTO ng : nganhDao.getAllNganh()) {
+            // bỏ qua chính nó (so sánh id)
+            if (ng.getIdNganh() != n.getIdNganh()
+                    && ng.getMaNganh().equalsIgnoreCase(n.getMaNganh())) {
+                return 0; // trùng mã ngành
+            }
+        }
+
+        return nganhDao.update(n);
+    }
 
     // Kiểm tra trùng mã ngành
     public boolean checkDup(String maNganh) {
@@ -119,7 +131,12 @@ public class NganhBUS {
             return null;
         }
     }
-
+    public int getIdbyIndex(int index){
+        ArrayList<NganhDTO> list = nganhDao.getAllNganh();
+        if(index >=0 && index < list.size())
+            return list.get(index).getIdNganh();
+        return -1;
+    }
     public ArrayList<String> getListToHopGoc() {
         ArrayList<String> listToHopGoc = new ArrayList<>();
         for (NganhDTO n : nganhDao.getAllNganh()) {

@@ -33,6 +33,22 @@ public class NganhDAO {
             return 0;
         }
     }
+    
+    public int update(NganhDTO n) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            session.update(n); // update object
+            tx.commit();
+            return 1;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (tx != null) {
+                tx.rollback();
+            }
+            return 0;
+        }
+    }
 
     // Lấy tất cả ngành
     public ArrayList<NganhDTO> getAllNganh() {

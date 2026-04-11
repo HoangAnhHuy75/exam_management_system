@@ -133,7 +133,7 @@ public class AddThiSinhDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jLabel2.setText("THÊM THÍ SINH");
@@ -325,7 +325,7 @@ public class AddThiSinhDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        String cccd = jtf_cccd.getText();
+        String cccd = jtf_cccd.getText().trim();
         String sbd = jtf_sbd.getText().trim();
         String hoten = jtf_hoten.getText();
         String doituong = (String) cbb_doituong.getSelectedItem();
@@ -343,7 +343,18 @@ public class AddThiSinhDialog extends javax.swing.JDialog {
             return;
         }
         Date ngaysinh = jcalendar_ns.getDate();
-
+        if (!dt.equals("")) {
+            if (!dt.matches("^0\\d{9}$")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Số điện thoại không đúng định dạng");
+                return;
+            }
+        }
+        if (!email.equals("")) {
+            if (!email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+                javax.swing.JOptionPane.showMessageDialog(this, "Email không đúng định dạng");
+                return;
+            }
+        }
         if (ngaysinh == null) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh");
             return;
@@ -378,13 +389,14 @@ public class AddThiSinhDialog extends javax.swing.JDialog {
         if(doituong.equals("Không"))
             doituong = null;
         if(email.trim().equals(""))
-            doituong = null;
+            email = null;
         if(dt.trim().equals(""))
-            doituong = null;
+            dt = null;
         if(sbd.trim().equals(""))
-            doituong = null;
+            sbd = null;
         ThiSinhDTO thisinh = new ThiSinhDTO();
         thisinh.setCccd(cccd);
+        thisinh.setSobaodanh(sbd);
         thisinh.setTen(hoten);
         thisinh.setNgaySinh(ngaysinh);
         thisinh.setGioiTinh(gioitinh);

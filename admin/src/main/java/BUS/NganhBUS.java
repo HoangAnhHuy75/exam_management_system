@@ -53,7 +53,15 @@ public class NganhBUS {
         }
         return nganhMap;
     }
-
+    
+    // Map tennganh -> manganh(thành)
+    public HashMap<String,String> getMapTenNganh() {
+        HashMap<String,String> getMapTenNganh = new HashMap<>();
+        for(NganhDTO ng : nganhDao.getAllNganh()) {
+            getMapTenNganh.put(ng.getMaNganh(), ng.getTenNganh());
+        }
+        return getMapTenNganh;
+    }
     // Tìm mã ngành theo tên ngành
     public String getMaNganhByTenNganh(String tenNganh) {
         return nganhDao.getAllNganh().stream()

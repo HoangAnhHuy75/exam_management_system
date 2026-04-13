@@ -41,7 +41,8 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     public void loadData() {
         field_cccd.setText(dtDTO.getCccd());
         field_sbd.setText(dtDTO.getSobaodanh());
-        cbb_phuongthuc.setSelectedItem(dtDTO.getD_phuongthuc());
+        String ptText = convertPhuongThucToText(dtDTO.getD_phuongthuc());
+        cbb_phuongthuc.setSelectedItem(ptText);
 
         field_to.setText(getText(dtDTO.getTO()));
         field_li.setText(getText(dtDTO.getLI()));
@@ -57,7 +58,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_nk1.setText(getText(dtDTO.getNK1()));
         field_nk2.setText(getText(dtDTO.getNK2()));
         field_nl1.setText(getText(dtDTO.getNL1()));
-
+        field_n1cc.setText(getText(dtDTO.getN1_CC()));
         field_n1thi.setText(getText(dtDTO.getN1_THI()));
     }
     public void setUpCombobox(){
@@ -82,8 +83,36 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         return new BigDecimal(text);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Dữ liệu số không hợp lệ tại: " + field.getName());
-        return BigDecimal.ZERO;
+        return null;
+        }
     }
+    public String convertPhuongThuc(String pt) {
+    switch (pt) {
+        case "Tuyển thẳng":
+            return "PT1";
+        case "ĐGNL":
+            return "PT2";
+        case "VSAT":
+            return "PT3";
+        case "THPT":
+            return "PT4";
+        default:
+            return "";
+        }
+    }
+    public String convertPhuongThucToText(String ptCode) {
+    switch (ptCode) {
+        case "PT1":
+            return "Tuyển thẳng";
+        case "PT2":
+            return "ĐGNL";
+        case "PT3":
+            return "VSAT";
+        case "PT4":
+            return "THPT";
+        default:
+            return ptCode;
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -358,8 +387,6 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
 
         jLabel3.setText("Số báo danh");
 
-        field_cccd.setEditable(false);
-
         jLabel20.setText("Phương thức");
 
         cbb_phuongthuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -481,8 +508,6 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetActionPerformed
-        field_cccd.setText("");
-        field_sbd.setText("");
         cbb_phuongthuc.setSelectedIndex(0);
 
         field_to.setText("");
@@ -501,6 +526,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_nl1.setText("");
         field_n1thi.setText("");
         field_n1cc.setText("");
+        field_sbd.setText("");
         field_cccd.requestFocus();
     }//GEN-LAST:event_btn_resetActionPerformed
 
@@ -511,7 +537,8 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
         String Cccd = field_cccd.getText().trim();
         String Sbd = field_sbd.getText().trim();
-        String phuongthuc = cbb_phuongthuc.getSelectedItem().toString();
+        String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
+        String phuongthuc = convertPhuongThuc(phuongthucText);
         BigDecimal to = getBigDecimal(field_to);
         BigDecimal li = getBigDecimal(field_li);
         BigDecimal ho = getBigDecimal(field_ho);
@@ -545,10 +572,12 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
             cncn, cnnn, ti, ktpl, nk1, nk2, n1_thi, n1_cc
         );
 
-        // check âm
+        // check âm || không chữ
         for (BigDecimal diem : diemList) {
             if (diem.compareTo(BigDecimal.ZERO) < 0) {
                 JOptionPane.showMessageDialog(this, "Điểm không được âm");
+                return;
+            } else if (diem == null) {
                 return;
             }
         }
@@ -568,7 +597,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Điểm đgnl phải từ 0 đến 1200");
             return;
         }
-
+        
         // sửa dữ liệu
         DiemThiDTO dt = dtDTO;
         dt.setIddiemthi(dtDTO.getIddiemthi());

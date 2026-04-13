@@ -104,11 +104,11 @@ public class DiemCongDTO implements Serializable{
         this.diemCC = diemCC;
     }
 
-    public BigDecimal getDienUtxt() {
+    public BigDecimal getDiemUtxt() {
         return diemUtxt;
     }
 
-    public void setDienUtxt(BigDecimal dienUtxt) {
+    public void setDiemUtxt(BigDecimal dienUtxt) {
         this.diemUtxt = dienUtxt;
     }
 

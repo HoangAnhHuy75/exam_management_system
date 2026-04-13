@@ -6,6 +6,7 @@ import GUI.Panel.DiemThiPanel;
 import java.awt.Frame;
 import java.awt.Window;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -34,9 +35,13 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     public void khoiTao(){
         setUpCombobox();
         loadPhuongThucToComboBox();
+        loadCccdToComboBox();
+        loadSbdToCombobox("");
     }
     public void setUpCombobox(){
         cbb_design.setUpComBoBox(cbb_phuongthuc);
+        cbb_design.setUpComBoBox(cbb_cccd);
+        cbb_design.setUpComBoBox(cbb_sbd);
     }
     public void loadPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
@@ -44,6 +49,22 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         String[] ptxt = {"Tuyển thẳng", "ĐGNL", "VSAT"};
         for(String pt : ptxt){
             cbb_phuongthuc.addItem(pt);
+        }
+    }
+    public void loadCccdToComboBox() {
+        cbb_cccd.removeAllItems();
+        cbb_cccd.addItem("Chọn CCCD");
+        List<String> list = diemThiBus.loadCbbCccd();
+        for(String cccd : list) {
+            cbb_cccd.addItem(cccd);
+        }
+    }
+    public void loadSbdToCombobox(String cccd) {
+        cbb_sbd.removeAllItems();
+        cbb_sbd.addItem("Chọn SBD");
+        List<String> list = diemThiBus.loadCbbSBD(cccd);
+        for(String sbd : list) {
+            cbb_sbd.addItem(sbd);
         }
     }
     public BigDecimal getBigDecimal(JTextField field) {
@@ -57,8 +78,22 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         return new BigDecimal(text);
     } catch (Exception e) {
         JOptionPane.showMessageDialog(this, "Dữ liệu số không hợp lệ tại: " + field.getName());
-        return BigDecimal.ZERO;
+        return null;
+        }
     }
+    public String convertPhuongThuc(String pt) {
+    switch (pt) {
+        case "Tuyển thẳng":
+            return "PT1";
+        case "ĐGNL":
+            return "PT2";
+        case "VSAT":
+            return "PT3";
+        case "THPT":
+            return "PT4";
+        default:
+            return "";
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -104,10 +139,10 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        field_cccd = new javax.swing.JTextField();
-        field_sbd = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         cbb_phuongthuc = new javax.swing.JComboBox<>();
+        cbb_cccd = new javax.swing.JComboBox<>();
+        cbb_sbd = new javax.swing.JComboBox<>();
         btn_reset = new javax.swing.JButton();
         btn_huy = new javax.swing.JButton();
         btn_them = new javax.swing.JButton();
@@ -155,8 +190,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         jLabel9.setText("DIA");
 
         jLabel10.setText("VA");
-
-        field_to.setForeground(new java.awt.Color(204, 204, 204));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -340,6 +373,11 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         cbb_phuongthuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
+        cbb_cccd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_cccd.addActionListener(this::cbb_cccdActionPerformed);
+
+        cbb_sbd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -348,43 +386,42 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(field_cccd))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(field_sbd)
-                            .addComponent(cbb_phuongthuc, 0, 139, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(cbb_phuongthuc, 0, 139, Short.MAX_VALUE)
+                            .addComponent(cbb_sbd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cbb_cccd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2))
-                    .addComponent(field_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(field_sbd, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbb_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(cbb_sbd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3))
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel20)
-                    .addComponent(cbb_phuongthuc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(19, Short.MAX_VALUE))
+                    .addComponent(cbb_phuongthuc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel20))
+                .addContainerGap(23, Short.MAX_VALUE))
         );
 
         btn_reset.setBackground(new java.awt.Color(51, 153, 255));
         btn_reset.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_reset.setForeground(new java.awt.Color(255, 255, 255));
-        btn_reset.setText("Reset");
+        btn_reset.setText("Làm mới");
         btn_reset.addActionListener(this::btn_resetActionPerformed);
 
         btn_huy.setBackground(new java.awt.Color(255, 51, 51));
@@ -412,8 +449,8 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(4, 4, 4)
-                        .addComponent(btn_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
+                        .addComponent(btn_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btn_huy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(btn_them, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -457,8 +494,8 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetActionPerformed
-        field_cccd.setText("");
-        field_sbd.setText("");
+        cbb_cccd.setSelectedIndex(0);
+        cbb_sbd.setSelectedIndex(0);
         cbb_phuongthuc.setSelectedIndex(0);
 
         field_to.setText("");
@@ -477,7 +514,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         field_nl1.setText("");
         field_n1thi.setText("");
         field_n1cc.setText("");
-        field_cccd.requestFocus();    
+        cbb_cccd.requestFocus();
     }//GEN-LAST:event_btn_resetActionPerformed
 
     private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_huyActionPerformed
@@ -485,9 +522,10 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_huyActionPerformed
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-        String Cccd = field_cccd.getText().trim();
-        String Sbd = field_sbd.getText().trim();
-        String phuongthuc = cbb_phuongthuc.getSelectedItem().toString();
+        String Cccd = cbb_cccd.getSelectedItem().toString();
+        String Sbd = cbb_sbd.getSelectedItem().toString();
+        String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
+        String phuongthuc = convertPhuongThuc(phuongthucText);
         BigDecimal to = getBigDecimal(field_to);
         BigDecimal li = getBigDecimal(field_li);
         BigDecimal ho = getBigDecimal(field_ho);
@@ -506,15 +544,15 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         BigDecimal n1_cc = getBigDecimal(field_n1cc);
         
         // check rỗng
-        if(Cccd.isEmpty() || Sbd.isEmpty() || phuongthuc == null) {
+        if(Cccd.equals("Chọn CCCD") || Sbd.equals("Chọn SBD") || phuongthuc == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin thí sinh");
             return;
         }
         
-        if (!Cccd.matches("\\d{12}")) {
-        JOptionPane.showMessageDialog(this, "CCCD phải gồm 12 chữ số");
-        return;
-        }
+//        if (!Cccd.matches("\\d{12}")) {
+//        JOptionPane.showMessageDialog(this, "CCCD phải gồm 12 chữ số");
+//        return;
+//        }
         
         List<BigDecimal> diemList = Arrays.asList(
         to, li, ho, si, su, dia, va,
@@ -525,6 +563,8 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         for (BigDecimal diem : diemList) {
             if (diem.compareTo(BigDecimal.ZERO) < 0) {
                 JOptionPane.showMessageDialog(this, "Điểm không được âm");
+                return;
+            } else if (diem == null) {
                 return;
             }
         }
@@ -571,17 +611,33 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
             diemThiPanel.dataTable(diemThiBus.getList());
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Căn cước công dân đã tồn tại","Thông báo",JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Sửa thất bại","Lỗi",JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btn_themActionPerformed
+
+    private void cbb_cccdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_cccdActionPerformed
+        if(cbb_cccd.getSelectedItem() == null) return;
+
+        String cccd = cbb_cccd.getSelectedItem().toString();
+
+        if(cccd.equals("Chọn CCCD"))
+        {
+            cbb_sbd.removeAllItems();
+            cbb_sbd.addItem("Chọn SBD");
+            return;
+        }
+
+        loadSbdToCombobox(cccd);
+    }//GEN-LAST:event_cbb_cccdActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_huy;
     private javax.swing.JButton btn_reset;
     private javax.swing.JButton btn_them;
+    private javax.swing.JComboBox<String> cbb_cccd;
     private javax.swing.JComboBox<String> cbb_phuongthuc;
-    private javax.swing.JTextField field_cccd;
+    private javax.swing.JComboBox<String> cbb_sbd;
     private javax.swing.JTextField field_cncn;
     private javax.swing.JTextField field_cnnn;
     private javax.swing.JTextField field_dia;
@@ -593,7 +649,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JTextField field_nk1;
     private javax.swing.JTextField field_nk2;
     private javax.swing.JTextField field_nl1;
-    private javax.swing.JTextField field_sbd;
     private javax.swing.JTextField field_si;
     private javax.swing.JTextField field_su;
     private javax.swing.JTextField field_ti;

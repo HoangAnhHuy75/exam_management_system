@@ -11,7 +11,7 @@ public class DiemThiDTO implements Serializable{
     @Column(name = "iddiemthi")
     private Integer iddiemthi;
     
-    @Column(name = "cccd", nullable = false)
+    @Column(name = "cccd", unique = true, nullable = false)
     private String cccd;
     
     @Column(name = "sobaodanh")

@@ -119,7 +119,7 @@ public class ThiSinhDAO {
             return null;
         }
     }
-
+    
     private int getColumnIndex(Row headerRow, String columnName) {
         for (Cell cell : headerRow) {
             if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
@@ -252,6 +252,25 @@ public class ThiSinhDAO {
                     "SELECT cccd FROM ThiSinhDTO", String.class
             );
             return query.list();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+    
+    // dùng để hiển thị khi chọn cccd (thành)
+    public List<String> getSBDByCccd(String cccd) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+        Query<String> query = session.createQuery(
+            "SELECT t.sobaodanh FROM ThiSinhDTO t WHERE t.cccd = :cccd",
+            String.class
+        );
+
+        query.setParameter("cccd", cccd);
+
+        return query.getResultList();
+
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();

@@ -1,6 +1,7 @@
 package BUS;
 
 import DAO.DiemThiDAO;
+import DAO.ThiSinhDAO;
 import DTO.DiemThiDTO;
 import DTO.NganhDTO;
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class DiemThiBUS {
     private DiemThiDAO diemThiDao = new DiemThiDAO();
+    private ThiSinhDAO thiSinhDao = new ThiSinhDAO();
     private ArrayList<DiemThiDTO> diemThiList = new ArrayList<>();
 //    cache
 //    public ArrayList<DiemThiDTO> getList(){
@@ -30,6 +32,14 @@ public class DiemThiBUS {
         return diemThiList;
     }
     
+    // load cccd combobox
+    public List<String> loadCbbCccd(){
+        return thiSinhDao.getAllCCCD();
+    }
+    // load sbd khi chọn cccd
+    public List<String> loadCbbSBD(String cccd) {
+        return thiSinhDao.getSBDByCccd(cccd);
+    }
     // thêm điểm
     public int insert(DiemThiDTO dt) {
         if(checkDup(dt.getCccd())) {
@@ -83,17 +93,18 @@ public class DiemThiBUS {
     }
     //filter theo phương thức xét tuyển
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
+        String ptText = convertPhuongThuc(pt);
         ArrayList<DiemThiDTO> list = new ArrayList<>();
         
         for(DiemThiDTO dt: diemThiDao.getAllDiem()) {
             if(dt.getD_phuongthuc() == null) continue;
-            if(dt.getD_phuongthuc().equalsIgnoreCase(pt)) {
+            if(dt.getD_phuongthuc().equalsIgnoreCase(ptText)) {
                 list.add(dt);
             }
         }
         return list;
     }
-    //filter theo loại điểm 
+    //filter nâng cao (theo loại điểm và môn)
     public ArrayList<DiemThiDTO> filterByLoaiDiemVaMon(String mon,String loai){
 
         ArrayList<DiemThiDTO> list = new ArrayList<>();
@@ -121,7 +132,7 @@ public class DiemThiBUS {
 
         return list;
     }
-    // Thống kê nâng cao
+    // Thống kê theo môn
     public HashMap<String, Integer> thongKetheoMon(String mon) {
         HashMap<String,Integer> map = new HashMap<>();
         map.put("Giỏi", 0);
@@ -222,5 +233,16 @@ public class DiemThiBUS {
         diemThiDao.saveAll(newList);
         
         return newList.size();
+    }
+    
+    public String convertPhuongThuc(String pt) {
+
+    switch (pt) {
+        case "Tuyển thẳng": return "PT1";
+        case "ĐGNL": return "PT2";
+        case "VSAT": return "PT3";
+        case "THPT": return "PT4";
+        default: return "";
+        }
     }
 }

@@ -113,7 +113,7 @@ public class DiemThiDAO {
                 
                 DiemThiDTO dt = new DiemThiDTO();
                 dt.setCccd(row.getCell(1) != null ? row.getCell(1).toString() : null);
-                dt.setD_phuongthuc("THPT");
+                dt.setD_phuongthuc("PT4");
                 dt.setTO(getDecimal(row.getCell(6)));
                 dt.setVA(getDecimal(row.getCell(7)));
                 dt.setLI(getDecimal(row.getCell(8)));

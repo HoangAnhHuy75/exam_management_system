@@ -545,9 +545,6 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="field_cccd">
-              <Properties>
-                <Property name="editable" type="boolean" value="false"/>
-              </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="field_sbd">
             </Component>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+<header th:fragment="header" class="app-header">
+    <div class="header-content">
+        <!-- Logo -->
+        <div class="logo-section">
+            <div class="logo-icon">
+                <i data-lucide="graduation-cap"></i>
+            </div>
+            <div class="logo-text">
+                <h1 th:text="${portalName} ?: 'Cổng Tuyển Sinh Đại Học'">Cổng Tuyển Sinh Đại Học</h1>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <ul class="nav-center">
+            <li>
+                <a href="#profile"
+                   class="nav-link"
+                   th:class="${activePage == 'profile'} ? 'nav-link active' : 'nav-link'"
+                   data-page="profile">
+                    <i data-lucide="user-circle"></i>
+                    <span>Trang cá nhân</span>
+                </a>
+            </li>
+            <li>
+                <a href="#scores"
+                   class="nav-link"
+                   th:class="${activePage == 'scores'} ? 'nav-link active' : 'nav-link'"
+                   data-page="scores">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Xem điểm</span>
+                </a>
+            </li>
+            <li>
+                <a href="#register"
+                   class="nav-link"
+                   th:class="${activePage == 'register'} ? 'nav-link active' : 'nav-link'"
+                   data-page="register">
+                    <i data-lucide="file-edit"></i>
+                    <span>Đăng ký nguyện vọng</span>
+                </a>
+            </li>
+        </ul>
+
+        <!-- Logout -->
+        <button class="logout-btn" onclick="handleLogout()">
+            <i data-lucide="log-out"></i>
+            <span>Đăng xuất</span>
+        </button>
+    </div>
+</header>
+
+<!-- ==================== CSS ==================== -->
+<style th:fragment="header-style">
+    .app-header {
+        background: #ffffff;
+        border-bottom: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+    }
+
+    .header-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 0 32px;
+        height: 74px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    /* Logo */
+    .logo-section {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #2563eb, #1e40af);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 22px;
+    }
+
+    .logo-text h1 {
+        font-size: 19px;
+        font-weight: 700;
+        color: #0f172a;
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+
+    /* Navigation */
+    .nav-center {
+        display: flex;
+        gap: 8px;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 11px 22px;
+        border-radius: 9999px;
+        text-decoration: none;
+        font-size: 14.5px;
+        font-weight: 500;
+        color: #64748b;
+        transition: all 0.25s ease;
+    }
+
+    .nav-link:hover {
+        background: #f8fafc;
+        color: #334155;
+    }
+
+    /* ACTIVE EFFECT */
+    .nav-link.active {
+        background: #eff6ff;
+        color: #2563eb;
+        font-weight: 600;
+        box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+    }
+
+    .nav-link.active i {
+        color: #2563eb;
+    }
+
+    .nav-link i {
+        width: 19px;
+        height: 19px;
+    }
+
+    /* Logout Button */
+    .logout-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        background: #fee2e2;
+        color: #ef4444;
+        border: none;
+        border-radius: 9999px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+        background: #fecaca;
+        transform: translateY(-1px);
+    }
+
+    .logout-btn i {
+        width: 18px;
+        height: 18px;
+    }
+</style>
+
+<!-- Script -->
+<script th:fragment="header-script">
+    lucide.createIcons();
+    function handleLogout() {
+        if (confirm("Bạn có chắc chắn muốn đăng xuất?")) {
+            window.location.href = "/logout";
+        }
+    }
+</script>
+
+</html>

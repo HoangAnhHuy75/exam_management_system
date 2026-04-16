@@ -19,8 +19,11 @@ public class ThiSinhDTO implements Serializable {
     @Column(name = "sobaodanh")
     private String sobaodanh;
 
-    @Column(name = "ho_ten")
-    private String hoTen;
+    @Column(name = "ho")
+    private String ho;
+    
+    @Column(name = "ten")
+    private String ten;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "ngay_sinh")
@@ -51,14 +54,15 @@ public class ThiSinhDTO implements Serializable {
     public ThiSinhDTO() {
     }
 
-    public ThiSinhDTO(int idthisinh, String cccd, String sobaodanh, String hoTen,
+    public ThiSinhDTO(int idthisinh, String cccd, String sobaodanh, String ho,String ten,
             Date ngaySinh, String dienThoai, String password,
             String gioiTinh, String email, String noiSinh,
             String doiTuong, String khuVuc) {
         this.idthisinh = idthisinh;
         this.cccd = cccd;
         this.sobaodanh = sobaodanh;
-        this.hoTen = hoTen;
+        this.ho = ho;
+        this.ten = ten;
         this.ngaySinh = ngaySinh;
         this.dienThoai = dienThoai;
         this.password = password;
@@ -93,13 +97,18 @@ public class ThiSinhDTO implements Serializable {
     public void setSobaodanh(String sobaodanh) {
         this.sobaodanh = sobaodanh;
     }
-
+    public String getHo() {
+        return ho;
+    }
+    public void setHo(String ho) {
+        this.ho= ho;
+    }
     public String getTen() {
-        return hoTen;
+        return ten;
     }
 
     public void setTen(String ten) {
-        this.hoTen = ten;
+        this.ten = ten;
     }
 
     public Date getNgaySinh() {
@@ -166,8 +175,4 @@ public class ThiSinhDTO implements Serializable {
         this.khuVuc = khuVuc;
     }
 
-    // ===== Helper =====
-    public String getHoTen() {
-        return (hoTen != null ? hoTen : "");
-    }
 }

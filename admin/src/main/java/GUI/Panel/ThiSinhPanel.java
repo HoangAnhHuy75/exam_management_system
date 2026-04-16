@@ -99,7 +99,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-                    "CCCD", "SBD", "Họ tên", "Ngày sinh",
+                    "CCCD", "SBD", "Họ", "Tên", "Ngày sinh",
                     "Giới tính", "SĐT", "Email", "Nơi sinh",
                     "Đối tượng", "Khu vực"
                 }
@@ -114,7 +114,8 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 t.getCccd(),
                 t.getSobaodanh(),
-                t.getHoTen(),
+                t.getHo(),
+                t.getTen(),
                 t.getNgaySinh(),
                 t.getGioiTinh(),
                 t.getDienThoai(),
@@ -135,14 +136,15 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
         columnModel.getColumn(0).setPreferredWidth(120); // CCCD
         columnModel.getColumn(1).setPreferredWidth(100); // SBD
-        columnModel.getColumn(2).setPreferredWidth(200); // Họ tên
-        columnModel.getColumn(3).setPreferredWidth(120); // Ngày sinh
-        columnModel.getColumn(4).setPreferredWidth(100); // Giới tính
-        columnModel.getColumn(5).setPreferredWidth(120); // SĐT
-        columnModel.getColumn(6).setPreferredWidth(200); // Email
-        columnModel.getColumn(7).setPreferredWidth(150); // Nơi sinh
-        columnModel.getColumn(8).setPreferredWidth(100); // Đối tượng
-        columnModel.getColumn(9).setPreferredWidth(100); // Khu vực
+        columnModel.getColumn(2).setPreferredWidth(70); // Họ tên
+        columnModel.getColumn(3).setPreferredWidth(130); // Họ tên
+        columnModel.getColumn(4).setPreferredWidth(120); // Ngày sinh
+        columnModel.getColumn(5).setPreferredWidth(100); // Giới tính
+        columnModel.getColumn(6).setPreferredWidth(120); // SĐT
+        columnModel.getColumn(7).setPreferredWidth(200); // Email
+        columnModel.getColumn(8).setPreferredWidth(150); // Nơi sinh
+        columnModel.getColumn(9).setPreferredWidth(100); // Đối tượng
+        columnModel.getColumn(10).setPreferredWidth(100); // Khu vực
     }
 
     private String getSafeString(int row, int col) {
@@ -471,9 +473,11 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         int idthisinh = thisinhBus.getIDbyIndex(vitriRow);
         String cccd = getSafeString(vitriRow, 0);
         String sbd = getSafeString(vitriRow, 1);
-        String hoten = getSafeString(vitriRow, 2);
+        String ho = getSafeString(vitriRow, 2);
+        String ten = getSafeString(vitriRow, 3);
+        String password = thisinhBus.getPasswordByCCCD(cccd);
 
-        Object objDate = thisinh_table.getValueAt(vitriRow, 3);
+        Object objDate = thisinh_table.getValueAt(vitriRow, 4);
         Date ngaysinh = null;
 
         if (objDate instanceof Date) {
@@ -486,17 +490,19 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                 e.printStackTrace();
             }
         }
-        String gioitinh = getSafeString(vitriRow, 4);
-        String dt = getSafeString(vitriRow, 5);
-        String email = getSafeString(vitriRow, 6);
-        String noisinh = getSafeString(vitriRow, 7);
-        String doituong = getSafeString(vitriRow, 8);
-        String khuvuc = getSafeString(vitriRow, 9);
+        String gioitinh = getSafeString(vitriRow, 5);
+        String dt = getSafeString(vitriRow, 6);
+        String email = getSafeString(vitriRow, 7);
+        String noisinh = getSafeString(vitriRow, 8);
+        String doituong = getSafeString(vitriRow, 9);
+        String khuvuc = getSafeString(vitriRow, 10);
         ThiSinhDTO thisinh = new ThiSinhDTO();
         thisinh.setIdthisinh(idthisinh);
         thisinh.setCccd(cccd);
-        thisinh.setTen(hoten);
+        thisinh.setHo(ho);
+        thisinh.setTen(ten);
         thisinh.setSobaodanh(sbd);
+        thisinh.setPassword(password);
         thisinh.setNgaySinh(ngaysinh);
         thisinh.setGioiTinh(gioitinh);
         thisinh.setKhuVuc(khuvuc);

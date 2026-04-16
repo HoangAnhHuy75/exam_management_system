@@ -49,6 +49,20 @@ public class ThiSinhBUS {
         if (cccd == null || cccd.trim().isEmpty()) return null;
         return thiSinhDAO.findByCCCD(cccd.trim());
     }
+    
+    public String getPasswordByCCCD(String cccd) {
+        if (cccd == null || cccd.trim().isEmpty()) {
+            return null;
+        }
+
+        ThiSinhDTO t = thiSinhDAO.findByCCCD(cccd.trim());
+
+        if (t != null) {
+            return t.getPassword();
+        }
+
+        return null;
+    }
 
     // ===== Import Excel =====
     public int importFromExcel(String filePath) {
@@ -95,7 +109,7 @@ public class ThiSinhBUS {
 
         for (ThiSinhDTO t : thiSinhDAO.getAll()) {
             boolean matchCCCD = t.getCccd() != null && t.getCccd().toLowerCase().contains(key);
-            boolean matchName = t.getHoTen() != null && t.getHoTen().toLowerCase().contains(key);
+            boolean matchName = t.getTen() != null && t.getTen().toLowerCase().contains(key);
 
             if (matchCCCD || matchName) {
                 result.add(t);
@@ -129,7 +143,7 @@ public class ThiSinhBUS {
     public ArrayList<ThiSinhDTO> timKiem2(String text) {
         ArrayList<ThiSinhDTO> result = new ArrayList<>();
         for (ThiSinhDTO ts : thiSinhDAO.getAll()) {
-            if (ts.getCccd().toLowerCase().contains(text) || ts.getHoTen().toLowerCase().contains(text)) {
+            if (ts.getCccd().toLowerCase().contains(text) || ts.getTen().toLowerCase().contains(text)) {
                 result.add(ts);
             }
         }

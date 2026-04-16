@@ -25,75 +25,46 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="29" max="-2" attributes="0"/>
-                      <Component id="jLabel3" min="-2" pref="47" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="255" max="-2" attributes="0"/>
-                      <Component id="jLabel4" min="-2" pref="90" max="-2" attributes="0"/>
+              <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="jtf_ho" max="32767" attributes="0"/>
+                      <Component id="jLabel13" min="-2" pref="61" max="-2" attributes="0"/>
+                      <Component id="jLabel3" alignment="0" min="-2" pref="47" max="-2" attributes="0"/>
+                      <Component id="jtf_cccd" pref="180" max="32767" attributes="0"/>
+                      <Component id="jLabel9" alignment="0" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="jtf_sdt" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jLabel10" alignment="0" min="-2" pref="80" max="-2" attributes="0"/>
+                      <Component id="cbb_noisinh" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jLabel11" alignment="0" min="-2" pref="56" max="-2" attributes="0"/>
+                      <Component id="cbb_kv" alignment="0" pref="180" max="32767" attributes="0"/>
+                      <Component id="jpassword" alignment="0" max="32767" attributes="0"/>
                   </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
-                      <Component id="jtf_cccd" min="-2" pref="180" max="-2" attributes="0"/>
-                      <EmptySpace min="121" pref="121" max="-2" attributes="0"/>
-                      <Component id="jtf_sbd" min="-2" pref="180" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
-                      <Component id="jLabel9" min="-2" pref="80" max="-2" attributes="0"/>
-                      <EmptySpace min="221" pref="221" max="-2" attributes="0"/>
-                      <Component id="jLabel8" min="-2" pref="44" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
-                      <Component id="jtf_sdt" min="-2" pref="180" max="-2" attributes="0"/>
-                      <EmptySpace min="121" pref="121" max="-2" attributes="0"/>
-                      <Component id="jtf_email" min="-2" pref="181" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-                      <Component id="jLabel10" min="-2" pref="80" max="-2" attributes="0"/>
-                      <EmptySpace min="220" pref="220" max="-2" attributes="0"/>
-                      <Component id="jLabel7" min="-2" pref="80" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-                      <Component id="cbb_noisinh" min="-2" pref="180" max="-2" attributes="0"/>
-                      <EmptySpace min="120" pref="120" max="-2" attributes="0"/>
-                      <Component id="cbb_gt" min="-2" pref="180" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                      <Component id="jLabel11" min="-2" pref="56" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="244" max="-2" attributes="0"/>
-                      <Component id="jLabel12" min="-2" pref="112" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-                      <Component id="cbb_kv" min="-2" pref="180" max="-2" attributes="0"/>
-                      <EmptySpace min="120" pref="120" max="-2" attributes="0"/>
-                      <Component id="cbb_doituong" min="-2" pref="180" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="151" max="-2" attributes="0"/>
-                      <Component id="btn_cancel" min="-2" pref="80" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="61" max="-2" attributes="0"/>
-                      <Component id="btn_update" min="-2" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="29" pref="29" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jtf_hoten" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace min="-2" pref="122" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="jcalendar_ns" alignment="0" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
+                  <Component id="jLabel14" min="-2" pref="63" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="0" pref="29" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="121" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="jtf_sbd" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                  <Component id="jtf_ten" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                  <Component id="jLabel5" alignment="0" min="-2" pref="61" max="-2" attributes="0"/>
+                  <Component id="jLabel4" min="-2" pref="90" max="-2" attributes="0"/>
+                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Component id="jcalendar_ns" alignment="0" min="-2" pref="180" max="-2" attributes="0"/>
+                  <Component id="jLabel8" min="-2" pref="44" max="-2" attributes="0"/>
+                  <Component id="jtf_email" min="-2" pref="181" max="-2" attributes="0"/>
+                  <Component id="jLabel7" min="-2" pref="80" max="-2" attributes="0"/>
+                  <Component id="cbb_gt" min="-2" pref="180" max="-2" attributes="0"/>
+                  <Component id="jLabel12" min="-2" pref="112" max="-2" attributes="0"/>
+                  <Component id="cbb_doituong" min="-2" pref="180" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace min="0" pref="31" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="156" max="-2" attributes="0"/>
+              <Component id="btn_cancel" min="-2" pref="80" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
+              <Component id="btn_update" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -101,68 +72,72 @@
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
               <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="18" pref="18" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel4" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
-                      <Component id="jtf_cccd" min="-2" pref="35" max="-2" attributes="0"/>
-                  </Group>
-                  <Component id="jtf_sbd" alignment="0" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="jtf_cccd" min="-2" pref="35" max="-2" attributes="0"/>
+                  <Component id="jtf_sbd" min="-2" pref="35" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="30" pref="30" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
+              <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                  <Component id="jtf_hoten" alignment="0" pref="37" max="32767" attributes="0"/>
-                  <Component id="jcalendar_ns" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jtf_ho" pref="35" max="32767" attributes="0"/>
+                  <Component id="jtf_ten" max="32767" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel9" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="2" pref="2" max="-2" attributes="0"/>
-                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                  </Group>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel6" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="jpassword" max="32767" attributes="0"/>
+                  <Component id="jcalendar_ns" pref="37" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="26" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel9" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jtf_sdt" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
                   <Component id="jtf_email" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="32" pref="32" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel10" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel10" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel7" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="cbb_noisinh" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   <Component id="cbb_gt" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="40" pref="40" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jLabel11" alignment="0" min="-2" max="-2" attributes="0"/>
-                  <Component id="jLabel12" alignment="0" min="-2" max="-2" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="jLabel11" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jLabel12" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="4" pref="4" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="cbb_kv" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
-                  <Component id="cbb_doituong" alignment="0" min="-2" pref="40" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cbb_kv" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                  <Component id="cbb_doituong" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace pref="21" max="32767" attributes="0"/>
+              <EmptySpace pref="34" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="btn_cancel" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   <Component id="btn_update" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -195,7 +170,7 @@
                       <Component id="logo_edit" alignment="0" min="-2" pref="43" max="-2" attributes="0"/>
                       <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -229,10 +204,10 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="H&#x1ecd; v&#xe0; t&#xea;n"/>
+        <Property name="text" type="java.lang.String" value="T&#xea;n"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="jtf_hoten">
+    <Component class="javax.swing.JTextField" name="jtf_ten">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel6">
       <Properties>
@@ -348,6 +323,23 @@
       </Events>
     </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="jcalendar_ns">
+    </Component>
+    <Component class="javax.swing.JTextField" name="jtf_ho">
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jtf_hoActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel13">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="H&#x1ecd;"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JPasswordField" name="jpassword">
+    </Component>
+    <Component class="javax.swing.JLabel" name="jLabel14">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="M&#x1ead;t kh&#x1ea9;u"/>
+      </Properties>
     </Component>
   </SubComponents>
 </Form>

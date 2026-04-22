@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style th:replace="~{header :: header-style}"></style>
+
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/nguyenvong.css}">
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
+
+<div class="profile-wrap">
+    <div class="profile-content">
+        <div class="profile-container">
+
+            <!-- FORM MVC -->
+            <form id="nvForm" method="post" th:action="@{/nguyenvong/submit}">
+
+                <!-- hidden inputs (JS sẽ đổ vào đây) -->
+                <div id="hiddenInputs"></div>
+
+                <div class="nv-container">
+
+                    <!-- ACTION -->
+                    <div class="nv-actions">
+                        <button type="button" onclick="sortNV()" class="btn btn-blue">
+                            Xếp theo NV
+                        </button>
+
+                        <button type="button" onclick="openModal()" class="btn btn-primary">
+                            Thêm nguyện vọng
+                        </button>
+
+                        <button type="submit" class="btn btn-success">
+                            Xác nhận
+                        </button>
+                    </div>
+
+                    <!-- LIST -->
+                    <div id="nvList">
+
+                        <div th:if="${#lists.isEmpty(listNV)}">
+                            <p>Chưa có nguyện vọng nào</p>
+                        </div>
+
+                        <div th:each="nv : ${listNV}" class="nv-item">
+
+                            <!-- LEFT -->
+                            <div class="nv-left">
+                                NV <span th:text="${nv.nvTt}"></span>
+                            </div>
+
+                            <!-- CENTER -->
+                            <div class="nv-center">
+                                <div>
+                                    <b>Ngành:</b>
+                                    <span th:text="${nv.maNganh}"></span>
+                                </div>
+
+                                <div>
+                                    <b>Phương thức:</b>
+                                    <span th:text="${nv.ttPhuongThuc}"></span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="nv-modal" style="display:none;">
+    <div class="nv-modal-content">
+
+        <h3>Thêm nguyện vọng</h3>
+
+        <div class="nv-form-group">
+            <label>Thứ tự NV</label>
+            <input id="thuTu" type="number">
+        </div>
+
+        <div class="nv-form-group">
+            <label>Ngành</label>
+            <select id="nganh">
+                <option value="">-- Chọn ngành --</option>
+                <option th:each="n : ${listNganh}"
+                        th:value="${n.maNganh}"
+                        th:text="${n.maNganh} + ' - ' + ${n.tenNganh}">
+                </option>
+            </select>
+        </div>
+
+        <div class="nv-form-group">
+            <label>Phương thức</label>
+            <select id="phuongthuc">
+                <option value="">-- Chọn phương thức --</option>
+                <option value="THPT">THPT</option>
+                <option value="DGNL">ĐGNL</option>
+                <option value="VSAT">VSAT</option>
+                <option value="TT">Tuyển thẳng</option>
+            </select>
+        </div>
+
+        <div class="nv-modal-actions">
+            <button type="button" onclick="saveNV()" class="btn btn-success">Lưu</button>
+            <button type="button" onclick="closeModal()" class="btn btn-gray">Hủy</button>
+        </div>
+
+    </div>
+</div>
+
+<script th:inline="javascript">
+    window.listNV = [[${listNV}]];
+</script>
+<!-- SCRIPT -->
+<script th:replace="~{header :: header-script}"></script>
+
+<!-- JS riêng -->
+<script th:src="@{/js/nguyenvong.js}"></script>
+
+</body>
+</html>

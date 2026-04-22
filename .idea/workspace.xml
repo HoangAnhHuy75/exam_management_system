@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a02b6ff4-19b7-448c-a951-5abd0b07c5c5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/NguyenVongXetTuyenController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/NguyenVongXetTuyen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NguyenVongXetTuyenRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NguyenVongXetTuyenService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/resources/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/resources/hibernate.cfg.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/ProfileViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/ProfileViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/header.html" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3COacJMM4fUZ5Cc4ZS2BXRpC3BJ" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Admin.executor&quot;: &quot;Run&quot;,
+    &quot;Application.StudentSystemApplication.executor&quot;: &quot;Run&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;huynhdev&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/mhpl&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Application.StudentSystemApplication">
+    <configuration name="Admin" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.mycompany.admin.Admin" />
+      <module name="admin_desktop" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.mycompany.admin.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StudentSystemApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="admissions.student_system.StudentSystemApplication" />
+      <module name="student-system" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="admissions.student_system.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.StudentSystemApplication" />
+        <item itemvalue="Application.Admin" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.25557.131" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a02b6ff4-19b7-448c-a951-5abd0b07c5c5" name="Changes" comment="" />
+      <created>1776259149717</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776259149717</updated>
+    </task>
+    <servers />
+  </component>
+</project>

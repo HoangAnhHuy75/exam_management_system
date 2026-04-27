@@ -8,6 +8,7 @@ package GUI.Frame;
  *
  * @author Hao Nguyen
  */
+import BUS.UserBUS;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -22,7 +23,7 @@ public class LoginFrame extends JFrame {
     private JTextField txtUser;
     private JPasswordField txtPass;
     private boolean passwordVisible = false;
- 
+    private UserBUS userBUS = new UserBUS();
     public LoginFrame() {
         setTitle("Academic Ledger - Login");
         setSize(480, 420);
@@ -151,19 +152,29 @@ public class LoginFrame extends JFrame {
         field.setFont(new Font("Segoe UI", Font.PLAIN, 13));
         field.setForeground(new Color(50, 60, 75));
  
-        if (!(field instanceof JPasswordField) && field instanceof JTextField tf) {
-            String ph = "Tên đăng nhập";
-            tf.setForeground(new Color(160, 170, 185));
-            tf.setText(ph);
-            tf.addFocusListener(new FocusAdapter() {
-                @Override public void focusGained(FocusEvent e) {
-                    if (tf.getText().equals(ph)) { tf.setText(""); tf.setForeground(new Color(50, 60, 75)); }
-                }
-                @Override public void focusLost(FocusEvent e) {
-                    if (tf.getText().isEmpty()) { tf.setText(ph); tf.setForeground(new Color(160, 170, 185)); }
-                }
-            });
+        if (!(field instanceof JPasswordField) && field instanceof JTextField) {
+    JTextField tf = (JTextField) field;
+
+    String ph = "Tên đăng nhập";
+    tf.setForeground(new Color(160, 170, 185));
+    tf.setText(ph);
+
+    tf.addFocusListener(new FocusAdapter() {
+        @Override public void focusGained(FocusEvent e) {
+            if (tf.getText().equals(ph)) {
+                tf.setText("");
+                tf.setForeground(new Color(50, 60, 75));
+            }
         }
+
+        @Override public void focusLost(FocusEvent e) {
+            if (tf.getText().isEmpty()) {
+                tf.setText(ph);
+                tf.setForeground(new Color(160, 170, 185));
+            }
+        }
+    });
+}
  
         field.addFocusListener(new FocusAdapter() {
             @Override public void focusGained(FocusEvent e) { panel.repaint(); }
@@ -257,8 +268,39 @@ public class LoginFrame extends JFrame {
                 "Cảnh báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        // TODO: gọi DB check login
-        JOptionPane.showMessageDialog(this, "Đăng nhập thành công: " + user);
+        
+    String result = userBUS.login(user, pass);
+
+    switch (result) {
+        case "ADMIN":
+             new Main("ADMIN").setVisible(true);
+    this.dispose();
+            // mở form admin
+            break;
+
+        case "USER":
+            new Main("USER").setVisible(true);
+    this.dispose();
+            // mở form user
+            break;
+
+        case "WRONG_PASSWORD":
+            JOptionPane.showMessageDialog(this, "Sai mật khẩu");
+            break;
+
+        case "NOT_FOUND":
+            JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại");
+            break;
+
+        case "BANNED":
+            JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa");
+            break;
+
+        case "EMPTY":
+        default:
+            JOptionPane.showMessageDialog(this, "Dữ liệu không hợp lệ");
+            break;
+    }
     }
  
     public static void main(String[] args) {

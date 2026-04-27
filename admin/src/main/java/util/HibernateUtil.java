@@ -21,6 +21,7 @@ public class HibernateUtil {
                         .addAnnotatedClass(DTO.NganhDTO.class)
                         .addAnnotatedClass(DTO.ToHopDTO.class)           // ✅ THÊM DÒNG NÀY
                         .addAnnotatedClass(DTO.ToHopNganhDTO.class)   // thêm entity
+                        .addAnnotatedClass(DTO.UserDTO.class)
                         .buildMetadata()
                         .buildSessionFactory();
 

@@ -5,16 +5,27 @@
 package GUI.Panel;
 
 import BUS.NganhBUS;
-import BUS.ToHop_Nganh_BUS;
-import DTO.ToHop_Nganh_DTO;
+import BUS.ToHopNganhBUS;
+import BUS.UserBUS;
+import DTO.ToHopNganhDTO;
+import DTO.UserDTO;
 import GUIDialog.AddToHopNganhDialog;
+import GUIDialog.AddUser;
+import GUIDialog.EditUser;
+import GUIDialog.UpdateToHopNganhDialog;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
+import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
+import util.JButton_design;
+import util.JTextF_design;
 import util.Table_design;
 
 /**
@@ -22,14 +33,75 @@ import util.Table_design;
  * @author kiman
  */
 public class UserPanel extends javax.swing.JPanel {
-    Combobox_design cbb_design = new Combobox_design();
-    ToHop_Nganh_BUS toH_ng_Bus = new ToHop_Nganh_BUS();
-    Table_design table_design = new Table_design();
-    NganhBUS nganhBus = new NganhBUS();
+     private UserBUS userBUS = new UserBUS();
+    private Table_design table_design = new Table_design();
+    private JTextF_design jtf_design = new JTextF_design();
+    private JButton_design btn_design = new JButton_design();
+
     public UserPanel() {
         initComponents();
+        khoiTao();
     }
- 
+    public void khoiTao() {
+        dataTable(userBUS.getAll());
+        setUpJtf();
+        setIcon();
+    }
+
+    
+    // ===== Setup UI =====
+    public void setUpJtf() {
+        jtf_design.setUpJTF(jtf_timkiem);
+        PromptSupport.setPrompt("Tìm kiếm username hoặc role", jtf_timkiem);
+        PromptSupport.setForeground(Color.GRAY, jtf_timkiem);
+    }
+
+    public void setIcon() {
+        btn_timkiem.setIcon(new FlatSVGIcon("./resources/icon/look.svg", 0.25f));
+        btn_add.setIcon(new FlatSVGIcon("./resources/icon/add.svg", 0.2f));
+        btn_update.setIcon(new FlatSVGIcon("./resources/icon/edit.svg", 0.2f));
+        btn_delete.setIcon(new FlatSVGIcon("./resources/icon/delete.svg", 0.2f));
+    }
+
+
+    // ===== Load table =====
+    public void dataTable(ArrayList<UserDTO> list) {
+
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+    "ID", "Username", "Role", "Trạng thái"
+}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        for (UserDTO u : list) {
+    String status = Boolean.TRUE.equals(u.getEnabled()) ? "Active" : "Banned";
+
+    model.addRow(new Object[]{
+        u.getId(),
+        u.getUsername(),
+        u.getRole(),
+        status,
+    });
+}
+
+        user_table.setModel(model);
+
+        table_design.centerTable(user_table);
+        table_design.setUpTable(user_table);
+
+        TableColumnModel columnModel = user_table.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(50);
+        columnModel.getColumn(1).setPreferredWidth(150);
+        columnModel.getColumn(2).setPreferredWidth(100);
+        columnModel.getColumn(3).setPreferredWidth(100);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -40,115 +112,41 @@ public class UserPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        btn_add = new javax.swing.JButton();
-        btn_ban = new javax.swing.JButton();
-        btn_ban1 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox<>();
-        jLabel4 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
-        jLabel5 = new javax.swing.JLabel();
-        btn_filter = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        combination_major_table = new javax.swing.JTable();
+        user_table = new javax.swing.JTable();
+        jtf_timkiem = new javax.swing.JTextField();
+        btn_delete = new javax.swing.JButton();
+        btn_add = new javax.swing.JButton();
+        btn_update = new javax.swing.JButton();
+        btn_timkiem = new javax.swing.JButton();
+
+        setBackground(new java.awt.Color(204, 204, 204));
+        setPreferredSize(new java.awt.Dimension(1008, 1008));
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel3.setText("Quản lý người dùng");
 
-        btn_add.setBackground(new java.awt.Color(0, 153, 51));
-        btn_add.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_add.setForeground(new java.awt.Color(255, 255, 255));
-        btn_add.setText("Thêm");
-        btn_add.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_addActionPerformed(evt);
-            }
-        });
-
-        btn_ban.setBackground(new java.awt.Color(255, 0, 0));
-        btn_ban.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_ban.setForeground(new java.awt.Color(255, 255, 255));
-        btn_ban.setText("Xóa");
-        btn_ban.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_banActionPerformed(evt);
-            }
-        });
-
-        btn_ban1.setBackground(new java.awt.Color(255, 255, 0));
-        btn_ban1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_ban1.setText("Sửa");
-        btn_ban1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_ban1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(14, 14, 14)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btn_ban1, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(btn_ban, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addGap(18, 18, 18)))
-                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54))
+                .addGap(22, 22, 22)
+                .addComponent(jLabel3)
+                .addContainerGap(817, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(17, 17, 17)
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_ban, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_ban1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addGap(47, 47, 47)
+                .addComponent(jLabel3)
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất cả", "Đang hoạt động", "Bị khóa" }));
-        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox1ActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setText("Trạng thái");
-
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Tất Cả", "Người dùng", "Admin" }));
-        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jComboBox2ActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("Vai trò");
-
-        btn_filter.setBackground(new java.awt.Color(0, 0, 255));
-        btn_filter.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        btn_filter.setForeground(new java.awt.Color(255, 255, 255));
-        btn_filter.setText("Lọc dữ liệu");
-
-        combination_major_table.setModel(new javax.swing.table.DefaultTableModel(
+        user_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -159,7 +157,43 @@ public class UserPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(combination_major_table);
+        jScrollPane1.setViewportView(user_table);
+
+        btn_delete.setBackground(new java.awt.Color(255, 0, 0));
+        btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_delete.setForeground(new java.awt.Color(255, 255, 255));
+        btn_delete.setText("Xóa");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
+
+        btn_add.setBackground(new java.awt.Color(0, 135, 51));
+        btn_add.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_add.setForeground(new java.awt.Color(255, 255, 255));
+        btn_add.setText("Thêm");
+        btn_add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_addActionPerformed(evt);
+            }
+        });
+
+        btn_update.setBackground(new java.awt.Color(52, 152, 219));
+        btn_update.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_update.setForeground(new java.awt.Color(255, 255, 255));
+        btn_update.setText("Sửa");
+        btn_update.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_updateActionPerformed(evt);
+            }
+        });
+
+        btn_timkiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_timkiemActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -167,77 +201,103 @@ public class UserPanel extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(60, 60, 60)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 63, Short.MAX_VALUE)
-                        .addComponent(btn_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(63, 63, 63))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel5)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGap(10, 10, 10)
+                .addComponent(jtf_timkiem, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(298, 298, 298)
+                .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41))
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel5))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)))
-                .addGap(1, 1, 1)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_filter, javax.swing.GroupLayout.DEFAULT_SIZE, 39, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jtf_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(22, 22, 22)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
-
+       Window parent = SwingUtilities.getWindowAncestor(this);
+        new AddUser((Frame) parent, true, this).setVisible(true);
     }//GEN-LAST:event_btn_addActionPerformed
 
-    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+       int row = user_table.getSelectedRow();
 
-    }//GEN-LAST:event_jComboBox1ActionPerformed
+    if (row == -1) {
+        JOptionPane.showMessageDialog(this, "Chọn user cần xóa!");
+        return;
+    }
 
-    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jComboBox2ActionPerformed
+    int id = (int) user_table.getValueAt(row, 0);
 
-    private void btn_banActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_banActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_banActionPerformed
+    int confirm = JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc muốn xóa user này?",
+            "Xác nhận",
+            JOptionPane.YES_NO_OPTION
+    );
 
-    private void btn_ban1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ban1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btn_ban1ActionPerformed
+    if (confirm != JOptionPane.YES_OPTION) return;
 
+    String message = userBUS.delete(id);
+
+    JOptionPane.showMessageDialog(this, message);
+
+    if (message.equals("Xóa user thành công!")) {
+        loadData();
+    }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
+    private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
+       int row = user_table.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Chọn user!");
+            return;
+        }
+        int id = (int) user_table.getValueAt(row, 0);
+        Window parent = SwingUtilities.getWindowAncestor(this);
+        new EditUser((Frame) parent, true, this,id).setVisible(true);
+    }//GEN-LAST:event_btn_updateActionPerformed
+
+    private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
+        String text = jtf_timkiem.getText().trim();
+
+    ArrayList<UserDTO> list = userBUS.searchByUsername(text);
+
+    dataTable(list);
+
+    }//GEN-LAST:event_btn_timkiemActionPerformed
+    // ===== Public để dialog gọi lại =====
+    public void loadData() {
+        dataTable(userBUS.getAll());
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
-    private javax.swing.JButton btn_ban;
-    private javax.swing.JButton btn_ban1;
-    private javax.swing.JButton btn_filter;
-    private javax.swing.JTable combination_major_table;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton btn_delete;
+    private javax.swing.JButton btn_timkiem;
+    private javax.swing.JButton btn_update;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField jtf_timkiem;
+    private javax.swing.JTable user_table;
     // End of variables declaration//GEN-END:variables
 }

@@ -80,6 +80,8 @@
                           <Component id="btn_diemthi" max="32767" attributes="0"/>
                           <Component id="btn_diemcong" max="32767" attributes="0"/>
                           <Component id="btn_nvxt" pref="195" max="32767" attributes="0"/>
+                          <Component id="btn_user" alignment="0" pref="195" max="32767" attributes="0"/>
+                          <Component id="btn_logout" alignment="0" pref="195" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="25" max="32767" attributes="0"/>
                   </Group>
@@ -104,7 +106,11 @@
                       <Component id="btn_diemcong" min="-2" pref="31" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btn_nvxt" min="-2" pref="31" max="-2" attributes="0"/>
-                      <EmptySpace pref="364" max="32767" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btn_user" min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btn_logout" min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace pref="266" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -170,6 +176,22 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nguy&#x1ec7;n v&#x1ecd;ng x&#xe9;t tuy&#x1ec3;n"/>
               </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="btn_user">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ng&#x1b0;&#x1edd;i d&#xf9;ng"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_userActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btn_logout">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="&#x110;&#x103;ng xu&#x1ea5;t"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_logoutActionPerformed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

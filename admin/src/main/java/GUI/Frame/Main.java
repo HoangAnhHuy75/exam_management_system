@@ -11,6 +11,7 @@ import GUI.Panel.ThiSinhPanel;
 import GUI.Panel.ToHopNganhPanel;
 import GUI.Panel.TohopPanel;
 import GUI.Panel.TrangChuPanel;
+import GUI.Panel.UserPanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
@@ -33,17 +34,20 @@ public class Main extends javax.swing.JFrame {
     TrangChuPanel trangChuPanel = new TrangChuPanel();
     NganhPanel nganhPanel = new NganhPanel();
     TohopPanel toHopPanel = new TohopPanel();
+    UserPanel userPanel = new UserPanel();
     ToHopNganhPanel tohop_nganh_panel = new ToHopNganhPanel();
     DiemCongPanel diemCongPanel = new DiemCongPanel();
     DiemThiPanel diemThiPanel = new DiemThiPanel();
     ThiSinhPanel thisinhPanel = new ThiSinhPanel();
-    JButton[] btns = new JButton[8];
+    JButton[] btns = new JButton[9];
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
-    public Main() {
+    private String role;
+    public Main(String role) {
         initComponents();
         this.setTitle("Quản lý xét tuyển thí sinh");
         this.setLocationRelativeTo(null);
+        this.role = role; 
         khoiTao();
         main.add(trangChuPanel, "TrangChu");
         main.add(nganhPanel, "Nganh");
@@ -52,13 +56,26 @@ public class Main extends javax.swing.JFrame {
         main.add(diemCongPanel, "DiemCong");
         main.add(diemThiPanel, "DiemThi");
         main.add(thisinhPanel, "ThiSinh");
+        main.add(userPanel,"User");
         nganhPanel.setVisible(false);
         toHopPanel.setVisible(false);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
+        applyRole();
     }
+    private void applyRole() {
 
+    if (!"ADMIN".equalsIgnoreCase(role)) {
+
+        // Ẩn nút user
+        btn_user.setVisible(false);
+
+        // tránh lỗi nếu vẫn cố truy cập
+        userPanel.setVisible(false);
+    }
+}
     public void khoiTao() {
         khoiTaoBtns();
         actionJButtonMenu();
@@ -76,6 +93,7 @@ public class Main extends javax.swing.JFrame {
         btns[5] = btn_diemthi;
         btns[6] = btn_diemcong;
         btns[7] = btn_nvxt;
+        btns[8] = btn_user;
     }
     public void setIcon(){
         btn_home.setIcon(new FlatSVGIcon("./resources/icon/home.svg", 0.35f));
@@ -185,6 +203,8 @@ public class Main extends javax.swing.JFrame {
         btn_diemthi = new javax.swing.JButton();
         btn_diemcong = new javax.swing.JButton();
         btn_nvxt = new javax.swing.JButton();
+        btn_user = new javax.swing.JButton();
+        btn_logout = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         logo_school = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -193,7 +213,6 @@ public class Main extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(1300, 800));
-        getContentPane().setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(240, 470));
@@ -251,6 +270,20 @@ public class Main extends javax.swing.JFrame {
 
         btn_nvxt.setText("Nguyện vọng xét tuyển");
 
+        btn_user.setText("Người dùng");
+        btn_user.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_userActionPerformed(evt);
+            }
+        });
+
+        btn_logout.setText("Đăng xuất");
+        btn_logout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_logoutActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_bottom_menuLayout = new javax.swing.GroupLayout(panel_bottom_menu);
         panel_bottom_menu.setLayout(panel_bottom_menuLayout);
         panel_bottom_menuLayout.setHorizontalGroup(
@@ -265,7 +298,9 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(btn_thisinh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_diemthi, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_diemcong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btn_nvxt, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                    .addComponent(btn_nvxt, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(btn_user, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(btn_logout, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         panel_bottom_menuLayout.setVerticalGroup(
@@ -287,7 +322,11 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(btn_diemcong, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_nvxt, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(364, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(btn_user, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_logout, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(266, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -359,6 +398,7 @@ public class Main extends javax.swing.JFrame {
         diemThiPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
@@ -369,6 +409,7 @@ public class Main extends javax.swing.JFrame {
         diemThiPanel.setVisible(false);
         trangChuPanel.setVisible(true);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_homeActionPerformed
 
     private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combinationActionPerformed
@@ -379,6 +420,7 @@ public class Main extends javax.swing.JFrame {
         diemCongPanel.setVisible(false);
         diemThiPanel.setVisible(false);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_combinationActionPerformed
 
     private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combination_majorActionPerformed
@@ -389,6 +431,7 @@ public class Main extends javax.swing.JFrame {
         diemThiPanel.setVisible(false);
         tohop_nganh_panel.setVisible(true);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_combination_majorActionPerformed
 
     private void btn_diemthiActionPerformed(java.awt.event.ActionEvent evt) {                                                                                       
@@ -399,6 +442,7 @@ public class Main extends javax.swing.JFrame {
         diemCongPanel.setVisible(false);
         diemThiPanel.setVisible(true);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }                                           
 
     private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_diemcongActionPerformed
@@ -409,16 +453,45 @@ public class Main extends javax.swing.JFrame {
         diemCongPanel.setVisible(true);
         diemThiPanel.setVisible(false);
         thisinhPanel.setVisible(false);
+        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_diemcongActionPerformed
+
+    private void btn_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_userActionPerformed
+         nganhPanel.setVisible(false);
+        toHopPanel.setVisible(false);
+        trangChuPanel.setVisible(false);
+        tohop_nganh_panel.setVisible(false);
+        diemCongPanel.setVisible(false);
+        diemThiPanel.setVisible(false);
+        thisinhPanel.setVisible(false);
+        userPanel.setVisible(true);
+    }//GEN-LAST:event_btn_userActionPerformed
+
+    private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
+         int confirm = javax.swing.JOptionPane.showConfirmDialog(
+            this,
+            "Bạn có chắc chắn muốn đăng xuất?",
+            "Xác nhận đăng xuất",
+            javax.swing.JOptionPane.YES_NO_OPTION
+    );
+
+    if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+        this.dispose(); // đóng màn hình Main
+
+        // mở lại màn hình đăng nhập
+        new LoginFrame().setVisible(true);
+    }
+    }//GEN-LAST:event_btn_logoutActionPerformed
     private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) { 
-        nganhPanel.setVisible(false);
+         nganhPanel.setVisible(false);
         toHopPanel.setVisible(false);
         trangChuPanel.setVisible(false);
         tohop_nganh_panel.setVisible(false);
         diemCongPanel.setVisible(false);
         diemThiPanel.setVisible(false);
         thisinhPanel.setVisible(true);
-    }                                           
+        userPanel.setVisible(false);
+    }
 
     /**
      * @param args the command line arguments
@@ -450,7 +523,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new Main("ADMIN").setVisible(true);
             }
         });
     }
@@ -461,9 +534,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btn_diemcong;
     private javax.swing.JButton btn_diemthi;
     private javax.swing.JButton btn_home;
+    private javax.swing.JButton btn_logout;
     private javax.swing.JButton btn_major;
     private javax.swing.JButton btn_nvxt;
     private javax.swing.JButton btn_thisinh;
+    private javax.swing.JButton btn_user;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;

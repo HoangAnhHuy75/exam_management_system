@@ -79,6 +79,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_filter.setIcon(new FlatSVGIcon("./resources/icon/filter.svg", 0.2f));
         btn_import.setIcon(new FlatSVGIcon("./resources/icon/import.svg", 0.2f));
         btn_refresh.setIcon(new FlatSVGIcon("./resources/icon/refresh.svg", 0.25f));
+        btn_chitiet.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
         btn_timkiem.setIcon(new FlatSVGIcon("./resources/icon/look.svg", 0.3f));
         jtf_design.setUpJTF(jtf_timkiem);
         btn_design.setUpBtn(btn_timkiem, Color.white, Color.white);
@@ -183,6 +184,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         jtf_timkiem = new javax.swing.JTextField();
         btn_timkiem = new javax.swing.JButton();
         btn_refresh = new javax.swing.JButton();
+        btn_chitiet = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -213,7 +215,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                         .addComponent(jLabel3)))
                 .addGap(452, 452, 452)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(409, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +321,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_edit.setBackground(new java.awt.Color(52, 152, 219));
         btn_edit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_edit.setForeground(new java.awt.Color(255, 255, 255));
-        btn_edit.setText("Sửa hồ sơ");
+        btn_edit.setText("Sửa");
         btn_edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_editActionPerformed(evt);
@@ -334,7 +336,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_add.setBackground(new java.awt.Color(46, 204, 113));
         btn_add.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_add.setForeground(new java.awt.Color(255, 255, 255));
-        btn_add.setText("Thêm thí sinh");
+        btn_add.setText("Thêm ");
         btn_add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_addActionPerformed(evt);
@@ -370,6 +372,11 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             }
         });
 
+        btn_chitiet.setBackground(new java.awt.Color(0, 0, 255));
+        btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
+        btn_chitiet.setText("Chi tiết");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -382,14 +389,16 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                 .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(jScrollPane2)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -403,10 +412,11 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                     .addComponent(jtf_timkiem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
                     .addComponent(btn_timkiem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btn_refresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -533,6 +543,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
+    private javax.swing.JButton btn_chitiet;
     private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_filter;

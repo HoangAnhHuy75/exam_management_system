@@ -51,6 +51,7 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_timkiem.setIcon(new FlatSVGIcon("./resources/icon/look.svg", 0.25f));
         btn_refresh.setIcon(new FlatSVGIcon("./resources/icon/refresh.svg", 0.25f));
         btn_delete.setIcon(new FlatSVGIcon("./resources/icon/delete.svg", 0.2f));
+        btn_chitiet.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
     }
 
     public void setUpBtn(){
@@ -120,6 +121,7 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_refresh = new javax.swing.JButton();
         btn_update = new javax.swing.JButton();
         btn_delete = new javax.swing.JButton();
+        btn_chitiet = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -186,7 +188,7 @@ public class TohopPanel extends javax.swing.JPanel {
         combination_add.setBackground(new java.awt.Color(0, 153, 51));
         combination_add.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         combination_add.setForeground(new java.awt.Color(255, 255, 255));
-        combination_add.setText("Thêm tổ hợp");
+        combination_add.setText("Thêm ");
         combination_add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 combination_addActionPerformed(evt);
@@ -209,7 +211,7 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_update.setBackground(new java.awt.Color(52, 152, 219));
         btn_update.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_update.setForeground(new java.awt.Color(255, 255, 255));
-        btn_update.setText("Sửa tổ hợp");
+        btn_update.setText("Sửa ");
         btn_update.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_updateActionPerformed(evt);
@@ -220,6 +222,11 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_delete.setForeground(new java.awt.Color(255, 255, 255));
         btn_delete.setText("Xóa");
+
+        btn_chitiet.setBackground(new java.awt.Color(0, 51, 204));
+        btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
+        btn_chitiet.setText("Chi tiết");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -233,15 +240,17 @@ public class TohopPanel extends javax.swing.JPanel {
                 .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
                 .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 115, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(combination_import, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(combination_add, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(combination_add, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(14, Short.MAX_VALUE))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
@@ -252,12 +261,13 @@ public class TohopPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(combination_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(combination_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(combination_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(combination_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(15, 15, 15)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
         );
@@ -334,6 +344,7 @@ public class TohopPanel extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btn_chitiet;
     private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_refresh;
     private javax.swing.JButton btn_timkiem;

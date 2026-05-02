@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,6 +29,7 @@ public class ToHopNganhDAO {
             return new ArrayList<>();
         }
     }
+    
 
     // Thêm 1
     public int insert(ToHopNganhDTO t) {
@@ -81,52 +83,174 @@ public class ToHopNganhDAO {
         }
     }
     
-    public List<ToHopNganhDTO> importFromExcel(String filePath) {
-        List<ToHopNganhDTO> list = new ArrayList<>();
-        try (FileInputStream fis = new FileInputStream(new File(filePath)); Workbook workbook = new XSSFWorkbook(fis)) {
+    
+    public int getColumnIndex(Row headerRow, String columnName) {
+        for (Cell cell : headerRow) {
+            if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
+                return cell.getColumnIndex();
+            }
+        }
+        return -1;
+    }
 
+    private String getCell(Row row, int index) {
+        if (index == -1) {
+            return null;
+        }
+
+        Cell cell = row.getCell(index);
+        if (cell == null) {
+            return null;
+        }
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+
+            case NUMERIC:
+                double num = cell.getNumericCellValue();
+
+                // tránh 1.0 -> 1
+                if (num == (long) num) {
+                    return String.valueOf((long) num);
+                } else {
+                    return String.valueOf(num);
+                }
+
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+
+            default:
+                return cell.toString().trim();
+        }
+    }
+
+    public Object[] parseMonAndHeSo(String matohop) {
+
+        if (matohop == null || !matohop.contains("(")) {
+            return new Object[]{
+                new String[]{"", "", ""},
+                new Integer[]{0, 0, 0}
+            };
+        }
+
+        try {
+            String inside = matohop.substring(
+                    matohop.indexOf("(") + 1,
+                    matohop.indexOf(")")
+            );
+
+            String[] parts = inside.split(",");
+
+            String[] mons = new String[3];
+            Integer[] hs = new Integer[3];
+
+            for (int i = 0; i < 3; i++) {
+
+                if (i < parts.length) {
+                    String[] p = parts[i].split("-");
+
+                    mons[i] = p.length > 0 ? p[0] : "";
+
+                    try {
+                        hs[i] = p.length > 1 ? Integer.parseInt(p[1]) : 0;
+                    } catch (Exception e) {
+                        hs[i] = 0;
+                    }
+
+                } else {
+                    mons[i] = "";
+                    hs[i] = 0;
+                }
+            }
+
+            return new Object[]{mons, hs};
+
+        } catch (Exception e) {
+            return new Object[]{
+                new String[]{"", "", ""},
+                new Integer[]{0, 0, 0}
+            };
+        }
+    }
+    
+    
+    public List<ToHopNganhDTO> importFromExcel(String filePath) {
+
+        List<ToHopNganhDTO> list = new ArrayList<>();
+
+        try {
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Workbook workbook = new XSSFWorkbook(fis);
             Sheet sheet = workbook.getSheetAt(0);
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) { // giả sử dòng 0 là header
+            Row headerRow = sheet.getRow(0);
+
+            int maNganhCol = getColumnIndex(headerRow, "MANGANH");
+            int maToHopCol = getColumnIndex(headerRow, "MA_TO_HOP");
+            int tbKeysCol = getColumnIndex(headerRow, "tb_keys");
+            int dolechCol = getColumnIndex(headerRow, "Độ lệch");
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
                 Row row = sheet.getRow(i);
                 if (row == null) {
                     continue;
                 }
 
-                ToHopNganhDTO t = new ToHopNganhDTO();
+                String maNganh = getCell(row, maNganhCol);
+                String maToHop = getCell(row, maToHopCol);
 
-                t.setManganh(row.getCell(0) != null ? row.getCell(0).toString().trim() : "");
-                t.setMatohop(row.getCell(1) != null ? row.getCell(1).toString().trim() : "");
+                if (maNganh == null || maToHop == null) {
+                    continue;
+                }
 
-                t.setTh_mon1(row.getCell(2) != null ? row.getCell(2).toString().trim() : "");
-                t.setHsmon1(row.getCell(3) != null ? (int) row.getCell(3).getNumericCellValue() : null);
+                ToHopNganhDTO dto = new ToHopNganhDTO();
 
-                t.setTh_mon2(row.getCell(4) != null ? row.getCell(4).toString().trim() : "");
-                t.setHsmon2(row.getCell(5) != null ? (int) row.getCell(5).getNumericCellValue() : null);
+                // ===== ONLY DB FIELDS =====
+                dto.setManganh(maNganh);
+                dto.setMatohop(maToHop);
+                dto.setTb_keys(getCell(row, tbKeysCol));
 
-                t.setTh_mon3(row.getCell(6) != null ? row.getCell(6).toString().trim() : "");
-                t.setHsmon3(row.getCell(7) != null ? (int) row.getCell(7).getNumericCellValue() : null);
+                // ===== PARSE MÔN + HỆ SỐ =====
+                Object[] result = parseMonAndHeSo(maToHop);
 
-                t.setTb_keys(row.getCell(8) != null ? row.getCell(8).toString().trim() : "");
+                String[] mons = (String[]) result[0];
+                Integer[] hs = (Integer[]) result[1];
 
-                t.setN1(row.getCell(9) != null ? (int) row.getCell(9).getNumericCellValue() : null);
-                t.setTO(row.getCell(10) != null ? (int) row.getCell(10).getNumericCellValue() : null);
-                t.setLI(row.getCell(11) != null ? (int) row.getCell(11).getNumericCellValue() : null);
-                t.setHO(row.getCell(12) != null ? (int) row.getCell(12).getNumericCellValue() : null);
-                t.setSI(row.getCell(13) != null ? (int) row.getCell(13).getNumericCellValue() : null);
-                t.setVA(row.getCell(14) != null ? (int) row.getCell(14).getNumericCellValue() : null);
-                t.setSU(row.getCell(15) != null ? (int) row.getCell(15).getNumericCellValue() : null);
-                t.setDI(row.getCell(16) != null ? (int) row.getCell(16).getNumericCellValue() : null);
-                t.setTI(row.getCell(17) != null ? (int) row.getCell(17).getNumericCellValue() : null);
-                t.setKHAC(row.getCell(18) != null ? (int) row.getCell(18).getNumericCellValue() : null);
-                t.setKTPL(row.getCell(19) != null ? (int) row.getCell(19).getNumericCellValue() : null);
-                t.setDolech(row.getCell(20) != null ? BigDecimal.valueOf(row.getCell(20).getNumericCellValue()) : null);
-                list.add(t);
+                dto.setTh_mon1(mons[0]);
+                dto.setHsmon1(hs[0]);
+
+                dto.setTh_mon2(mons[1]);
+                dto.setHsmon2(hs[1]);
+
+                dto.setTh_mon3(mons[2]);
+                dto.setHsmon3(hs[2]);
+
+                // ===== ĐỘ LỆCH =====
+                String dl = getCell(row, dolechCol);
+                if (dl != null && !dl.isEmpty()) {
+                    try {
+                        dto.setDolech(new BigDecimal(dl));
+                    } catch (Exception e) {
+                        dto.setDolech(BigDecimal.ZERO);
+                    }
+                }
+
+                list.add(dto);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
+    
+    
+    
+   
+    
+    
 
     // Map manganh_matohop -> DTO (hoặc bạn có thể đổi tùy mục đích)
     public HashMap<String, ToHopNganhDTO> toHopNganhMap() {

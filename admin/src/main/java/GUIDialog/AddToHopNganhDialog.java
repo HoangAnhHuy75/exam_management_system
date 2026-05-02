@@ -18,13 +18,16 @@ import util.Combobox_design;
  * @author kiman
  */
 public class AddToHopNganhDialog extends javax.swing.JDialog {
+
     ToHopNganhPanel toh_ng_Panel;
     Combobox_design cbb_design = new Combobox_design();
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
     ToHopNganhBUS th_ng_bus = new ToHopNganhBUS();
     HashMap<String, String> nganhMap = nganhBus.nganhMap();
-    HashMap<String,String> tohopMap = tohopBus.tohopMap();
+    HashMap<String, String> tohopMap = tohopBus.tohopMap();
+    HashMap<String, String> tohopGocMap = nganhBus.getMapToHopGoc();
+  
     /**
      * Creates new form AddToHopNganhDialog
      */
@@ -36,18 +39,20 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         khoiTao();
         this.setLocationRelativeTo(null);
     }
-    public void khoiTao(){
+
+    public void khoiTao() {
         setUpCBB();
         loadCombobox();
         tudong_check();
         disableAllCheckbox();
     }
-    public void loadCombobox(){
 
-        for(String tenNganh : nganhMap.keySet()){
+    public void loadCombobox() {
+
+        for (String tenNganh : nganhMap.keySet()) {
             major_cbb.addItem(tenNganh);
         }
-        for(String tenTH : tohopMap.keySet()){
+        for (String tenTH : tohopMap.keySet()) {
             combination_cbb.addItem(tenTH);
         }
         jComboBox1.addItem("Chọn môn 1");
@@ -60,6 +65,7 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
             jComboBox3.addItem(s);
         }
     }
+
     private void resetCheckbox() {
         jcb_toan.setSelected(false);
         jcb_li.setSelected(false);
@@ -147,6 +153,7 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         jcb_ktpl.setEnabled(false);
         jcb_khac.setEnabled(false);
     }
+
     private void updateCheckboxUI() {
         resetCheckbox();
 
@@ -157,17 +164,104 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
         // chỉ để update UI nên truyền DTO rỗng
         autoTickSubject(new ToHopNganhDTO(), mon1, mon2, mon3);
     }
+
     public void tudong_check() {
         jComboBox1.addActionListener(e -> updateCheckboxUI());
         jComboBox2.addActionListener(e -> updateCheckboxUI());
         jComboBox3.addActionListener(e -> updateCheckboxUI());
     }
-    public void setUpCBB(){
+
+    public void setUpCBB() {
         cbb_design.setUpComBoBox(major_cbb);
         cbb_design.setUpComBoBox(combination_cbb);
         cbb_design.setUpComBoBox(jComboBox1);
         cbb_design.setUpComBoBox(jComboBox2);
         cbb_design.setUpComBoBox(jComboBox3);
+    }
+    
+    public HashMap<String, HashMap<String, BigDecimal>> getDoLechMatrix() {
+        HashMap<String, HashMap<String, BigDecimal>> map = new HashMap<>();
+
+        // ===== A00 =====
+        HashMap<String, BigDecimal> A00 = new HashMap<>();
+        A00.put("A01", new BigDecimal("-0.69"));
+        A00.put("B00", new BigDecimal("-1.21"));
+        A00.put("C00", new BigDecimal("2.32"));
+        A00.put("C01", new BigDecimal("0.94"));
+        A00.put("D01", new BigDecimal("-0.68"));
+        A00.put("D07", new BigDecimal("-1.62"));
+        map.put("A00", A00);
+
+        // ===== A01 =====
+        HashMap<String, BigDecimal> A01 = new HashMap<>();
+        A01.put("A00", new BigDecimal("0.69"));
+        A01.put("B00", new BigDecimal("-0.52"));
+        A01.put("C00", new BigDecimal("3.01"));
+        A01.put("C01", new BigDecimal("1.63"));
+        A01.put("D01", new BigDecimal("0.01"));
+        A01.put("D07", new BigDecimal("-0.93"));
+        map.put("A01", A01);
+
+        // ===== B00 =====
+        HashMap<String, BigDecimal> B00 = new HashMap<>();
+        B00.put("A00", new BigDecimal("1.21"));
+        B00.put("A01", new BigDecimal("0.52"));
+        B00.put("C00", new BigDecimal("3.53"));
+        B00.put("C01", new BigDecimal("2.15"));
+        B00.put("D01", new BigDecimal("0.53"));
+        B00.put("D07", new BigDecimal("-0.41"));
+        map.put("B00", B00);
+
+        // ===== C00 =====
+        HashMap<String, BigDecimal> C00 = new HashMap<>();
+        C00.put("A00", new BigDecimal("-2.32"));
+        C00.put("A01", new BigDecimal("-3.01"));
+        C00.put("B00", new BigDecimal("-3.53"));
+        C00.put("C01", new BigDecimal("-1.38"));
+        C00.put("D01", new BigDecimal("-3.00"));
+        C00.put("D07", new BigDecimal("-3.94"));
+        map.put("C00", C00);
+
+        // ===== C01 =====
+        HashMap<String, BigDecimal> C01 = new HashMap<>();
+        C01.put("A00", new BigDecimal("-0.94"));
+        C01.put("A01", new BigDecimal("-1.63"));
+        C01.put("B00", new BigDecimal("-2.15"));
+        C01.put("C00", new BigDecimal("1.38"));
+        C01.put("D01", new BigDecimal("-1.62"));
+        C01.put("D07", new BigDecimal("-2.56"));
+        map.put("C01", C01);
+
+        // ===== D01 =====
+        HashMap<String, BigDecimal> D01 = new HashMap<>();
+        D01.put("A00", new BigDecimal("0.68"));
+        D01.put("A01", new BigDecimal("-0.01"));
+        D01.put("B00", new BigDecimal("-0.53"));
+        D01.put("C00", new BigDecimal("3.00"));
+        D01.put("C01", new BigDecimal("1.62"));
+        D01.put("D07", new BigDecimal("-0.94"));
+        map.put("D01", D01);
+
+        return map;
+    }
+
+    public BigDecimal calculateDoLech(String toHopGoc, String toHop) {
+        if (toHopGoc == null || toHop == null) {
+            return BigDecimal.ZERO;
+        }
+
+        // nếu là tổ hợp gốc → độ lệch = 0
+        if (toHopGoc.equalsIgnoreCase(toHop)) {
+            return BigDecimal.ZERO;
+        }
+
+        HashMap<String, HashMap<String, BigDecimal>> map = getDoLechMatrix();
+
+        if (map.containsKey(toHopGoc)) {
+            return map.get(toHopGoc).getOrDefault(toHop, BigDecimal.ZERO);
+        }
+
+        return BigDecimal.ZERO;
     }
 
     /**
@@ -654,7 +748,6 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
                 return;
             }
 
-
             if (mon1.equals(mon2) || mon1.equals(mon3) || mon2.equals(mon3)) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Các môn trong tổ hợp không được trùng nhau!", "Lỗi", javax.swing.JOptionPane.ERROR_MESSAGE);
                 return;
@@ -707,7 +800,6 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
             String tenTH = (String) combination_cbb.getSelectedItem();
             String maTH = tohopMap.get(tenTH);
 
-
             // ===== 3. TẠO DTO =====
             ToHopNganhDTO t = new ToHopNganhDTO();
             t.setManganh(manganh);
@@ -739,29 +831,19 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
             t.setTI(0);
             t.setKTPL(0);
             t.setKHAC(0);
-
-// reset UI
             resetCheckbox();
-
-// auto tick theo môn đã chọn
             autoTickSubject(t, mon1, mon2, mon3);
+            String tohopGoc = tohopGocMap.get(manganh);
+            BigDecimal doLech;
 
-            // HOẶC nếu bạn muốn dùng checkbox do người dùng chọn (bỏ comment đoạn dưới và comment đoạn autoTickSubject)
-            /*
-        t.setTO(jcb_toan.isSelected() ? 1 : 0);
-        t.setLI(jcb_li.isSelected() ? 1 : 0);
-        t.setHO(jcb_hoa.isSelected() ? 1 : 0);
-        t.setSI(jcb_sinh.isSelected() ? 1 : 0);
-        t.setVA(jcb_van.isSelected() ? 1 : 0);
-        t.setN1(jcb_anh.isSelected() ? 1 : 0);
-        t.setSU(jcb_su.isSelected() ? 1 : 0);
-        t.setDI(jcb_dia.isSelected() ? 1 : 0);
-        t.setTI(jcb_tin.isSelected() ? 1 : 0);
-        t.setKTPL(jcb_ktpl.isSelected() ? 1 : 0);
-        t.setKHAC(jcb_khac.isSelected() ? 1 : 0);
-             */
-            // ===== DOLECH (mặc định 0) =====
-            t.setDolech(BigDecimal.ZERO);
+// nếu là tổ hợp gốc
+            if (maTH.equalsIgnoreCase(tohopGoc)) {
+                doLech = BigDecimal.ZERO;
+            } else {
+                doLech = calculateDoLech(tohopGoc, maTH);
+            }
+
+            t.setDolech(doLech);
 
             // ===== INSERT =====
             int result = th_ng_bus.insert(t);
@@ -785,7 +867,6 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     /**
      * @param args the command line arguments
      */
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox<String> combination_cbb;

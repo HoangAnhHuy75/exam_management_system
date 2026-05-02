@@ -345,12 +345,7 @@ public class AddNganhDialog extends javax.swing.JDialog {
             return;
         }
 
-        // ===== 7. LẤY MÃ TỔ HỢP =====
-        String maTH = tohopBus.getMaTHByTenTH(tohopgoc);
-        if (maTH == null) {
-            JOptionPane.showMessageDialog(this, "Tổ hợp không hợp lệ!");
-            return;
-        }
+
 
         // ===== 8. TẠO DTO =====
         NganhDTO nganhDto = new NganhDTO();
@@ -358,7 +353,7 @@ public class AddNganhDialog extends javax.swing.JDialog {
         nganhDto.setTenNganh(tennganh);
         nganhDto.setNChiTieu(chitieu);
         nganhDto.setNDiemSan(diemsan);
-        nganhDto.setNToHopGoc(maTH);
+        nganhDto.setNToHopGoc(tohopgoc);
 
         nganhDto.setSlDGNL(sldgnl);
         nganhDto.setSlTHPT(slthpt);

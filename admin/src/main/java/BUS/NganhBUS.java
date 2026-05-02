@@ -121,7 +121,7 @@ public class NganhBUS {
 
         return newList.size();
     }
-
+    
     private BigDecimal getDecimal(Cell cell) {
         if (cell == null) {
             return null;
@@ -171,6 +171,18 @@ public class NganhBUS {
             }
         }
         return result;
+    }
+    
+    public HashMap<String, String> getMapToHopGoc() {
+        HashMap<String, String> map = new HashMap<>();
+
+        for (NganhDTO n : nganhDao.getAllNganh()) {
+            if (n.getMaNganh() != null) {
+                map.put(n.getMaNganh(), n.getNToHopGoc());
+            }
+        }
+
+        return map;
     }
     
     public ArrayList<NganhDTO> timkiemText(String text){

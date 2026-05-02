@@ -2,9 +2,15 @@ package BUS;
 
 import DAO.DiemCongDAO;
 import DTO.DiemCongDTO;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+import org.apache.poi.ss.usermodel.Row;
 
 /**
  *
@@ -14,6 +20,7 @@ public class DiemCongBUS {
     private DiemCongDAO diemCongDao = new DiemCongDAO();
     private ArrayList<DiemCongDTO> diemCongList = new ArrayList<>();
     private NganhBUS ngB = new NganhBUS();
+    private Map<String, BigDecimal> ccMap = new HashMap<>();
     // lấy danh sách điểm thi
     public ArrayList<DiemCongDTO> getList(){
         diemCongList = diemCongDao.getAllDiemCong();
@@ -121,4 +128,79 @@ public class DiemCongBUS {
         default: return "";
         }
     }
+    
+    public void setCC(Map<String,BigDecimal> map) {
+        this.ccMap = map;
+    }
+    
+    public int getColumnIndex(Row headerRow, String columnName) {
+        for (Cell cell : headerRow) {
+            if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
+                return cell.getColumnIndex();
+            }
+        }
+        return -1;
+    }
+
+    private String getCell(Row row, int index) {
+        if (index == -1) {
+            return null;
+        }
+
+        Cell cell = row.getCell(index);
+        if (cell == null) {
+            return null;
+        }
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                return String.valueOf((long) cell.getNumericCellValue());
+            default:
+                return cell.toString().trim();
+        }
+    }
+
+    public int importCC(String filePath) {
+        try {
+            Map<String, BigDecimal> map = diemCongDao.importCC(filePath);
+
+            if (map == null || map.isEmpty()) {
+                return 0;
+            }
+
+            diemCongDao.upsertDiemCC(map);
+
+            this.ccMap = map;
+
+            return map.size();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int importFromExcel(String filePath) {
+        try {
+            // 1. đọc file excel → list DTO
+            List<DiemCongDTO> list = diemCongDao.importExcel(filePath, ccMap);
+
+            if (list == null || list.isEmpty()) {
+                return 0;
+            }
+
+            // 2. insert batch
+            diemCongDao.insertList(list);
+
+            return list.size(); // trả về số dòng import
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    
 }

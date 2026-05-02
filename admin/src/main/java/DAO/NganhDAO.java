@@ -7,8 +7,6 @@ import org.hibernate.query.Query;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.io.File;
@@ -109,7 +107,7 @@ public class NganhDAO {
                 }
 
                 NganhDTO n = new NganhDTO();
-                n.setMaNganh(row.getCell(1) != null ? row.getCell(1).toString() : null);
+                 n.setMaNganh(getMaNganhFromCell(row.getCell(1)));
                 n.setTenNganh(row.getCell(2) != null ? row.getCell(2).toString() : null);
                 n.setNToHopGoc(row.getCell(3) != null ? row.getCell(3).toString() : null);
                 n.setNChiTieu(row.getCell(4) != null ? (int) row.getCell(4).getNumericCellValue() : 0);
@@ -121,8 +119,8 @@ public class NganhDAO {
                 n.setNVSAT(row.getCell(10) != null ? row.getCell(10).toString() : null);
                 n.setSlXTT(row.getCell(11) != null ? (int) row.getCell(11).getNumericCellValue() : null);
                 n.setSlDGNL(row.getCell(12) != null ? (int) row.getCell(12).getNumericCellValue() : null);
-                n.setSlVSAT(row.getCell(13) != null ? (int) row.getCell(13).getNumericCellValue() : null);
-                n.setSlTHPT(row.getCell(14) != null ? (int) row.getCell(14).getNumericCellValue() : null);
+                n.setSlTHPT(row.getCell(13) != null ? (int) row.getCell(13).getNumericCellValue() : null);
+                n.setSlVSAT(row.getCell(14) != null ? (int) row.getCell(14).getNumericCellValue() : null);
 
                 list.add(n);
             }
@@ -131,6 +129,36 @@ public class NganhDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    private String getMaNganhFromCell(Cell cell) {
+        if (cell == null) {
+            return null;
+        }
+
+        try {
+            switch (cell.getCellType()) {
+                case NUMERIC:
+                    // Xử lý số - loại bỏ .0 nếu là số nguyên
+                    double value = cell.getNumericCellValue();
+                    if (value == (long) value) {
+                        return String.valueOf((long) value);
+                    } else {
+                        return String.valueOf(value);
+                    }
+                case STRING:
+                    String strValue = cell.getStringCellValue();
+                    // Nếu string có dạng "123.0" thì loại bỏ .0
+                    if (strValue != null && strValue.matches("\\d+\\.0")) {
+                        return strValue.replaceAll("\\.0$", "");
+                    }
+                    return strValue;
+                default:
+                    return cell.toString();
+            }
+        } catch (Exception e) {
+            return cell.toString();
+        }
     }
 
 }

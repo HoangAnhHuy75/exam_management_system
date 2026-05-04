@@ -14,18 +14,14 @@ import java.awt.Window;
 import java.io.File;
 import java.io.FileInputStream;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
@@ -359,12 +355,10 @@ public class DiemCongPanel extends javax.swing.JPanel {
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn file Excel");
-
         int result = fileChooser.showOpenDialog(this);
         if (result != JFileChooser.APPROVE_OPTION) {
             return;
         }
-
         File file = fileChooser.getSelectedFile();
         String filePath = file.getAbsolutePath();
 
@@ -373,81 +367,56 @@ public class DiemCongPanel extends javax.swing.JPanel {
         loadingDialog.setTitle("Đang xử lý...");
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(this);
-
         loadingDialog.setLayout(new BorderLayout());
-
-// text
         JLabel text = new JLabel("Đang import dữ liệu...", JLabel.CENTER);
         text.setFont(new Font("Segoe UI", Font.BOLD, 14));
         text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
-// add vào CENTER (quan trọng)
         loadingDialog.add(text, BorderLayout.CENTER);
-
-// auto size đẹp
         loadingDialog.pack();
         loadingDialog.setLocationRelativeTo(this);
         loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         // ===== BACKGROUND TASK =====
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
-
             int count = 0;
             String message = "";
-
             @Override
             protected Void doInBackground() {
                 try {
                     DiemCongBUS bus = new DiemCongBUS();
-
                     try (FileInputStream fis = new FileInputStream(file); Workbook workbook = new XSSFWorkbook(fis)) {
-
                         Sheet sheet = workbook.getSheetAt(0);
                         Row header = sheet.getRow(0);
-
                         int cccdCol = bus.getColumnIndex(header, "CCCD");
                         int loaiGiaiCol = bus.getColumnIndex(header, "Loại giải");
                         int diemCongCol = bus.getColumnIndex(header, "Điểm cộng");
-
                         boolean isCCFile = (cccdCol != -1 && diemCongCol != -1);
                         boolean isUTXTFile = (loaiGiaiCol != -1);
-
                         if (isCCFile) {
-
                             count = bus.importCC(filePath);
                             message = "Import chứng chỉ thành công " + count + " dòng";
-
                         } else if (isUTXTFile) {
-
-                            count = bus.importFromExcel(filePath);
+                            count = bus.importUTXT(filePath);
                             message = "Import UTXT thành công " + count + " dòng!";
 
                         } else {
                             message = "Không xác định được loại file!";
                         }
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     message = "Lỗi khi import file!";
                 }
                 return null;
             }
-
             @Override
             protected void done() {
                 loadingDialog.dispose(); // tắt loading
-
                 JOptionPane.showMessageDialog(null, message);
-
                 dataTable(diemCongB.getList());
             }
         };
-
-        // chạy background
         worker.execute();
-
-        // show loading
         loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 

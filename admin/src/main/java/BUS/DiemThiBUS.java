@@ -3,11 +3,20 @@ package BUS;
 import DAO.DiemThiDAO;
 import DAO.ThiSinhDAO;
 import DTO.DiemThiDTO;
-import DTO.NganhDTO;
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -16,6 +25,7 @@ import java.util.List;
 public class DiemThiBUS {
     private DiemThiDAO diemThiDao = new DiemThiDAO();
     private ThiSinhDAO thiSinhDao = new ThiSinhDAO();
+    private HashSet<String> cccdCache = null;
     private ArrayList<DiemThiDTO> diemThiList = new ArrayList<>();
 //    cache
 //    public ArrayList<DiemThiDTO> getList(){
@@ -82,15 +92,14 @@ public class DiemThiBUS {
     
     // tìm 1 cccd
     public DiemThiDTO findOneByCCCD(String cccd) {
-
-    for(DiemThiDTO dt : diemThiDao.getAllDiem()) {
-        if(dt.getCccd().equals(cccd)) {
-            return dt;
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            if (dt.getCccd().equals(cccd)) {
+                return dt;
+            }
         }
+        return null;
     }
-
-    return null;
-    }
+    
     //filter theo phương thức xét tuyển
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
         String ptText = convertPhuongThuc(pt);
@@ -106,32 +115,24 @@ public class DiemThiBUS {
     }
     //filter nâng cao (theo loại điểm và môn)
     public ArrayList<DiemThiDTO> filterByLoaiDiemVaMon(String mon,String loai){
-
         ArrayList<DiemThiDTO> list = new ArrayList<>();
-
         for(DiemThiDTO dt : diemThiDao.getAllDiem()){
-
             BigDecimal diem = layDiemTheoMon(dt, mon); 
             if(diem == null) continue;
-            
             if(loai.equals("Giỏi") && diem.compareTo(new BigDecimal("8")) >= 0)
                 list.add(dt);
-
             else if(loai.equals("Khá") && diem.compareTo(new BigDecimal("6.5")) >= 0 && diem.compareTo(new BigDecimal("8")) < 0)
                 list.add(dt);
-
             else if(loai.equals("Trung bình") && diem.compareTo(new BigDecimal("5")) >= 0 && diem.compareTo(new BigDecimal("6.5")) < 0 )
                 list.add(dt);
-
             else if(loai.equals("Yếu") && diem.compareTo(new BigDecimal("3.5")) >= 0 && diem.compareTo(new BigDecimal("5")) < 0)
                 list.add(dt);
-
             else if(loai.equals("Kém") && diem.compareTo(new BigDecimal("3.5")) < 0)
                 list.add(dt);
         }
-
         return list;
     }
+    
     // Thống kê theo môn
     public HashMap<String, Integer> thongKetheoMon(String mon) {
         HashMap<String,Integer> map = new HashMap<>();
@@ -143,7 +144,7 @@ public class DiemThiBUS {
         
         for(DiemThiDTO dt : diemThiDao.getAllDiem()) {
             BigDecimal diem = layDiemTheoMon(dt, mon);
-            
+           
             if(diem == null) continue;
             
             if(diem.compareTo(new BigDecimal("8")) >= 0 ){
@@ -164,6 +165,7 @@ public class DiemThiBUS {
         }
         return map;
     }
+    
     // lấy điểm theo môn
     public BigDecimal layDiemTheoMon(DiemThiDTO dt,String mon) {
         switch (mon) {
@@ -202,47 +204,153 @@ public class DiemThiBUS {
         }
         return null;
     }
+    
+    
+    public int getColumnIndex(Row header, String columnName) {
+        for (Cell cell : header) {
+            if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
+                return cell.getColumnIndex();
+            }
+        }
+        return -1;
+    }
+    
+    public String getCell(Row row, int index){
+        if(index==-1)
+            return null;
+        Cell cell = row.getCell(index);
+        if(cell == null)
+            return null;
+         switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                return String.valueOf(cell.getNumericCellValue());
+            default:
+                return cell.toString().trim();
+        }
+    }
+    
+    private BigDecimal parseBigDecimal(String value) {
+        try {
+            if (value == null || value.trim().isEmpty()) {
+                return BigDecimal.ZERO.setScale(2);
+            }
+            return new BigDecimal(value.trim());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    // đọc file
+    public List<DiemThiDTO> readFile(String filePath) {
+        List<DiemThiDTO> list = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Workbook work = new XSSFWorkbook(fis);
+            Sheet sheet = work.getSheetAt(0);
+            Row headerRow = sheet.getRow(0);
+            int cccdCol = getColumnIndex(headerRow, "CCCD");
+            int toanCol = getColumnIndex(headerRow, "TO");
+            int vaCol = getColumnIndex(headerRow, "VA");
+            int liCol = getColumnIndex(headerRow, "LI");
+            int hoCol = getColumnIndex(headerRow, "HO");
+            int siCol = getColumnIndex(headerRow, "SI");
+            int suCol = getColumnIndex(headerRow, "SU");
+            int diCol = getColumnIndex(headerRow, "DI");
+            int gdcdCol = getColumnIndex(headerRow, "GDCD");
+            int n1Col = getColumnIndex(headerRow, "NN");
+            int ktplCol = getColumnIndex(headerRow, "KTPL");
+            int tiCol = getColumnIndex(headerRow, "TIN");
+            int cncnCol = getColumnIndex(headerRow, "CNCN");
+            int cnnnCol = getColumnIndex(headerRow, "CNNN");
+            int nk1Col = getColumnIndex(headerRow, "NK1");
+            int nk2Col = getColumnIndex(headerRow, "NK2");
+            int nk3Col = getColumnIndex(headerRow, "NK3");
+            int nk4Col = getColumnIndex(headerRow, "NK4");
+            int nk5Col = getColumnIndex(headerRow, "NK5");
+            int nk6Col = getColumnIndex(headerRow, "NK6");
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+
+                String cccd = getCell(row, cccdCol);
+                if (cccd == null || cccd.trim().isEmpty()) {
+                    continue;
+                }
+
+                DiemThiDTO dto = new DiemThiDTO();
+                dto.setCccd(cccd);
+                dto.setD_phuongthuc("THPT");
+                dto.setTO(parseBigDecimal(getCell(row, toanCol)));
+                dto.setVA(parseBigDecimal(getCell(row, vaCol)));
+                dto.setLI(parseBigDecimal(getCell(row, liCol)));
+                dto.setHO(parseBigDecimal(getCell(row, hoCol)));
+                dto.setSI(parseBigDecimal(getCell(row, siCol)));
+                dto.setSU(parseBigDecimal(getCell(row, suCol)));
+                dto.setDI(parseBigDecimal(getCell(row, diCol)));
+                dto.setGDCD(parseBigDecimal(getCell(row, gdcdCol)));
+                dto.setN1_THI(parseBigDecimal(getCell(row, n1Col)));
+                dto.setKTPL(parseBigDecimal(getCell(row, ktplCol)));
+                dto.setTI(parseBigDecimal(getCell(row, tiCol)));
+                dto.setCNCN(parseBigDecimal(getCell(row, cncnCol)));
+                dto.setCNNN(parseBigDecimal(getCell(row, cnnnCol)));
+                dto.setNK1(parseBigDecimal(getCell(row, nk1Col)));
+                dto.setNK2(parseBigDecimal(getCell(row, nk2Col)));
+                dto.setNK3(parseBigDecimal(getCell(row, nk3Col)));
+                dto.setNK4(parseBigDecimal(getCell(row, nk4Col)));
+                dto.setNK5(parseBigDecimal(getCell(row, nk5Col)));
+                dto.setNK6(parseBigDecimal(getCell(row, nk6Col)));
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+    
     // import điểm thi
     public int importFromExcel(String filePath) {
-        List<DiemThiDTO> importList = diemThiDao.importFromExcel(filePath);
-        
+        List<DiemThiDTO> importList = readFile(filePath);
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-        
-        // 2. Tạo map để check trùng
-        HashMap<String, Boolean> existingMap = new HashMap<>();
-        for (DiemThiDTO n : diemThiDao.getAllDiem()) {
-            if (n.getCccd() != null) {
-                existingMap.put(n.getCccd(), true);
-            }
+        if (cccdCache == null) {
+            cccdCache = new HashSet<>(diemThiDao.getAllCCCD());
         }
         List<DiemThiDTO> newList = new ArrayList<>();
+
         for (DiemThiDTO dt : importList) {
-            if (dt.getCccd() == null){
+            if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
                 continue;
             }
-            
-            String key = dt.getCccd();
-            
-            if (!existingMap.containsKey(key)) {
+            String cccd = dt.getCccd().trim();
+
+            if (!cccdCache.contains(cccd)) {
                 newList.add(dt);
-                existingMap.put(key, true); // tránh trùng trong file
-            } 
+                cccdCache.add(cccd); // tránh trùng DB + file
+            }
         }
-        diemThiDao.saveAll(newList);
-        
+        if (!newList.isEmpty()) {
+            diemThiDao.saveAll(newList);
+        }
         return newList.size();
     }
     
     public String convertPhuongThuc(String pt) {
-
-    switch (pt) {
-        case "Tuyển thẳng": return "PT1";
-        case "ĐGNL": return "PT2";
-        case "VSAT": return "PT3";
-        case "THPT": return "PT4";
-        default: return "";
+        switch (pt) {
+            case "Tuyển thẳng":
+                return "PT1";
+            case "ĐGNL":
+                return "PT2";
+            case "VSAT":
+                return "PT3";
+            case "THPT":
+                return "PT4";
+            default:
+                return "";
         }
     }
 }

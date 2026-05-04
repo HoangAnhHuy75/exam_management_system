@@ -9,13 +9,22 @@ import DTO.ThiSinhDTO;
 import GUIDialog.AddThiSinhDialog;
 import GUIDialog.UpdateThiSinhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
+import javax.swing.JLabel;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
@@ -426,36 +435,55 @@ public class ThiSinhPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
-        try {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Chọn file Excel");
-
-            int result = fileChooser.showOpenDialog(this);
-
-            if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File file = fileChooser.getSelectedFile();
-
-                // GỌI BUS
-                int count = thisinhBus.importFromExcel(file.getAbsolutePath());
-
-                if (count == 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                            "File không có dữ liệu hoặc bị trùng!");
-                    return;
-                }
-
-                // reload lại bảng
-                loadDataTable(thisinhBus.getAll()); // hoặc dataTable(...) tùy bạn đặt tên
-
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Import thành công " + count + " thí sinh!");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Lỗi khi import: " + e.getMessage());
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
         }
+
+        File file = fileChooser.getSelectedFile();
+
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setSize(300, 120);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JLabel text = new JLabel("Đang import thí sinh...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        loadingDialog.add(text, BorderLayout.CENTER);
+        loadingDialog.pack();
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            int count = 0;
+            String message = "";
+            @Override
+            protected Void doInBackground() {
+                try {
+                    count = thisinhBus.importFromExcel(file.getAbsolutePath());
+                    if (count == 0) {
+                        message = "File không có dữ liệu hoặc tất cả bị trùng!";
+                    } else {
+                        message = "Import thành công " + count + " thí sinh!";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi import: " + e.getMessage();
+                }
+                return null;
+            }
+            @Override
+            protected void done() {
+                loadingDialog.dispose();
+                JOptionPane.showMessageDialog(null, message);
+                loadDataTable(thisinhBus.getAll());
+            }
+        };
+        worker.execute();
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed

@@ -12,6 +12,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.CellType;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import util.HibernateUtil;
@@ -21,45 +23,33 @@ public class NguyenVongDAO {
     // ================= CRUD =================
     public int insert(NguyenVongDTO nv) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
             session.save(nv);
             tx.commit();
             return 1;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
-            e.printStackTrace();
-            return 0;
-        }
-    }
-    
-    public void insertList(List<NguyenVongDTO> list) {
-        Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            tx = session.beginTransaction();
-
-            for (NguyenVongDTO nv : list) {
-                session.save(nv);
-            }
-
-            tx.commit();
-        } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
             }
             e.printStackTrace();
+            return 0;
         }
     }
 
     public int update(NguyenVongDTO nv) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
             session.update(nv);
             tx.commit();
             return 1;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return 0;
         }
@@ -67,7 +57,8 @@ public class NguyenVongDAO {
 
     public int delete(int id) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try{
+            Session session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
             NguyenVongDTO nv = session.get(NguyenVongDTO.class, id);
             if (nv != null) session.delete(nv);
@@ -81,28 +72,27 @@ public class NguyenVongDAO {
     }
 
     // ================= GET =================
-    public ArrayList<NguyenVongDTO> getAll() {
+    public List<NguyenVongDTO> getAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            return new ArrayList<>(
-                session.createQuery("FROM NguyenVongDTO", NguyenVongDTO.class).list()
-            );
+            return session.createQuery("FROM NguyenVongDTO", NguyenVongDTO.class)
+                    .getResultList();
         }
     }
 
     public List<NguyenVongDTO> getByCccdOrderByNV(String cccd) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<NguyenVongDTO> query = session.createQuery(
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        Query<NguyenVongDTO> query = session.createQuery(
                 "FROM NguyenVongDTO WHERE nvCccd = :cccd ORDER BY nvTt ASC",
                 NguyenVongDTO.class
-            );
-            query.setParameter("cccd", cccd);
-            return query.list();
-        }
+        );
+        query.setParameter("cccd", cccd);
+        return query.list();
     }
 
     public void deleteByCccd(String cccd) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
             tx = session.beginTransaction();
             Query q = session.createQuery("DELETE FROM NguyenVongDTO WHERE nvCccd = :cccd");
             q.setParameter("cccd", cccd);
@@ -115,41 +105,79 @@ public class NguyenVongDAO {
             e.printStackTrace();
         }
     }
-
-    public List<NguyenVongDTO> importFromExcel(String filePath) {
-        List<NguyenVongDTO> list = new ArrayList<>();
-
-        try (FileInputStream fis = new FileInputStream(new File(filePath)); Workbook workbook = new XSSFWorkbook(fis)) {
-
-            Sheet sheet = workbook.getSheetAt(0);
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null) {
-                    continue;
-                }
-
-                NguyenVongDTO nv = new NguyenVongDTO();
-
-                nv.setNvCccd(getString(row.getCell(1)));
-                nv.setNvTt(getInt(row.getCell(2)));
-                nv.setNvManganh(getString(row.getCell(5)));
-
-                // các cột điểm (nếu có)
-                nv.setDiemThxt(getDecimal(row.getCell(6)));
-                nv.setDiemUtqd(getDecimal(row.getCell(7)));
-                nv.setDiemCong(getDecimal(row.getCell(8)));
-                nv.setDiemXettuyen(getDecimal(row.getCell(9)));
-
-                list.add(nv);
-            }
-
+    
+    public List<String> getListMaNganh(){
+        List<String> result = new ArrayList<>();
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            String hql = "SELECT nv_manganh FROM NguyenVongDTO";
+            Query<String> query = session.createQuery(hql, String.class);
+            result = query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return list;
+        return result;
     }
+    
+    public List<Object[]> getToHopNganhByMaNganh(String maNganh) {
+        List<Object[]> result = new ArrayList<>();
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            String hql = "SELECT thn.matohop, thn.th_mon1, thn.th_mon2, thn.th_mon3, "
+                    + "thn.hsmon1, thn.hsmon2, thn.hsmon3, thn.dolech "
+                    + "FROM ToHopNganhDTO thn "
+                    + "WHERE thn.manganh = :maNganh";
+            Query<Object[]> query = session.createQuery(hql, Object[].class);
+            query.setParameter("maNganh", maNganh);
+            result = query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    
+    public void updateBatch(List<NguyenVongDTO> list) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            int batchSize = 50;
+            for (int i = 0; i < list.size(); i++) {
+                session.update(list.get(i));
+                if (i % batchSize == 0) {
+                    session.flush();
+                    session.clear();
+                }
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    public void insertList(List<NguyenVongDTO> list) {
+        Transaction tx = null;
+        try {
+            Session session = HibernateUtil.getSessionFactory().openSession();
+            tx = session.beginTransaction();
+            for (NguyenVongDTO nv : list) {
+                session.save(nv);
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
+    
+    
+    
+    
 
     // ===== HELPER =====
     private String getString(Cell cell) {

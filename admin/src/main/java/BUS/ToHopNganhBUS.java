@@ -48,7 +48,6 @@ public class ToHopNganhBUS {
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-
         // map dữ liệu đã có
         HashMap<String, Boolean> existingMap = new HashMap<>();
         for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
@@ -57,16 +56,12 @@ public class ToHopNganhBUS {
                 existingMap.put(key, true);
             }
         }
-
         ArrayList<ToHopNganhDTO> newList = new ArrayList<>();
-
         for (ToHopNganhDTO t : importList) {
             if (t.getManganh() == null || t.getMatohop() == null) {
                 continue;
             }
-
             String key = (t.getManganh().trim() + "_" + t.getMatohop().trim()).toLowerCase();
-
             if (!existingMap.containsKey(key)) {
                 // chuẩn hóa
                 t.setManganh(t.getManganh().trim());
@@ -76,12 +71,10 @@ public class ToHopNganhBUS {
                 existingMap.put(key, true);
             }
         }
-
         if (!newList.isEmpty()) {
             tohopnganhDao.insertList(newList);
             tohopnganhList.addAll(newList);
         }
-
         return newList.size();
     }
 

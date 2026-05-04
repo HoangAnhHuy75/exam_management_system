@@ -38,6 +38,9 @@ public class DiemThiDTO implements Serializable{
     @Column(name = "DI", precision = 8, scale = 2)
     private BigDecimal DI;
     
+     @Column(name = "GDCD", precision = 8, scale = 2)
+    private BigDecimal GDCD;
+    
     @Column(name = "VA", precision = 8, scale = 2)
     private BigDecimal VA;
     
@@ -67,11 +70,24 @@ public class DiemThiDTO implements Serializable{
     
     @Column(name = "NK2", precision = 8, scale = 2)
     private BigDecimal NK2;
+    
+    @Column(name = "NK3", precision = 8, scale = 2)
+    private BigDecimal NK3;
+    
+    @Column(name = "NK4", precision = 8, scale = 2)
+    private BigDecimal NK4;
+    
+    @Column(name = "NK5", precision = 8, scale = 2)
+    private BigDecimal NK5;
+    
+    @Column(name = "NK6", precision = 8, scale = 2)
+    private BigDecimal NK6;
 
     public DiemThiDTO(Integer iddiemthi, String cccd, String sobaodanh, String d_phuongthuc
     , BigDecimal TO, BigDecimal LI, BigDecimal HO, BigDecimal SI, BigDecimal SU
-    , BigDecimal DI, BigDecimal VA, BigDecimal N1_THI, BigDecimal N1_CC, BigDecimal CNCN
-    , BigDecimal CNNN, BigDecimal TI, BigDecimal KTPL, BigDecimal NL1, BigDecimal NK1, BigDecimal NK2) {
+    , BigDecimal DI, BigDecimal VA,BigDecimal GDCD, BigDecimal N1_THI, BigDecimal N1_CC, BigDecimal CNCN
+    , BigDecimal CNNN, BigDecimal TI, BigDecimal KTPL, BigDecimal NL1, BigDecimal NK1, BigDecimal NK2,
+    BigDecimal NK3,BigDecimal NK4,BigDecimal NK5,BigDecimal NK6) {
         this.iddiemthi = iddiemthi;
         this.cccd = cccd;
         this.sobaodanh = sobaodanh;
@@ -83,6 +99,7 @@ public class DiemThiDTO implements Serializable{
         this.SU = SU;
         this.DI = DI;
         this.VA = VA;
+        this.GDCD = GDCD;
         this.N1_THI = N1_THI;
         this.N1_CC = N1_CC;
         this.CNCN = CNCN;
@@ -92,6 +109,10 @@ public class DiemThiDTO implements Serializable{
         this.NL1 = NL1;
         this.NK1 = NK1;
         this.NK2 = NK2;
+        this.NK3 = NK3;
+        this.NK4 = NK4;
+        this.NK5 = NK5;
+        this.NK6 = NK6;
     }
 
     public DiemThiDTO() {
@@ -184,6 +205,15 @@ public class DiemThiDTO implements Serializable{
     public void setVA(BigDecimal VA) {
         this.VA = VA;
     }
+    
+    public BigDecimal getGDCD() {
+        return GDCD;
+    }
+
+    public void setGDCD(BigDecimal GDCD) {
+        this.GDCD = GDCD;
+    }
+    
 
     public BigDecimal getN1_THI() {
         return N1_THI;
@@ -255,6 +285,38 @@ public class DiemThiDTO implements Serializable{
 
     public void setNK2(BigDecimal NK2) {
         this.NK2 = NK2;
+    }
+    
+    public BigDecimal getNK3() {
+        return NK3;
+    }
+
+    public void setNK3(BigDecimal NK3) {
+        this.NK3 = NK3;
+    }
+    
+    public BigDecimal getNK4() {
+        return NK4;
+    }
+
+    public void setNK4(BigDecimal NK4) {
+        this.NK4 = NK4;
+    }
+    
+    public BigDecimal getNK5() {
+        return NK5;
+    }
+
+    public void setNK5(BigDecimal NK5) {
+        this.NK5 = NK5;
+    }
+    
+    public BigDecimal getNK6() {
+        return NK6;
+    }
+
+    public void setNK6(BigDecimal NK6) {
+        this.NK6 = NK6;
     }
     
     

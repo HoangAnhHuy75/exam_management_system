@@ -2,6 +2,8 @@ package BUS;
 
 import DAO.DiemCongDAO;
 import DTO.DiemCongDTO;
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +13,9 @@ import org.apache.poi.ss.usermodel.Cell;
 import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
 import static org.apache.poi.ss.usermodel.CellType.STRING;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
  *
@@ -129,10 +134,10 @@ public class DiemCongBUS {
         }
     }
     
-    public void setCC(Map<String,BigDecimal> map) {
+    public void setCC(Map<String, BigDecimal> map) {
         this.ccMap = map;
     }
-    
+
     public int getColumnIndex(Row headerRow, String columnName) {
         for (Cell cell : headerRow) {
             if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
@@ -146,12 +151,10 @@ public class DiemCongBUS {
         if (index == -1) {
             return null;
         }
-
         Cell cell = row.getCell(index);
         if (cell == null) {
             return null;
         }
-
         switch (cell.getCellType()) {
             case STRING:
                 return cell.getStringCellValue().trim();
@@ -162,40 +165,157 @@ public class DiemCongBUS {
         }
     }
 
+    public Map<String, BigDecimal> readFileCC(String filePath) {
+        Map<String, BigDecimal> map = new HashMap<>();
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            Workbook wb = new XSSFWorkbook(fis);
+            Sheet sheet = wb.getSheetAt(0);
+            Row header = sheet.getRow(0);
+            int cccdCol = getColumnIndex(header, "CCCD");
+            int diemCol = getColumnIndex(header, "Điểm cộng");
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                String cccd = getCell(row, cccdCol);
+                String diemStr = getCell(row, diemCol);
+                if (cccd == null || cccd.trim().isEmpty()) {
+                    continue;
+                }
+                BigDecimal diem = BigDecimal.ZERO;
+                try {
+                    if (diemStr != null && !diemStr.isEmpty()) {
+                        diem = new BigDecimal(diemStr);
+                    }
+                } catch (Exception e) {
+                    diem = BigDecimal.ZERO;
+                }
+                map.put(cccd, diem);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return map;
+    }
+
     public int importCC(String filePath) {
         try {
-            Map<String, BigDecimal> map = diemCongDao.importCC(filePath);
-
+            Map<String, BigDecimal> map = readFileCC(filePath);
             if (map == null || map.isEmpty()) {
                 return 0;
             }
-
             diemCongDao.upsertDiemCC(map);
-
             this.ccMap = map;
-
             return map.size();
-
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
         }
     }
 
-    public int importFromExcel(String filePath) {
-        try {
-            // 1. đọc file excel → list DTO
-            List<DiemCongDTO> list = diemCongDao.importExcel(filePath, ccMap);
+    private String normalizeMon(String mon) {
+        if (mon == null) {
+            return "";
+        }
+        mon = mon.trim().toLowerCase();
+        switch (mon) {
+            case "tiếng anh":
+                return "N1";
+            case "lịch sử":
+                return "SU";
+            case "địa lí":
+            case "địa lý":
+                return "DI";
+            case "toán học":
+                return "TO";
+            case "ngữ văn":
+                return "VA";
+            case "vật lí":
+            case "vật lý":
+                return "LI";
+            case "hóa học":
+                return "HO";
+            case "khoa học xã hội và hành vi":
+                return "KHAC";
+            default:
+                return mon.toUpperCase();
+        }
+    }
 
+    public List<DiemCongDTO> readFileUTXT(String filePath, Map<String, BigDecimal> ccMap) {
+        List<DiemCongDTO> diemCongList = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Workbook work = new XSSFWorkbook(fis);
+            Sheet sheet = work.getSheetAt(1);
+            Row headerRow = sheet.getRow(0);
+            int cccdCol = getColumnIndex(headerRow, "CCCD");
+            int tenNganhCol = getColumnIndex(headerRow, "Tên ngành");
+            int monDatGiaiCol = getColumnIndex(headerRow, "Môn đạt giải");
+            int diemCol = getColumnIndex(headerRow, "Điểm cộng cho môn đạt giải");
+            int diemKhongMonCol = getColumnIndex(headerRow, "Điểm cộng cho THXT ko có môn đạt giải");
+            HashMap<String, List<Object[]>> cacheNganh = new HashMap<>();
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                String cccd = getCell(row, cccdCol);
+                String tenNganh = getCell(row, tenNganhCol);
+                if (cccd == null || cccd.trim().isEmpty() || tenNganh == null) {
+                    continue;
+                }
+                List<Object[]> list = cacheNganh.get(tenNganh);
+                if (list == null) {
+                    list = diemCongDao.buildDiemCongFromExcel(tenNganh);
+                    cacheNganh.put(tenNganh, list);
+                }
+                String monDatGiai = getCell(row, monDatGiaiCol);
+                double diem = row.getCell(diemCol) != null ? row.getCell(diemCol).getNumericCellValue() : 0;
+                double diemKhongMon = row.getCell(diemKhongMonCol) != null ? row.getCell(diemKhongMonCol).getNumericCellValue() : 0;
+                for (Object[] obj : list) {
+                    String maToHop = obj[0].toString();
+                    String maNganh = obj[1].toString();
+                    String mon1 = obj[2] != null ? obj[2].toString() : "";
+                    String mon2 = obj[3] != null ? obj[3].toString() : "";
+                    String mon3 = obj[4] != null ? obj[4].toString() : "";
+                    boolean trungMon = false;
+                    if (monDatGiai != null) {
+                        String m = normalizeMon(monDatGiai);
+                        if (m.equals(mon1) || m.equals(mon2) || m.equals(mon3)) {
+                            trungMon = true;
+                        }
+                    }
+                    BigDecimal utxt = trungMon ? BigDecimal.valueOf(diem) : BigDecimal.valueOf(diemKhongMon);
+                    BigDecimal diemCC = ccMap.getOrDefault(cccd, BigDecimal.ZERO);
+                    DiemCongDTO dc = new DiemCongDTO();
+                    dc.setTs_cccd(cccd);
+                    dc.setManganh(maNganh);
+                    dc.setMatohop(maToHop);
+                    dc.setDiemUtxt(utxt);
+                    dc.setDiemCC(diemCC);
+                    dc.setDiemTong(diemCC.add(utxt));
+                    dc.setPhuongthuc("THPT");
+                    dc.setDc_keys(cccd + "_" + maNganh + "_" + maToHop);
+                    diemCongList.add(dc);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return diemCongList;
+    }
+
+    public int importUTXT(String filePath) {
+        try {
+            List<DiemCongDTO> list = readFileUTXT(filePath, ccMap);
             if (list == null || list.isEmpty()) {
                 return 0;
             }
-
-            // 2. insert batch
             diemCongDao.insertList(list);
-
-            return list.size(); // trả về số dòng import
-
+            return list.size();
         } catch (Exception e) {
             e.printStackTrace();
             return -1;

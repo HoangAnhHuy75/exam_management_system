@@ -10,12 +10,21 @@ import DTO.ToHopNganhDTO;
 import GUIDialog.AddToHopNganhDialog;
 import GUIDialog.UpdateToHopNganhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.File;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -300,35 +309,71 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_addActionPerformed
 
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
-        try {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Chọn file Excel");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
 
-            int result = fileChooser.showOpenDialog(this);
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
 
-            if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File file = fileChooser.getSelectedFile();
+        File file = fileChooser.getSelectedFile();
+        String filePath = file.getAbsolutePath();
 
-                // GỌI BUS
-                int count = toH_ng_Bus.importFromExcel(file.getAbsolutePath());
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setLayout(new BorderLayout());
 
-                if (count == 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "File không có dữ liệu hoặc bị trùng!");
-                    return;
+        JLabel text = new JLabel("Đang import tổ hợp ngành...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        loadingDialog.add(text, BorderLayout.CENTER);
+
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+            int count = 0;
+            String message = "";
+
+            @Override
+            protected Void doInBackground() {
+                try {
+                    count = toH_ng_Bus.importFromExcel(filePath);
+
+                    if (count == 0) {
+                        message = "File không có dữ liệu hoặc bị trùng!";
+                    } else {
+                        message = "Import thành công " + count + " tổ hợp ngành!";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi import: " + e.getMessage();
                 }
-
-                // reload lại bảng
-                dataTable(toH_ng_Bus.getAll());
-
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Import thành công " + count + " tổ hợp ngành!");
+                return null;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Lỗi khi import: " + e.getMessage());
-        }
+            @Override
+            protected void done() {
+                loadingDialog.dispose(); // tắt loading
+
+                JOptionPane.showMessageDialog(null, message);
+
+                // reload bảng
+                dataTable(toH_ng_Bus.getAll());
+            }
+        };
+
+        worker.execute();
+
+        // hiển thị loading
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed

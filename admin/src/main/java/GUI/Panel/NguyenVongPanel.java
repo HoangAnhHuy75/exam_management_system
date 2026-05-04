@@ -4,11 +4,26 @@
  */
 package GUI.Panel;
 
+import BUS.DiemThiBUS;
 import BUS.NguyenVongBUS;
+import DTO.DiemThiDTO;
 import DTO.NguyenVongDTO;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.util.ArrayList;
+import javax.swing.JLabel;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import javax.swing.BorderFactory;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
@@ -24,6 +39,7 @@ import util.Table_design;
 public class NguyenVongPanel extends javax.swing.JPanel {
 
     NguyenVongBUS nvBus = new NguyenVongBUS();
+    DiemThiBUS dtBus = new DiemThiBUS();
     JTextF_design jtf_design = new JTextF_design();
     Table_design table_design = new Table_design();
     Combobox_design cbb_design = new Combobox_design();
@@ -61,7 +77,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
 //        major_update.setIcon(new FlatSVGIcon("./resources/icon/edit.svg", 0.2f));
         btn_filter.setIcon(new FlatSVGIcon("./resources/icon/filter.svg", 0.2f));
 //        btn_delete.setIcon(new FlatSVGIcon("./resources/icon/delete.svg", 0.2f));
-        btn_xettuyen.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
+        btn_xettuyen.setIcon(new FlatSVGIcon("./resources/icon/agree.svg", 0.2f));
     }
 
     public void designButton() {
@@ -76,7 +92,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
         PromptSupport.setFocusBehavior(PromptSupport.FocusBehavior.SHOW_PROMPT, jtf_timkiem);
     }
 
-    public void dataTableNV(ArrayList<NguyenVongDTO> listNV) {
+    public void dataTableNV(List<NguyenVongDTO> listNV) {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{
@@ -289,6 +305,11 @@ public class NguyenVongPanel extends javax.swing.JPanel {
         btn_xettuyen.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_xettuyen.setForeground(new java.awt.Color(255, 255, 255));
         btn_xettuyen.setText("Tiến hành xét tuyển");
+        btn_xettuyen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xettuyenActionPerformed(evt);
+            }
+        });
 
         btn_refresh.setText("Làm mới");
         btn_refresh.addActionListener(new java.awt.event.ActionListener() {
@@ -332,8 +353,8 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                             .addComponent(btn_xettuyen, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(20, 20, 20)
                 .addComponent(major_search3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(14, 14, 14)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -344,35 +365,67 @@ public class NguyenVongPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_filterActionPerformed
 
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
-//        try {
-//            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-//            fileChooser.setDialogTitle("Chọn file Excel");
-//
-//            int result = fileChooser.showOpenDialog(this);
-//
-//            if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-//                java.io.File file = fileChooser.getSelectedFile();
-//
-//                // GỌI BUS (đúng kiến trúc)
-//                int count = nganhB.importFromExcel(file.getAbsolutePath());
-//
-//                if (count == 0) {
-//                    javax.swing.JOptionPane.showMessageDialog(this, "File không có dữ liệu!");
-//                    return;
-//                }
-//
-//                // reload lại bảng
-//                dataTable(nganhB.getListN());
-//
-//                javax.swing.JOptionPane.showMessageDialog(this,
-//                    "Import thành công " + count + " ngành!");
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            javax.swing.JOptionPane.showMessageDialog(this,
-//                "Lỗi khi import: " + e.getMessage());
-//        }
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
+
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File file = fileChooser.getSelectedFile();
+        String filePath = file.getAbsolutePath();
+
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setSize(300, 120);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setLayout(new BorderLayout());
+
+        JLabel text = new JLabel("Đang import nguyện vọng...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        loadingDialog.add(text, BorderLayout.CENTER);
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+            int count = 0;
+            String message = "";
+
+            @Override
+            protected Void doInBackground() {
+                try {
+                    count = nvBus.importFromExcel(filePath);
+                    if (count == 0) {
+                        message = "File không có dữ liệu!";
+                    } else if (count < 0) {
+                        message = "Lỗi khi import!";
+                    } else {
+                        message = "Import thành công " + count + " nguyện vọng!";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi import file!";
+                }
+                return null;
+            }
+            @Override
+            protected void done() {
+                loadingDialog.dispose();
+                JOptionPane.showMessageDialog(null, message);
+                dataTableNV(nvBus.getList()); // hoặc getList() tuỳ bạn đặt tên
+            }
+        };
+
+        worker.execute();
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 
     private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
@@ -384,6 +437,20 @@ public class NguyenVongPanel extends javax.swing.JPanel {
 //        dataTable(nganhB.getListN());
         jtf_timkiem.setText("");
     }//GEN-LAST:event_btn_refreshActionPerformed
+
+    private void btn_xettuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xettuyenActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc muốn tính điểm xét tuyển không?",
+                "Xác nhận",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            nvBus.xetTuyen();
+            dataTableNV(nvBus.getList());
+        }
+    }//GEN-LAST:event_btn_xettuyenActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

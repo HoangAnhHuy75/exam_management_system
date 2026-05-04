@@ -2,9 +2,15 @@ package BUS;
 
 import DAO.ToHopDAO;
 import DTO.ToHopDTO;
+import java.io.File;
+import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ToHopBUS {
 
@@ -54,21 +60,41 @@ public class ToHopBUS {
         }
         return listTen;
     }
+    
+    // Import Excel -> list ToHopDTO
+    public List<ToHopDTO> readFile(String filePath) {
+        List<ToHopDTO> list = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(new File(filePath)); Workbook workbook = new XSSFWorkbook(fis)) {
+            Sheet sheet = workbook.getSheetAt(0);
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                ToHopDTO t = new ToHopDTO();
+                t.setMatohop(row.getCell(0) != null ? row.getCell(0).toString() : "");
+                t.setMon1(row.getCell(1) != null ? row.getCell(1).toString() : "");
+                t.setMon2(row.getCell(2) != null ? row.getCell(2).toString() : "");
+                t.setMon3(row.getCell(3) != null ? row.getCell(3).toString() : "");
+                t.setTentohop(row.getCell(4) != null ? row.getCell(4).toString() : "");
+                list.add(t);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     // Import Excel
     public int importFromExcel(String filePath) {
-        List<ToHopDTO> list = tohopDao.importFromExcel(filePath);
-
+        List<ToHopDTO> list = readFile(filePath);
         if (list == null || list.isEmpty()) {
             return 0;
         }
-
-        // map chứa dữ liệu đã có trong DB
         HashMap<String, Boolean> existingMap = new HashMap<>();
         for (ToHopDTO th : tohopDao.getAllToHop()) {
             existingMap.put(th.getMatohop().toLowerCase(), true);
         }
-
         ArrayList<ToHopDTO> newList = new ArrayList<>();
         for (ToHopDTO th : list) {
             String key = th.getMatohop().toLowerCase();
@@ -77,13 +103,11 @@ public class ToHopBUS {
                 existingMap.put(key, true); // tránh trùng trong chính file Excel
             }
         }
-
         if (!newList.isEmpty()) {
             tohopDao.insertList(newList);
             tohopList.addAll(newList);
         }
-
-        return newList.size(); // số record thực sự insert
+        return newList.size();
     }
 
     // Lấy mã tổ hợp từ tên

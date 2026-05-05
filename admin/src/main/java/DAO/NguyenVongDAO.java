@@ -2,8 +2,6 @@ package DAO;
 
 import DTO.NguyenVongDTO;
 import DTO.DiemThiDTO;
-import java.io.File;
-import java.io.FileInputStream;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -12,9 +10,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.poi.ss.usermodel.CellType;
-import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
-import static org.apache.poi.ss.usermodel.CellType.STRING;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import util.HibernateUtil;
 
@@ -40,8 +35,7 @@ public class NguyenVongDAO {
 
     public int update(NguyenVongDTO nv) {
         Transaction tx = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
             tx = session.beginTransaction();
             session.update(nv);
             tx.commit();
@@ -57,8 +51,7 @@ public class NguyenVongDAO {
 
     public int delete(int id) {
         Transaction tx = null;
-        try{
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try(Session session = HibernateUtil.getSessionFactory().openSession()){
             tx = session.beginTransaction();
             NguyenVongDTO nv = session.get(NguyenVongDTO.class, id);
             if (nv != null) session.delete(nv);
@@ -91,8 +84,7 @@ public class NguyenVongDAO {
 
     public void deleteByCccd(String cccd) {
         Transaction tx = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
             tx = session.beginTransaction();
             Query q = session.createQuery("DELETE FROM NguyenVongDTO WHERE nvCccd = :cccd");
             q.setParameter("cccd", cccd);
@@ -108,8 +100,7 @@ public class NguyenVongDAO {
     
     public List<String> getListMaNganh(){
         List<String> result = new ArrayList<>();
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
             String hql = "SELECT nv_manganh FROM NguyenVongDTO";
             Query<String> query = session.createQuery(hql, String.class);
             result = query.getResultList();
@@ -121,8 +112,7 @@ public class NguyenVongDAO {
     
     public List<Object[]> getToHopNganhByMaNganh(String maNganh) {
         List<Object[]> result = new ArrayList<>();
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             String hql = "SELECT thn.matohop, thn.th_mon1, thn.th_mon2, thn.th_mon3, "
                     + "thn.hsmon1, thn.hsmon2, thn.hsmon3, thn.dolech "
                     + "FROM ToHopNganhDTO thn "
@@ -159,8 +149,7 @@ public class NguyenVongDAO {
 
     public void insertList(List<NguyenVongDTO> list) {
         Transaction tx = null;
-        try {
-            Session session = HibernateUtil.getSessionFactory().openSession();
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             for (NguyenVongDTO nv : list) {
                 session.save(nv);

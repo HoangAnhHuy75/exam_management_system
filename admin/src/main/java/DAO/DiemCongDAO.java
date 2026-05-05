@@ -1,20 +1,11 @@
 package DAO;
 
 import DTO.DiemCongDTO;
-import java.io.File;
-import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.poi.ss.usermodel.Cell;
-import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
-import static org.apache.poi.ss.usermodel.CellType.STRING;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -114,19 +105,19 @@ public class DiemCongDAO {
         }
     }
 
-    public void upsertDiemCC(Map<String, BigDecimal> ccMap) {
+    public void upsertDiemCC(List<DiemCongDTO> listCC) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
             int batchSize = 50;
-            int i = 0;
+            int count = 0;
             List<DiemCongDTO> all = session.createQuery("FROM DiemCongDTO", DiemCongDTO.class).list();
             Map<String, List<DiemCongDTO>> mapDB = new HashMap<>();
             for (DiemCongDTO dc : all) {
                 mapDB.computeIfAbsent(dc.getTs_cccd(), k -> new ArrayList<>()).add(dc);
             }
-            for (Map.Entry<String, BigDecimal> e : ccMap.entrySet()) {
-                String cccd = e.getKey().trim();
-                BigDecimal diem = e.getValue();
+            for (DiemCongDTO input : listCC) {
+                String cccd = input.getTs_cccd().trim();
+                BigDecimal diem = input.getDiemCC();
                 List<DiemCongDTO> list = mapDB.get(cccd);
                 if (list == null || list.isEmpty()) {
                     DiemCongDTO dc = new DiemCongDTO();
@@ -139,17 +130,20 @@ public class DiemCongDAO {
                     session.save(dc);
                 } else {
                     for (DiemCongDTO dc : list) {
+                        BigDecimal utxt = dc.getDiemUtxt();
+                        if (utxt == null) {
+                            utxt = BigDecimal.ZERO;
+                        }
                         dc.setDiemCC(diem);
-                        BigDecimal utxt = dc.getDiemUtxt() == null ? BigDecimal.ZERO : dc.getDiemUtxt();
                         dc.setDiemTong(diem.add(utxt));
                         session.update(dc);
                     }
                 }
-                if (i > 0 && i % batchSize == 0) {
+                count++;
+                if (count % batchSize == 0) {
                     session.flush();
                     session.clear();
                 }
-                i++;
             }
             tx.commit();
         } catch (Exception e) {

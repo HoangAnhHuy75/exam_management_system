@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import org.apache.poi.ss.usermodel.Cell;
@@ -65,6 +66,13 @@ public class ThiSinhBUS {
             return null;
         }
         return thiSinhDAO.findByCCCD(cccd.trim());
+    }
+    
+    public HashMap<String, ThiSinhDTO> thisinhMap(){
+        HashMap<String, ThiSinhDTO> thisinhMap = new HashMap<>();
+        for(ThiSinhDTO ts : thiSinhDAO.getAll())
+            thisinhMap.put(ts.getCccd(),ts);
+        return thisinhMap;
     }
 
     public String getPasswordByCCCD(String cccd) {
@@ -215,21 +223,6 @@ public class ThiSinhBUS {
         return newList.size();
     }
 
-    // ===== Tìm kiếm =====
-    public ArrayList<ThiSinhDTO> search(String keyword) {
-        ArrayList<ThiSinhDTO> result = new ArrayList<>();
-        if (keyword == null) keyword = "";
-        String key = keyword.toLowerCase();
-        for (ThiSinhDTO t : thiSinhDAO.getAll()) {
-            boolean matchCCCD = t.getCccd() != null && t.getCccd().toLowerCase().contains(key);
-            boolean matchName = t.getTen() != null && t.getTen().toLowerCase().contains(key);
-            if (matchCCCD || matchName) {
-                result.add(t);
-            }
-        }
-        return result;
-    }
-
     // ===== Check trùng CCCD =====
     public boolean checkDupCCCD(String cccd) {
         if (cccd == null) {
@@ -238,7 +231,7 @@ public class ThiSinhBUS {
         return thiSinhDAO.findByCCCD(cccd.trim()) != null;
     }
     
-    public ArrayList<ThiSinhDTO> timKiem(String gt, String kv, String ns) {
+    public ArrayList<ThiSinhDTO> filter(String gt, String kv, String ns) {
         ArrayList<ThiSinhDTO> result = new ArrayList<>();
         for (ThiSinhDTO ts : thiSinhDAO.getAll()) {
             boolean matchGT = gt.equals("Tất cả") || ts.getGioiTinh().equals(gt);
@@ -251,7 +244,7 @@ public class ThiSinhBUS {
         return result;
     }
 
-    public ArrayList<ThiSinhDTO> timKiem2(String text) {
+    public ArrayList<ThiSinhDTO> searchText(String text) {
         ArrayList<ThiSinhDTO> result = new ArrayList<>();
         for (ThiSinhDTO ts : thiSinhDAO.getAll()) {
             if (ts.getCccd().toLowerCase().contains(text) || ts.getTen().toLowerCase().contains(text)) {

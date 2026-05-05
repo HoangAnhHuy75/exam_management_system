@@ -2,6 +2,7 @@ package BUS;
 
 import DAO.DiemCongDAO;
 import DTO.DiemCongDTO;
+import DTO.DiemThiDTO;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
@@ -23,6 +24,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class DiemCongBUS {
     private DiemCongDAO diemCongDao = new DiemCongDAO();
+    private DiemThiBUS dtBus = new DiemThiBUS();
     private ArrayList<DiemCongDTO> diemCongList = new ArrayList<>();
     private NganhBUS ngB = new NganhBUS();
     private Map<String, BigDecimal> ccMap = new HashMap<>();
@@ -123,20 +125,32 @@ public class DiemCongBUS {
 
         return list;
     }
+    
     public String convertPhuongThuc(String pt) {
-
-    switch (pt) {
-        case "Tuyển thẳng": return "PT1";
-        case "ĐGNL": return "PT2";
-        case "VSAT": return "PT3";
-        case "THPT": return "PT4";
-        default: return "";
+        switch (pt) {
+            case "Tuyển thẳng":
+                return "PT1";
+            case "ĐGNL":
+                return "PT2";
+            case "VSAT":
+                return "PT3";
+            case "THPT":
+                return "PT4";
+            default:
+                return "";
         }
     }
     
-    public void setCC(Map<String, BigDecimal> map) {
-        this.ccMap = map;
+    public HashMap<String, DiemCongDTO> diemcongMap(){
+        HashMap<String,DiemCongDTO> diemcongMap = new HashMap<>();
+        for(DiemCongDTO dc : diemCongDao.getAllDiemCong()){
+            String key = dc.getTs_cccd() + "_" + dc.getManganh() + "_" + dc.getMatohop() + "_" + dc.getPhuongthuc();
+            diemcongMap.put(key, dc);
+        }
+        return diemcongMap;
     }
+    
+    
 
     public int getColumnIndex(Row headerRow, String columnName) {
         for (Cell cell : headerRow) {
@@ -164,9 +178,18 @@ public class DiemCongBUS {
                 return cell.toString().trim();
         }
     }
+    
+    public HashMap<String, BigDecimal> diemchungchiMap() {
+        HashMap<String, BigDecimal> diemchungchiMap = new HashMap<>();
+        for (DiemCongDTO dc : diemCongDao.getAllDiemCong()) {
+            diemchungchiMap.put(dc.getTs_cccd(), dc.getDiemCC());
+        }
+        return diemchungchiMap;
+    }
 
-    public Map<String, BigDecimal> readFileCC(String filePath) {
-        Map<String, BigDecimal> map = new HashMap<>();
+    public List<DiemCongDTO> readFileCC(String filePath) {
+        List<DiemCongDTO> listCongN1 = new ArrayList<>();
+        List<DiemThiDTO> listQuyDoiN1 = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(filePath);
             Workbook wb = new XSSFWorkbook(fis);
@@ -174,6 +197,8 @@ public class DiemCongBUS {
             Row header = sheet.getRow(0);
             int cccdCol = getColumnIndex(header, "CCCD");
             int diemCol = getColumnIndex(header, "Điểm cộng");
+            int diemquydoiCol = getColumnIndex(header, "Điểm quy đổi");
+            HashMap<String, DiemThiDTO> diemthiMap = dtBus.diemthiMap();
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) {
@@ -181,34 +206,52 @@ public class DiemCongBUS {
                 }
                 String cccd = getCell(row, cccdCol);
                 String diemStr = getCell(row, diemCol);
+                String diemquydoiStr = getCell(row, diemquydoiCol);
                 if (cccd == null || cccd.trim().isEmpty()) {
                     continue;
                 }
-                BigDecimal diem = BigDecimal.ZERO;
+                BigDecimal diemCC = BigDecimal.ZERO;
                 try {
                     if (diemStr != null && !diemStr.isEmpty()) {
-                        diem = new BigDecimal(diemStr);
+                        diemCC = new BigDecimal(diemStr);
                     }
                 } catch (Exception e) {
-                    diem = BigDecimal.ZERO;
+                    diemCC = BigDecimal.ZERO;
                 }
-                map.put(cccd, diem);
+                BigDecimal diemquydoi = new BigDecimal(diemquydoiStr);
+                DiemThiDTO dt = diemthiMap.get(cccd);
+                if (dt != null) {
+                    dt.setN1_CC(diemquydoi);
+                    listQuyDoiN1.add(dt);
+                }
+                DiemCongDTO dc = new DiemCongDTO();
+                dc.setTs_cccd(cccd);
+                dc.setDiemCC(diemCC);
+                dc.setManganh(null);
+                dc.setMatohop(null);
+                dc.setDiemUtxt(BigDecimal.ZERO);
+                dc.setDiemTong(diemCC);
+                dc.setPhuongthuc("THPT"); // phân biệt với UTXT
+                dc.setDc_keys(cccd); // chỉ cần CCCD
+
+                listCongN1.add(dc);
             }
+            dtBus.updateList(listQuyDoiN1);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return map;
+
+        return listCongN1;
     }
 
     public int importCC(String filePath) {
         try {
-            Map<String, BigDecimal> map = readFileCC(filePath);
-            if (map == null || map.isEmpty()) {
+            List<DiemCongDTO> list = readFileCC(filePath);
+            if (list == null || list.isEmpty()) {
                 return 0;
             }
-            diemCongDao.upsertDiemCC(map);
-            this.ccMap = map;
-            return map.size();
+            diemCongDao.upsertDiemCC(list); // hoặc upsert nếu bạn cần
+            return list.size();
         } catch (Exception e) {
             e.printStackTrace();
             return -1;
@@ -275,6 +318,7 @@ public class DiemCongBUS {
                 String monDatGiai = getCell(row, monDatGiaiCol);
                 double diem = row.getCell(diemCol) != null ? row.getCell(diemCol).getNumericCellValue() : 0;
                 double diemKhongMon = row.getCell(diemKhongMonCol) != null ? row.getCell(diemKhongMonCol).getNumericCellValue() : 0;
+                HashMap<String, BigDecimal> diemchungchiMap = diemchungchiMap();
                 for (Object[] obj : list) {
                     String maToHop = obj[0].toString();
                     String maNganh = obj[1].toString();
@@ -289,7 +333,7 @@ public class DiemCongBUS {
                         }
                     }
                     BigDecimal utxt = trungMon ? BigDecimal.valueOf(diem) : BigDecimal.valueOf(diemKhongMon);
-                    BigDecimal diemCC = ccMap.getOrDefault(cccd, BigDecimal.ZERO);
+                    BigDecimal diemCC = diemchungchiMap.getOrDefault(cccd, BigDecimal.ZERO);
                     DiemCongDTO dc = new DiemCongDTO();
                     dc.setTs_cccd(cccd);
                     dc.setManganh(maNganh);

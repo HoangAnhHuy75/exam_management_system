@@ -166,6 +166,26 @@ public class DiemThiBUS {
         return map;
     }
     
+    public int updateList(List<DiemThiDTO> list) {
+        try {
+            if (list == null || list.isEmpty()) {
+                return 0;
+            }
+            diemThiDao.updateAll(list);
+            return list.size();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+    
+    public HashMap<String, DiemThiDTO> diemthiMap(){
+        HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
+        for(DiemThiDTO dt : diemThiDao.getAllDiem())
+            diemthiMap.put(dt.getCccd(), dt);
+        return diemthiMap;
+    }
+    
     // lấy điểm theo môn
     public BigDecimal layDiemTheoMon(DiemThiDTO dt,String mon) {
         switch (mon) {
@@ -321,13 +341,11 @@ public class DiemThiBUS {
             cccdCache = new HashSet<>(diemThiDao.getAllCCCD());
         }
         List<DiemThiDTO> newList = new ArrayList<>();
-
         for (DiemThiDTO dt : importList) {
             if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
                 continue;
             }
             String cccd = dt.getCccd().trim();
-
             if (!cccdCache.contains(cccd)) {
                 newList.add(dt);
                 cccdCache.add(cccd); // tránh trùng DB + file

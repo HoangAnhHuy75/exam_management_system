@@ -21,6 +21,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -74,6 +75,9 @@ public class DiemThiPanel extends javax.swing.JPanel {
         for(String pt : ptxt){
             cbb_phuongthuc.addItem(pt);
         }
+    }
+    public JTable getTable(){
+        return this.table_diem;
     }
     public void loadMonToComboBox() {
         cbb_mon.removeAllItems(); // xóa dữ liệu cũ

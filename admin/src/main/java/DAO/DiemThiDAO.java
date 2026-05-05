@@ -95,6 +95,7 @@ public class DiemThiDAO {
         }
     }
     
+    
     public List<String> getAllCCCD() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<String> query = session.createQuery(
@@ -104,6 +105,27 @@ public class DiemThiDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return new ArrayList<>();
+        }
+    }
+    
+    public void updateAll(List<DiemThiDTO> list) {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            int batchSize = 50;
+            for (int i = 0; i < list.size(); i++) {
+                session.update(list.get(i));
+                if (i > 0 && i % batchSize == 0) {
+                    session.flush();
+                    session.clear();
+                }
+            }
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
         }
     }
 }

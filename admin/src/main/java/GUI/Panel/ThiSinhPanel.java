@@ -494,7 +494,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         String gt = (String) jComboBox2.getSelectedItem();
         String kv = (String) jComboBox1.getSelectedItem();
         String ns = (String) jComboBox3.getSelectedItem();
-        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.timKiem(gt, kv, ns);
+        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.filter(gt, kv, ns);
         loadDataTable(thisinhs);
     }//GEN-LAST:event_btn_filterActionPerformed
 
@@ -554,7 +554,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
     private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
         String text = jtf_timkiem.getText();
-        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.timKiem2(text);
+        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.searchText(text);
         loadDataTable(thisinhs);
     }//GEN-LAST:event_btn_timkiemActionPerformed
 

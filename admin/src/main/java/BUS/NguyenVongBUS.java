@@ -5,9 +5,9 @@ import DAO.NguyenVongDAO;
 import DTO.DiemCongDTO;
 import DTO.DiemThiDTO;
 import DTO.NguyenVongDTO;
+import DTO.ThiSinhDTO;
 import java.io.File;
 import java.io.FileInputStream;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -23,7 +23,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class NguyenVongBUS {
     private DiemThiBUS dtBus = new DiemThiBUS();
-    DiemCongDAO dcDao = new DiemCongDAO();
+    private ThiSinhBUS tsBus = new ThiSinhBUS();
+    private DiemCongBUS dcBus = new DiemCongBUS();
     private NguyenVongDAO nvDAO = new NguyenVongDAO();
     private List<NguyenVongDTO> nvList = new ArrayList<>();
 
@@ -178,28 +179,58 @@ public class NguyenVongBUS {
         }
         return maxDiem;
     }
-    
+
+    public BigDecimal tinhDiemKhuVucDoiTuong(BigDecimal diemTong, ThiSinhDTO ts) {
+        BigDecimal MDUT = BigDecimal.ZERO;
+        BigDecimal diemUT;
+        BigDecimal he_so_giam = new BigDecimal("7.5");
+        BigDecimal tongMax = new BigDecimal("30");
+        BigDecimal nguong = new BigDecimal("22.5");
+        switch (ts.getKhuVuc()) {
+            case "1":
+                MDUT = MDUT.add(new BigDecimal("0.75"));
+                break;
+            case "2NT":
+                MDUT = MDUT.add(new BigDecimal("0.5"));
+                break;
+            case "2":
+                MDUT = MDUT.add(new BigDecimal("0.25"));
+                break;
+            case "3":
+                // không cộng
+                break;
+        }
+        switch (ts.getDoiTuong()) {
+            case "01":
+                MDUT = MDUT.add(new BigDecimal("2.00"));
+            case "06a":
+            case "06b":
+                MDUT = MDUT.add(new BigDecimal("1.00"));
+                break;
+        }
+        if (diemTong.compareTo(nguong) < 0) {
+            diemUT = MDUT;
+        } else {
+            diemUT = tongMax.subtract(diemTong).divide(he_so_giam, 4, RoundingMode.HALF_UP).multiply(MDUT);
+        }
+        return diemUT;
+    }
+
     public void xetTuyen() {
         List<NguyenVongDTO> listNV = nvDAO.getAll();
-        HashMap<String, DiemThiDTO> diemThiMap = new HashMap<>();
-        for (DiemThiDTO dt : dtBus.getList()) {
-            diemThiMap.put(dt.getCccd(), dt);
-        }
+        HashMap<String, DiemThiDTO> diemThiMap = dtBus.diemthiMap();
+        HashMap<String, ThiSinhDTO> thisinhMap = tsBus.thisinhMap();
+        HashMap<String, DiemCongDTO> diemCongMap = dcBus.diemcongMap();
         HashMap<String, List<Object[]>> cache = new HashMap<>();
-        HashMap<String, DiemCongDTO> diemCongMap = new HashMap<>();
-        for (DiemCongDTO dc : dcDao.getAllDiemCong()) {
-            String key = dc.getTs_cccd() + "_" + dc.getManganh() + "_" + dc.getMatohop() + "_" + dc.getPhuongthuc();
-            diemCongMap.put(key, dc);
-        }
 
         for (NguyenVongDTO nv : listNV) {
             String maNganh = nv.getNvManganh();
             String cccd = nv.getNvCccd();
             DiemThiDTO dt = diemThiMap.get(cccd);
+            ThiSinhDTO ts = thisinhMap.get(cccd);
             if (dt == null) {
                 continue;
             }
-
             List<Object[]> list = cache.get(maNganh);
             if (list == null) {
                 list = nvDAO.getToHopNganhByMaNganh(maNganh);
@@ -212,28 +243,29 @@ public class NguyenVongBUS {
 
             // ===== 2. lấy điểm cộng theo từng tổ hợp =====
             BigDecimal max = BigDecimal.ZERO;
-            BigDecimal diemcong = BigDecimal.ZERO;
+            BigDecimal diem_cong = BigDecimal.ZERO;
+            BigDecimal diem_utqd = BigDecimal.ZERO;
             for (Object[] row : list) {
                 String matohop = (String) row[0];
                 String key = cccd + "_" + maNganh + "_" + matohop + "_" + "THPT";
                 DiemCongDTO dc = diemCongMap.get(key);
-                BigDecimal diemCongTong = (dc != null && dc.getDiemTong() != null)
-                        ? dc.getDiemTong()
-                        : BigDecimal.ZERO;
+                BigDecimal diem_Cong_Tong = (dc != null && dc.getDiemTong() != null) ? dc.getDiemTong() : BigDecimal.ZERO;
 
-                BigDecimal tong = thxt.add(diemCongTong);
-
+                BigDecimal tong = thxt.add(diem_Cong_Tong);
+                BigDecimal diemUT = tinhDiemKhuVucDoiTuong(tong, ts);
+                tong = tong.add(diemUT);
                 if (tong.compareTo(max) > 0) {
                     max = tong;
-                    diemcong = diemCongTong;
+                    diem_cong = diem_Cong_Tong;
+                    diem_utqd = diemUT;
                 }
             }
 
             // ===== 3. set điểm xét =====
-            nv.setDiemCong(diemcong);
+            nv.setDiemCong(diem_cong);
             nv.setDiemXettuyen(max);
+            nv.setDiemUtqd(diem_utqd);
         }
-
         nvDAO.updateBatch(listNV);
     }
 

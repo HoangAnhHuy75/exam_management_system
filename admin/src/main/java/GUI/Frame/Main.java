@@ -4,6 +4,7 @@
  */
 package GUI.Frame;
 
+import BUS.DiemThiBUS;
 import GUI.Panel.DiemCongPanel;
 import GUI.Panel.DiemThiPanel;
 import GUI.Panel.NganhPanel;
@@ -45,6 +46,7 @@ public class Main extends javax.swing.JFrame {
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
+    DiemThiBUS dtBus = new DiemThiBUS();
 
     public Main(String role) {
         initComponents();
@@ -468,6 +470,7 @@ public class Main extends javax.swing.JFrame {
         thisinhPanel.setVisible(false);
         userPanel.setVisible(false);
         nguyenvongPanel.setVisible(false);
+        diemThiPanel.dataTable(dtBus.getList());
     }
 
     private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_diemcongActionPerformed

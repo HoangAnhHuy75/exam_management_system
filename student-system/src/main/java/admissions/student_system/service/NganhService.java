@@ -23,4 +23,9 @@ public class NganhService {
     public Nganh getById(Integer id) {
         return repo.findById(id).orElse(null);
     }
+    public Nganh getByMaNganh(String ma) {
+        return repo.findByMaNganh(ma).orElse(null);
+    }
+
+
 }

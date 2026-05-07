@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style th:replace="~{header :: header-style}"></style>
+    <link rel="stylesheet" th:href="@{/css/tinhdiemdanhgianangluc.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
+
+<div class="tc-wrap">
+    <div class="tc-content">
+        <div class="tc-container">
+
+            <header class="page-header">
+                <h2><i data-lucide="calculator"></i> Chi tiết cách tính điểm xét tuyển THPT</h2>
+            </header>
+
+            <a href="/tracuutinhdiemxettuyen" class="nav-link" style="display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; text-decoration: none; color: #2563eb;">
+                <i data-lucide="arrow-left"></i>
+                <span>Trở lại công cụ tra cứu</span>
+            </a>
+
+            <div class="tc-body">
+                <div class="form-grid" style="margin-bottom: 20px;">
+                    <div class="tc-form-group">
+                        <label>Ngành xét tuyển:</label>
+                        <input type="text" th:value="${maNganhthpt}" readonly style="background: #f3f4f6; font-weight: bold;">
+                    </div>
+                </div>
+
+                <div class="detail-result-table">
+                    <!-- Chỉ lấy tổ hợp đầu tiên trong list để hiển thị chi tiết -->
+                    <div th:each="kq : ${ketQuaToHopTHPT}">
+                        <h3 style="color: #1f2937; margin-bottom: 10px;">
+                            Tổ hợp xét tuyển: <span th:text="${kq.maToHop}" style="color: #10b981;"></span>
+                        </h3>
+
+                        <table border="1" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                            <thead>
+                            <tr style="background: #f8fafc;">
+                                <th style="padding: 12px; width: 30%;">Nội dung</th>
+                                <th style="padding: 12px;">Chi tiết thế số</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- 1. MÔN 1 -->
+                            <tr>
+                                <td>Môn 1 (<strong><span th:text="${kq.mon1Name}"></span></strong>)</td>
+                                <td>
+                                    Hệ số: <span th:text="${kq.hs1}"></span> |
+                                    Điểm: <span th:text="${kq.diem1}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- 2. MÔN 2 -->
+                            <tr>
+                                <td>Môn 2 (<strong><span th:text="${kq.mon2Name}"></span></strong>)</td>
+                                <td>
+                                    Hệ số: <span th:text="${kq.hs2}"></span> |
+                                    Điểm: <span th:text="${kq.diem2}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- 3. MÔN 3 -->
+                            <tr>
+                                <td>Môn 3 (<strong><span th:text="${kq.mon3Name}"></span></strong>)</td>
+                                <td>
+                                    Hệ số: <span th:text="${kq.hs3}"></span> |
+                                    Điểm: <span th:text="${kq.diem3}"></span>
+                                </td>
+                            </tr>
+
+                            <!-- 4. CÔNG THỨC ĐTHXT -->
+                            <tr>
+                                <td><b>Điểm tổ hợp (ĐTHXT)</b></td>
+                                <td>
+                                    <code>((Môn1*HS1 + Môn2*HS2 + Môn3*HS3) / Tổng HS) * 3</code><br>
+                                    <span th:text="'((' + ${kq.diem1} + '*' + ${kq.hs1} + ' + ' + ${kq.diem2} + '*' + ${kq.hs2} + ' + ' + ${kq.diem3} + '*' + ${kq.hs3} + ') / ' + (${kq.hs1 + kq.hs2 + kq.hs3}) + ') * 3 = '"></span>
+                                    <strong style="color: #2563eb;" th:text="${#numbers.formatDecimal(res_dthxt, 1, 2)}"></strong>
+                                </td>
+                            </tr>
+
+                            <!-- 5. ĐIỂM CỘNG -->
+                            <tr>
+                                <td>Điểm cộng (DC)</td>
+                                <td>
+                                    <span th:text="${kq.dcCC}">0</span> (Quy đổi CC) +
+                                    <span th:text="${diemCongTHPT}">0</span> (Cộng khác) =
+                                    <strong th:text="${#numbers.formatDecimal(res_tongDiemCong, 1, 2)}"></strong>
+                                </td>
+                            </tr>
+
+                            <!-- 6. ĐIỂM ƯU TIÊN -->
+                            <tr>
+                                <td>Điểm ưu tiên (DUT)</td>
+                                <td>
+                                    <span th:text="${khuVucTHPT}">0</span> (Khu vực) +
+                                    <span th:text="${doiTuongTHPT}">0</span> (Đối tượng) =
+                                    <strong th:text="${#numbers.formatDecimal(res_dut, 1, 2)}"></strong>
+                                </td>
+                            </tr>
+
+                            <!-- 7. ĐỘ LỆCH -->
+                            <tr>
+                                <td>Độ lệch tổ hợp</td>
+                                <td>
+                                    <strong th:text="${#numbers.formatDecimal(res_doLech, 1, 2)}"></strong>
+                                </td>
+                            </tr>
+
+                            <!-- TỔNG KẾT -->
+                            <tr style="background: #eff6ff; font-weight: bold;">
+                                <td style="color: #1e40af;">ĐIỂM XÉT TUYỂN (ĐXT)</td>
+                                <td>
+                                    <code>ĐTHXT + DC + DUT + Độ lệch</code><br>
+                                    <span th:text="${#numbers.formatDecimal(res_dthxt, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_tongDiemCong, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_dut, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_doLech, 1, 2)} + ' = '"></span>
+                                    <span style="font-size: 1.3em; color: #2563eb;" th:text="${#numbers.formatDecimal(res_tongDiem, 1, 2)}"></span>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- KHU VỰC THÔNG BÁO ĐẬU/RỚT -->
+                <div style="margin-top: 25px; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb; background: #fff;">
+                    <div style="margin-bottom: 10px;">
+                        <strong>Điểm trúng tuyển năm trước:</strong>
+                        <span th:text="${nganhDiemChuan}" style="color: #2563eb; font-weight: bold;"></span>
+                        <span style="margin-left: 15px;">- Kết quả dự kiến: </span>
+                        <b th:if="${isDatTrungTuyen}" style="color: #059669;">🎉 ĐỦ ĐIỂM ĐẬU</b>
+                        <b th:if="${!isDatTrungTuyen}" style="color: #dc2626;">❌ CHƯA ĐẠT</b>
+                    </div>
+                    <div>
+                        <strong>Điểm sàn nhận hồ sơ:</strong>
+                        <span th:text="${nganhDiemSan}" style="color: #2563eb; font-weight: bold;"></span>
+                        <span style="margin-left: 15px;">- Trạng thái: </span>
+                        <b th:if="${isDatDiemSan}" style="color: #059669;">ĐẠT NGƯỠNG</b>
+                        <b th:if="${!isDatDiemSan}" style="color: #dc2626;">DƯỚI NGƯỠNG</b>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>

@@ -43,8 +43,45 @@ public class ToHopNganh {
     @Column(name = "hsmon3")
     private Integer hsMon3;
 
+    @Column(name = "tb_keys")
+    private String tb_keys;
+
+    // đánh dấu môn
+    @Column(name = "N1")
+    private Integer N1;
+
+    @Column(name = "`TO`")
+    private Integer TO;
+
+    @Column(name = "LI")
+    private Integer LI;
+
+    @Column(name = "HO")
+    private Integer HO;
+
+    @Column(name = "SI")
+    private Integer SI;
+
+    @Column(name = "VA")
+    private Integer VA;
+
+    @Column(name = "SU")
+    private Integer SU;
+
+    @Column(name = "DI")
+    private Integer DI;
+
+    @Column(name = "TI")
+    private Integer TI;
+
+    @Column(name = "KHAC")
+    private Integer KHAC;
+
+    @Column(name = "KTPL")
+    private Integer KTPL;
+
     @Column(name = "dolech")
     private BigDecimal doLech;
 
-    // getter setter
+
 }

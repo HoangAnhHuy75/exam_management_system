@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả Tra cứu Xét tuyển | The Academic Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --success-bg: #ecfdf5;
+            --success-text: #059669;
+            --fail-bg: #fef2f2;
+            --fail-text: #dc2626;
+            --primary-blue: #2563eb;
+            --bg-body: #f9fafb;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            margin: 0; padding: 0;
+            font-family: 'Inter', sans-serif;
+            color: var(--text-main);
+        }
+
+        .result-wrap { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); padding: 40px; border: 1px solid #f3f4f6; }
+
+        .student-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #e5e7eb; }
+        .student-info h3 { margin: 0; font-size: 1.4rem; }
+
+        .status-banner { text-align: center; padding: 20px; border-radius: 12px; font-weight: 800; font-size: 1.3rem; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .banner-success { background-color: var(--success-bg); color: var(--success-text); border: 1px solid #d1fae5; }
+        .banner-fail { background-color: var(--fail-bg); color: var(--fail-text); border: 1px solid #fee2e2; }
+
+        /* Bảng danh sách NV */
+        .all-nv-section { margin-top: 40px; border-top: 2px solid #f1f5f9; pt: 30px; }
+        .nv-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
+        .nv-table th { background: #f8fafc; text-align: left; padding: 12px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; }
+        .nv-table td { padding: 12px; border: 1px solid var(--border-color); }
+        .row-pass { background-color: #f0fdf4; font-weight: 600; color: #166534; }
+
+        /* Điểm số chính */
+        .score-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        .score-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
+        .value-cell { text-align: right; font-weight: 700; font-family: monospace; font-size: 1.1rem; }
+        .final-row { background-color: #eff6ff; color: #1e40af; }
+
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; }
+        .btn-back { color: var(--primary-blue); background: #eff6ff; }
+        .btn-print { background: var(--primary-blue); color: white; }
+
+        @media print { .btn-group, .btn-back { display: none !important; } }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+<body>
+
+<div class="result-wrap">
+    <div class="student-header">
+        <div class="student-info">
+            <h3 th:text="'Thí sinh: ' + ${studentName != null ? studentName : 'Họ tên Thí sinh'}">Nguyễn Văn A</h3>
+            <p>Số CCCD: <span th:text="${cccd}">00120300XXXX</span></p>
+        </div>
+        <a th:href="@{/tracuutinhdiemxettuyen}" class="btn btn-back"><i data-lucide="arrow-left"></i> Quay lại</a>
+    </div>
+
+    <div class="card">
+        <!-- HIỂN THỊ BANNER CHO NGUYỆN VỌNG CAO NHẤT TRÚNG TUYỂN -->
+        <div th:if="${ketQua == 'TRUNG_TUYEN'}">
+            <div class="status-banner banner-success">
+                <i data-lucide="party-popper"></i> CHÚC MỪNG BẠN ĐÃ TRÚNG TUYỂN!
+            </div>
+
+            <p style="text-align: center; color: #475569; margin-top: -20px; margin-bottom: 30px;">
+                Bạn đã trúng tuyển vào nguyện vọng số <strong th:text="${nv.nvTt}">1</strong>
+            </p>
+
+            <!-- Bảng điểm chi tiết của NV trúng tuyển -->
+            <table class="score-table">
+                <tr><td>Ngành trúng tuyển</td><td class="value-cell" th:text="${nv.nvManganh}">-</td></tr>
+                <tr><td>Tổ hợp môn</td><td class="value-cell" th:text="${nv.ttThm}">-</td></tr>
+                <tr><td>Điểm thi quy đổi</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemThxt,1,2)}">0.00</td></tr>
+                <tr><td>Điểm ưu tiên & Cộng</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemUtqd + nv.diemCong,1,2)}">0.00</td></tr>
+                <tr class="final-row"><td>TỔNG ĐIỂM XÉT TUYỂN</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemXettuyen,1,2)}">0.00</td></tr>
+            </table>
+        </div>
+
+        <div th:if="${ketQua == 'KHONG_TRUNG_TUYEN'}">
+            <div class="status-banner banner-fail">
+                <i data-lucide="frown"></i> KẾT QUẢ: CHƯA TRÚNG TUYỂN
+            </div>
+        </div>
+
+        <!-- PHẦN DANH SÁCH TẤT CẢ 11 NGUYỆN VỌNG -->
+        <div class="all-nv-section">
+            <h4 style="display: flex; align-items: center; gap: 8px;">
+                <i data-lucide="layers" style="width: 20px; color: var(--primary-blue);"></i>
+                Danh sách nguyện vọng đã đăng ký
+            </h4>
+            <div style="overflow-x: auto;">
+                <table class="nv-table">
+                    <thead>
+                    <tr>
+                        <th>TT</th>
+                        <th>Mã ngành</th>
+                        <th>Phương thức</th>
+                        <th>Tổ hợp</th>
+                        <th>Điểm xét</th>
+                        <th>Kết quả</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="item : ${danhSachNv}" th:classappend="${item.nvKetqua == 'Trúng tuyển'} ? 'row-pass' : ''">
+                        <td th:text="${item.nvTt}">1</td>
+                        <td th:text="${item.nvManganh}">7480201</td>
+                        <td th:text="${item.ttPhuongthuc}">Học bạ</td>
+                        <td th:text="${item.ttThm}">A00</td>
+                        <td th:text="${#numbers.formatDecimal(item.diemXettuyen,1,2)}">28.25</td>
+                        <td>
+                                <span th:if="${item.nvKetqua == 'Trúng tuyển'}">
+                                    <i data-lucide="check-circle-2" style="width:14px; vertical-align: middle;"></i> Trúng tuyển
+                                </span>
+                            <span th:if="${item.nvKetqua != 'Trúng tuyển'}" th:text="${item.nvKetqua}" style="color: #94a3b8;"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="btn-group" style="margin-top: 30px; display: flex; justify-content: space-between;">
+            <button onclick="window.print()" class="btn btn-print"><i data-lucide="printer"></i> In kết quả</button>
+            <p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Ngày cập nhật: <span th:text="${#calendars.format(#calendars.createNow(), 'dd/MM/yyyy HH:mm')}"></span></p>
+        </div>
+    </div>
+</div>
+
+<script>lucide.createIcons();</script>
+</body>
+</html>

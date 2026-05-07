@@ -1,5 +1,6 @@
 package admissions.student_system.service;
 
+import admissions.student_system.entity.Nganh;
 import admissions.student_system.entity.ToHopNganh;
 import admissions.student_system.repository.ToHopNganhRepository;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,10 @@ public class ToHopNganhService {
 
     public ToHopNganhService(ToHopNganhRepository repo) {
         this.repo = repo;
+    }
+
+    public List<ToHopNganh> getAll() {
+        return repo.findAll();
     }
 
     public List<ToHopNganh> getByMaNganh(String maNganh) {

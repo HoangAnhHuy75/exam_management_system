@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style th:replace="~{header :: header-style}"></style>
+    <link rel="stylesheet" th:href="@{/css/tinhdiemdanhgianangluc.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
+
+<div class="tc-wrap">
+    <div class="tc-content">
+        <div class="tc-container">
+
+            <header class="page-header">
+                <h2><i data-lucide="calculator"></i> Tra cứu cách tính điểm xét tuyển</h2>
+                <p class="description">
+                    Công cụ hỗ trợ thí sinh dự toán điểm xét tuyển theo các phương thức khác nhau.
+                </p>
+            </header>
+
+            <a href="/tracuutinhdiemxettuyen" class="nav-link">
+                <i data-lucide="file-search"></i>
+                <span>Trở lại</span>
+            </a>
+
+            <div class="tc-body">
+
+                <!-- TAB ĐGNL -->
+                <div id="dgnl" class="tab-content active">
+                    <div class="detail-result-table">
+
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Nội dung</th>
+                                <th>Chi tiết điểm</th>
+                            </tr>
+                            </thead>
+
+                            <tbody>
+
+                            <tr>
+                                <td>Điểm thi ĐGNL</td>
+                                <td th:text="${res_diemDGNL}">0</td>
+                            </tr>
+
+                            <tr>
+                                <td>Công thức quy đổi về thang 30</td>
+                                <td th:text="${res_diemc} + ' + ((' + ${res_diemDGNL} + ' - ' + ${res_diema} + ') / (' + ${res_diemb} + ' - ' + ${res_diema} + ')) * (' + ${res_diemd} + ' - ' + ${res_diemc} + ')'"></td>                            </tr>
+
+                            <tr>
+                                <td>Điểm thi quy đổi</td>
+                                <td th:text="${res_diemQuyDoi}">0</td>
+                            </tr>
+
+                            <tr>
+                                <td>Điểm cộng</td>
+                                <td th:text="${res_diemCong}">0</td>
+                            </tr>
+
+                            <tr>
+                                <td>Điểm ưu tiên quy đổi</td>
+                                <td th:text="${res_diemUuTien}">0</td>
+                            </tr>
+
+                            <tr class="final-score">
+                                <td>Điểm xét tuyển</td>
+                                <td th:text="${res_tongDiem}">0</td>
+                            </tr>
+
+                            </tbody>
+                        </table>
+
+                        <div class="result-box">
+                            <strong>Kết quả:</strong>
+
+                            <span th:if="${isDatTrungTuyen == true}"
+                                  style="color: green; font-weight: bold;">
+                                ĐẠT TRÚNG TUYỂN
+                            </span>
+
+                            <span th:if="${isDatTrungTuyen != true}"
+                                  style="color: red; font-weight: bold;">
+                                CHƯA ĐẠT
+                            </span>
+
+                            <br>
+
+                            <span th:if="${isDatDiemSan}"
+                                  style="color: green;">
+                                ĐẠT ĐIỂM SÀN
+                            </span>
+
+                            <span th:if="${!isDatDiemSan}"
+                                  style="color: red;">
+                                CHƯA ĐẠT ĐIỂM SÀN
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

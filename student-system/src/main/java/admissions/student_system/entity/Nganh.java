@@ -33,10 +33,10 @@ public class Nganh {
     private Integer nChiTieu;
 
     @Column(name = "n_diemsan")
-    private BigDecimal nDiemSan;
+    private Double nDiemSan;
 
     @Column(name = "n_diemtrungtuyen")
-    private BigDecimal nDiemTrungTuyen;
+    private Double nDiemTrungTuyen;
 
     @Column(name = "n_tuyenthang")
     private String nTuyenThang;

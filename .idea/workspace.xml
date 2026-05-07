@@ -5,14 +5,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a02b6ff4-19b7-448c-a951-5abd0b07c5c5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/NguyenVongXetTuyenController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/NguyenVongXetTuyen.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NguyenVongXetTuyenRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NguyenVongXetTuyenService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/admin/src/main/resources/hibernate.cfg.xml" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/resources/hibernate.cfg.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/ProfileViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/ProfileViewController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/application.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/BangQuyDoiController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/NganhController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/TinhDiemXetTuyenController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/TraCuuTinhDiemXetTuyenController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/BangQuyDoi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/BangQuyDoiPhanVi.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/NguyenVong.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/BangQuyDoiPhanViRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/BangQuyDoiRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NguyenVongRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/BangChenhLechService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/BangQuyDoiPhanViService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/BangQuyDoiService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/ChungChiTiengAnhService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NguyenVongService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/css/tinhdiemdanhgianangluc.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/css/tracuutinhdiemxettuyen.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/js/tinhdiemdanhgianangluc.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/js/tinhdiemvsat.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/js/tracuutinhdiemxettuyen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/ketquaxettuyen.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/tinhdiemdanhgianangluc.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/tinhdiemthpt.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/tinhdiemvsat.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/tracuuketquaxettuyen.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/tracuutinhdiemxettuyen.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/admin/src/main/java/DTO/ToHopDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/admin/src/main/java/DTO/ToHopDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/AuthenViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/AuthenViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/NguyenVongController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/controller/NguyenVongXetTuyenController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/Nganh.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/Nganh.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/NguyenVongXetTuyen.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/ToHopNganh.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/entity/ToHopNganh.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NganhRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NganhRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/repository/NguyenVongXetTuyenRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NganhService.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NganhService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/NguyenVongXetTuyenService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/ToHopNganhService.java" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/java/admissions/student_system/service/ToHopNganhService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/static/js/nguyenvong.js" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/static/js/nguyenvong.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/templates/dangkynguyenvong.html" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/dangkynguyenvong.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/templates/header.html" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/header.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/student-system/src/main/resources/templates/profile.html" beforeDir="false" afterPath="$PROJECT_DIR$/student-system/src/main/resources/templates/profile.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,6 +66,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5

@@ -14,7 +14,6 @@
 
 <body>
 
-<!-- HEADER -->
 <header th:replace="~{header :: header}"
         th:with="activePage='register', portalName=${portalName}">
 </header>
@@ -22,16 +21,12 @@
 <div class="profile-wrap">
     <div class="profile-content">
         <div class="profile-container">
-
-            <!-- FORM MVC -->
             <form id="nvForm" method="post" th:action="@{/nguyenvong/submit}">
 
-                <!-- hidden inputs (JS sẽ đổ vào đây) -->
                 <div id="hiddenInputs"></div>
 
                 <div class="nv-container">
 
-                    <!-- ACTION -->
                     <div class="nv-actions">
                         <button type="button" onclick="sortNV()" class="btn btn-blue">
                             Xếp theo NV

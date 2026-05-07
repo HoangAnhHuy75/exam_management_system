@@ -13,42 +13,29 @@
             </div>
         </div>
 
-        <!-- Navigation -->
         <ul class="nav-center">
+
+
             <li>
-                <a href="#profile"
+                <a href="/login"
                    class="nav-link"
-                   th:class="${activePage == 'profile'} ? 'nav-link active' : 'nav-link'"
-                   data-page="profile">
-                    <i data-lucide="user-circle"></i>
-                    <span>Trang cá nhân</span>
-                </a>
-            </li>
-            <li>
-                <a href="#scores"
-                   class="nav-link"
-                   th:class="${activePage == 'scores'} ? 'nav-link active' : 'nav-link'"
-                   data-page="scores">
-                    <i data-lucide="bar-chart-3"></i>
-                    <span>Xem điểm</span>
-                </a>
-            </li>
-            <li>
-                <a href="/dangkynguyenvong"
-                   class="nav-link"
-                   th:class="${activePage == 'register'} ? 'nav-link active' : 'nav-link'"
                    data-page="register">
-                    <i data-lucide="file-edit"></i>
-                    <span>Đăng ký nguyện vọng</span>
+                    <i data-lucide="file-search"></i>
+                    <span>Tra cứu kết quả xét tuyển</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tracuutinhdiemxettuyen"
+                   class="nav-link"
+                   data-page="tracuutinhdiemxettuyen">
+                    <i data-lucide="file-search"></i>
+                    <span>Tra cứu cách tính điểm xét tuyển</span>
                 </a>
             </li>
         </ul>
 
-        <!-- Logout -->
-        <button class="logout-btn" onclick="handleLogout()">
-            <i data-lucide="log-out"></i>
-            <span>Đăng xuất</span>
-        </button>
+
+
     </div>
 </header>
 

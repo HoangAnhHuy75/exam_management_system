@@ -1,0 +1,95 @@
+/* Layout chính */
+.tc-wrap {
+    padding: 30px 15px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.tc-content {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.tc-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+.tc-body {
+    padding: 20px 30px;
+}
+
+/* Tabs */
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+}
+
+.tab-btn {
+    padding: 12px 25px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #495057;
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+/* Form */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.tc-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.tc-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Bảng chi tiết điểm (Dựa trên ảnh) */
+.detail-result-table {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.detail-result-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-result-table th,
+.detail-result-table td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+}
+
+.detail-result-table th {
+    background-color: #f8f9fa;
+}
+
+.final-score {
+    font-weight: bold;
+    background-color: #f1f8ff;
+    color: #0056b3;
+}

@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style th:replace="~{header :: header-style}"></style>
+
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" th:href="@{/css/tracuutinhdiemxettuyen.css}">
+
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
+
+<div class="profile-wrap">
+    <div class="profile-content">
+        <div class="profile-container">
+
+            <!-- Header công cụ -->
+            <header class="page-header">
+                <h2><i data-lucide="calculator"></i> Tra cứu cách tính điểm xét tuyển</h2>
+                <p class="description">Công cụ hỗ trợ thí sinh dự toán điểm xét tuyển theo các phương thức khác nhau.</p>
+            </header>
+
+            <!-- Tabs Điều hướng -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="showTab(event, 'dgnl')">Đánh giá năng lực (ĐGNL)</button>
+                <button class="tab-btn" onclick="showTab(event, 'vsat')">V-SAT</button>
+                <button class="tab-btn" onclick="showTab(event, 'thpt')">THPT</button>
+
+            </div>
+            <!-- Tab DGNL -->
+            <div class="tc-container">
+                <form th:action="@{/tinhdgnl}" method="post">
+                    <div id="dgnl" class="tab-content active">
+                        <h3 class="method-title">Phương thức Đánh giá năng lực (Thang 1200)</h3>
+
+                        <div class="form-grid">
+
+                            <div class="tc-form-group">
+                                <label>Chọn ngành xét tuyển:</label>
+                                <select name="maNganh" required>
+                                    <option th:each="n : ${listNganh}"
+                                            th:value="${n.maNganh}"
+                                            th:text="${n.maNganh} + ' - ' + ${n.tenNganh}"
+                                            th:selected="${n.maNganh == maNganh}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Điểm cộng (<=3):</label>
+                                <input name="diemCong"
+                                       type="number"
+                                       th:value="${diemCong}">                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Khu vực ưu tiên:</label>
+                                <select name="khuVuc">
+                                    <option value="0" th:selected="${khuVuc == 0}">KV3</option>
+                                    <option value="0.75" th:selected="${khuVuc == 0.75}">KV1</option>
+                                    <option value="0.5" th:selected="${khuVuc == 0.5}">KV2-NT</option>
+                                    <option value="0.25" th:selected="${khuVuc == 0.25}">KV2</option>
+                                </select>
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Đối tượng ưu tiên:</label>
+                                <select name="doiTuong">
+                                    <option value="0" th:selected="${doiTuong == 0}">Không</option>
+                                    <option value="2" th:selected="${doiTuong == 2}">UT1</option>
+                                    <option value="1" th:selected="${doiTuong == 1}">UT2</option>
+                                </select>
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Nhập điểm đánh giá năng lực</label>
+                                <input name="diemDGNL"
+                                       type="number"
+                                       step="0.1"
+                                       th:value="${diemDGNL}"
+                                       placeholder="Nhập điểm (0 - 1200)">                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Chọn loại chứng chỉ:</label>
+                                <select name="cc_loai">
+                                    <option value="IELTS" th:selected="${cc_loai == 'IELTS'}">IELTS</option>
+                                    <option value="TOEFL_IBT" th:selected="${cc_loai == 'TOEFL_IBT'}">TOEFL iBT</option>
+                                    <option value="TOEFL_ITP" th:selected="${cc_loai == 'TOEFL_ITP'}">TOEFL ITP</option>
+                                    <option value="TOEIC" th:selected="${cc_loai == 'TOEIC'}">TOEIC</option>
+                                    <option value="PTE" th:selected="${cc_loai == 'PTE'}">PTE Academic</option>
+                                    <option value="LINGUASKILL" th:selected="${cc_loai == 'LINGUASKILL'}">Linguaskill</option>
+                                    <option value="APTIS_GENERAL" th:selected="${cc_loai == 'APTIS_GENERAL'}">Aptis General</option>
+                                    <option value="APTIS_ADVANCED" th:selected="${cc_loai == 'APTIS_ADVANCED'}">Aptis Advanced</option>
+                                    <option value="VSTEP" th:selected="${cc_loai == 'VSTEP'}">VSTEP</option>
+                                </select>
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Nhập điểm chứng chỉ:</label>
+                                <input name="cc_diem"
+                                       type="number"
+                                       th:value="${cc_diem}"
+                                       placeholder="Ví dụ: 6.5">                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Chọn phương thức:</label>
+                                <select name="cc_phuongThuc">
+                                    <option value="DGNL" th:selected="${cc_phuongThuc == 'DGNL'}">
+                                        ĐGNL (1200)
+                                    </option>
+                                </select>
+                            </div>
+
+                            <!-- ===== 2 NÚT ===== -->
+                            <div class="tc-actions">
+
+                                <button type="submit" name="action" value="TINH">
+                                    Tính điểm ĐGNL
+                                </button>
+
+                                <button type="submit" name="action" value="QUYDOI">
+                                    Quy đổi điểm
+                                </button>
+
+                            </div>
+
+                            <!-- RESULT -->
+                            <div class="tc-result">
+                                <p>Kết quả điểm cộng:
+                                    <strong th:text="${cc_ketqua}"></strong>
+                                </p>
+                                <input type="hidden" name="cc_ketqua" th:value="${cc_ketqua}">
+                            </div>
+
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+                <!-- Tab VSAT -->
+                <div id="vsat" class="tab-content">
+                    <form th:action="@{/tinhvsat}" method="post">
+
+                    <h3 class="method-title">Phương thức V-SAT (150) </h3>
+                    <p class="alert-info">Lưu ý: Hệ thống sẽ tự động quy đổi điểm V-SAT về thang 10 tương ứng.</p>
+
+                    <div class="form-grid">
+                        <div class="tc-form-group">
+                            <label>Chọn ngành xét tuyển:</label>
+                            <select name="maNganhVSAT">
+                                <option th:each="n : ${listNganh}"
+                                        th:value="${n.maNganh}"
+                                        th:text="${n.maNganh} + ' - ' + ${n.tenNganh}"
+                                        th:selected="${n.maNganh == maNganhVSAT}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="tc-form-group">
+                            <label>Điểm cộng (<=3):</label>
+                            <input name="diemCongVSAT" type="number" th:value="${diemCongVSAT}">
+                        </div>
+                        <div class="tc-form-group">
+                            <label>Khu vực ưu tiên:</label>
+                            <select name="khuVucVSAT">
+                                <option value="0" th:selected="${khuVucVSAT == 0}">KV3 (Không ưu tiên)</option>
+                                <option value="0.75" th:selected="${khuVucVSAT == 0.75}">KV1 (+0.75)</option>
+                                <option value="0.5" th:selected="${khuVucVSAT == 0.5}">KV2-NT (+0.5)</option>
+                                <option value="0.25" th:selected="${khuVucVSAT == 0.25}">KV2 (+0.25)</option>
+                            </select>
+                        </div>
+                        <div class="tc-form-group">
+                            <label>Đối tượng ưu tiên:</label>
+                            <select name="doiTuongVSAT">
+                                <option value="0" th:selected="${doiTuongVSAT == 0}">Không đối tượng</option>
+                                <option value="2" th:selected="${doiTuongVSAT == 2}">Ưu tiên 1 (+2.0)</option>
+                                <option value="1" th:selected="${doiTuongVSAT == 1}">Ưu tiên 2 (+1.0)</option>
+                            </select>
+                        </div>
+
+
+                        <div class="form-grid">
+
+                            <!-- TOÁN -->
+                            <div class="tc-form-group">
+                                <label>Toán (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="toan" type="number" placeholder="Điểm" th:value="${toan}">
+                                    <input name="cong_toan" type="number" step="0.1" placeholder="Cộng" th:value="${cong_toan}">
+                                </div>
+                            </div>
+
+                            <!-- VĂN -->
+                            <div class="tc-form-group">
+                                <label>Văn (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="van" type="number" placeholder="Điểm" th:value="${van}">
+                                    <input name="cong_van" type="number" step="0.1" placeholder="Cộng" th:value="${cong_van}">
+                                </div>
+                            </div>
+
+                            <!-- LÝ -->
+                            <div class="tc-form-group">
+                                <label>Lý (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="ly" type="number" placeholder="Điểm" th:value="${ly}">
+                                    <input name="cong_ly" type="number" step="0.1" placeholder="Cộng" th:value="${cong_ly}">
+                                </div>
+                            </div>
+
+                            <!-- HÓA -->
+                            <div class="tc-form-group">
+                                <label>Hóa (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="hoa" type="number" placeholder="Điểm" th:value="${hoa}">
+                                    <input name="cong_hoa" type="number" step="0.1" placeholder="Cộng" th:value="${cong_hoa}">
+                                </div>
+                            </div>
+
+                            <!-- SINH -->
+                            <div class="tc-form-group">
+                                <label>Sinh (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="sinh" type="number" placeholder="Điểm" th:value="${sinh}">
+                                    <input name="cong_sinh" type="number" step="0.1" placeholder="Cộng" th:value="${cong_sinh}">
+                                </div>
+                            </div>
+
+                            <!-- SỬ -->
+                            <div class="tc-form-group">
+                                <label>Sử (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="su" type="number" placeholder="Điểm" th:value="${su}">
+                                    <input name="cong_su" type="number" step="0.1" placeholder="Cộng" th:value="${cong_su}">
+                                </div>
+                            </div>
+
+                            <!-- ĐỊA -->
+                            <div class="tc-form-group">
+                                <label>Địa (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="dia" type="number" placeholder="Điểm" th:value="${dia}">
+                                    <input name="cong_dia" type="number" step="0.1" placeholder="Cộng" th:value="${cong_dia}">
+                                </div>
+                            </div>
+
+                            <!-- ANH -->
+                            <div class="tc-form-group">
+                                <label>Anh (Điểm / Cộng)</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input name="anh" type="number" placeholder="Điểm" th:value="${anh}">
+                                    <input name="cong_anh" type="number" step="0.1" placeholder="Cộng" th:value="${cong_anh}">
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="tc-box">
+                            <h3><i data-lucide="languages"></i> Quy đổi điểm cộng chứng chỉ Tiếng Anh</h3>
+
+                            <div class="form-grid">
+
+                                <div class="tc-form-group">
+                                    <label>Chọn loại chứng chỉ:</label>
+                                    <select name="cc_loai_vsat">
+                                        <option value="IELTS">IELTS</option>
+                                        <option value="TOEFL_IBT">TOEFL iBT</option>
+                                        <option value="TOEFL_ITP">TOEFL ITP</option>
+                                        <option value="TOEIC">TOEIC</option>
+                                        <option value="PTE">PTE Academic</option>
+                                        <option value="LINGUASKILL">Linguaskill</option>
+                                        <option value="APTIS_GENERAL">Aptis General</option>
+                                        <option value="APTIS_ADVANCED">Aptis Advanced</option>
+                                        <option value="VSTEP">VSTEP</option>
+                                    </select>
+                                </div>
+
+                                <div class="tc-form-group">
+                                    <label>Nhập điểm chứng chỉ:</label>
+                                    <input name="cc_diem_vsat" type="number" th:value="${cc_diem_vsat}">                                </div>
+
+                                <div class="tc-form-group">
+                                    <label>Chọn phương thức:</label>
+                                    <select name="cc_phuongThuc_vsat">
+                                        <option value="VSAT">VSAT</option>
+                                    </select>
+                                </div>
+                                <div class="tc-result">
+                                    <p>Kết quả điểm cộng:
+                                        <strong th:text="${cc_ketquaVSAT}"></strong>
+                                    </p>
+                                    <input type="hidden" name="cc_ketquaVSAT"
+                                           th:value="${#numbers.formatInteger(cc_ketquaVSAT, 0)}">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="tc-actions_vsat">
+
+                            <button type="submit" name="action" value="TINH">
+                                Tính điểm VSAT
+                            </button>
+
+                            <button type="submit" name="action" value="QUYDOI">
+                                Quy đổi điểm
+                            </button>
+
+                        </div>
+                    </div>
+                    </form>
+                </div>
+
+            <!-- Tab  THPT -->
+            <div id="thpt" class="tab-content">
+                <form th:action="@{/tinhthpt}" method="post">
+
+                    <label>Chọn ngành xét tuyển:</label>
+                    <select name="maNganhthpt" id="selectNganhThpt" onchange="loadToHopThpt()">
+                        <option value="">-- Chọn ngành --</option>
+                        <option th:each="n : ${listNganh}"
+                                th:value="${n.maNganh}"
+                                th:text="${n.maNganh} + ' - ' + ${n.tenNganh}"
+                                th:selected="${n.maNganh == maNganhthpt}">
+                        </option>
+                    </select>
+
+                    <div id="resultToHopThpt" th:fragment="danhSachToHop" style="margin-top: 15px;">
+                        <div th:if="${listToHopFragment != null and !listToHopFragment.isEmpty()}">
+
+                            <!-- Select chọn tổ hợp - Thêm name="maToHop" -->
+                            <div style="margin-bottom: 15px;">
+                                <label for="selectToHop" style="font-weight: bold; color: #1f2937; display: block; margin-bottom: 8px;">
+                                    Chọn tổ hợp môn:
+                                </label>
+                                <select id="selectToHop" name="maToHop" onchange="updateMonHoc()"
+                                        style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #d1d5db; background-color: white;">
+                                    <option value="" disabled th:selected="${maToHop == null}">-- Chọn tổ hợp --</option>
+                                    <th:block th:each="th : ${listToHopFragment}">
+                                        <option th:value="${th.maToHop}"
+                                                th:data-mon1="${th.mon1}" th:data-hs1="${th.hsMon1}"
+                                                th:data-mon2="${th.mon2}" th:data-hs2="${th.hsMon2}"
+                                                th:data-mon3="${th.mon3}" th:data-hs3="${th.hsMon3}"
+                                                th:selected="${th.maToHop == maToHop}"
+                                                th:text="${th.maToHop} + ': ' + ${th.mon1} + '*' + ${th.hsMon1} + ' ' + ${th.mon2} + '*' + ${th.hsMon2} + ' ' + ${th.mon3} + '*' + ${th.hsMon3}">
+                                        </option>
+                                    </th:block>
+                                </select>
+                            </div>
+                            <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                <!-- Khu vực -->
+                                <div class="tc-form-group">
+                                    <label>Khu vực ưu tiên:</label>
+                                    <select name="khuVucTHPT">
+                                        <option value="0" th:selected="${khuVucTHPT == 0}">KV3 (0đ)</option>
+                                        <option value="0.25" th:selected="${khuVucTHPT == 0.25}">KV2 (0.25đ)</option>
+                                        <option value="0.5" th:selected="${khuVucTHPT == 0.5}">KV2-NT (0.5đ)</option>
+                                        <option value="0.75" th:selected="${khuVucTHPT == 0.75}">KV1 (0.75đ)</option>
+                                    </select>
+                                </div>
+
+                                <!-- Đối tượng -->
+                                <div class="tc-form-group">
+                                    <label>Đối tượng ưu tiên:</label>
+                                    <select name="doiTuongTHPT">
+                                        <option value="0" th:selected="${doiTuongTHPT == 0}">Không (0đ)</option>
+                                        <option value="1" th:selected="${doiTuongTHPT == 1}">Nhóm UT2 (1đ)</option>
+                                        <option value="2" th:selected="${doiTuongTHPT == 2}">Nhóm UT1 (2đ)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div>
+                                <label style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Điểm cộng (khác):</label>
+                                <input type="number" step="0.01" name="diemCongTHPT" th:value="${diemCongTHPT}" placeholder="Nhập điểm cộng"
+                                       style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                            </div>
+
+                            <!-- Khu vực nhập điểm - Thêm name và th:value -->
+                            <div id="inputDiemContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px;">
+                                <div>
+                                    <label id="labelMon1" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 1</label>
+                                    <input type="number" step="0.01" name="diemMon1" th:value="${diemMon1}" placeholder="Nhập điểm"
+                                           style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                </div>
+                                <div>
+                                    <label id="labelMon2" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 2</label>
+                                    <input type="number" step="0.01" name="diemMon2" th:value="${diemMon2}" placeholder="Nhập điểm"
+                                           style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                </div>
+                                <div>
+                                    <label id="labelMon3" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 3</label>
+                                    <input type="number" step="0.01" name="diemMon3" th:value="${diemMon3}" placeholder="Nhập điểm"
+                                           style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div th:if="${listToHopFragment != null and listToHopFragment.isEmpty()}"
+                             style="padding: 10px; color: #ef4444; font-size: 0.9em; border: 1px dashed #fca5a5; border-radius: 8px;">
+                            ⚠️ Ngành này chưa có thông tin tổ hợp môn.
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="tc-form-group">
+                                <label>Chọn loại chứng chỉ:</label>
+                                <select name="cc_loai_vthpt">
+                                    <!-- Thêm th:selected để giữ giá trị loại CC -->
+                                    <option th:each="type : ${ {'IELTS', 'TOEFL_IBT', 'TOEFL_ITP', 'TOEIC', 'PTE', 'LINGUASKILL', 'APTIS_GENERAL', 'APTIS_ADVANCED', 'VSTEP'} }"
+                                            th:value="${type}" th:text="${type}"
+                                            th:selected="${type == cc_loai_vthpt}"></option>
+                                </select>
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Nhập điểm chứng chỉ:</label>
+                                <input name="cc_diem_thpt" type="number" step="0.1" th:value="${cc_diem_thpt}">
+                            </div>
+
+                            <div class="tc-form-group">
+                                <label>Chọn phương thức:</label>
+                                <select name="cc_phuongThuc_thpt">
+                                    <option value="THPT" th:selected="${cc_phuongThuc_thpt == 'THPT'}">THPT</option>
+                                </select>
+                            </div>
+
+                            <div class="tc-result">
+                                <p>Kết quả điểm cộng:
+                                    <strong th:text="${cc_ketquaTHPT}"></strong>
+                                </p>
+                                <input type="hidden" name="cc_ketquaTHPT" th:value="${cc_ketquaTHPT}">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tc-actions_thpt">
+                        <button type="submit" name="action" value="TINH">Tính điểm THPT</button>
+                        <button type="submit" name="action" value="QUYDOI">Quy đổi điểm</button>
+                    </div>
+                </form>
+
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+            </div>
+        </div>
+
+        </div>
+    </div>
+</div>
+<script th:src="@{/js/tracuutinhdiemxettuyen.js}"></script>
+<script th:replace="~{header :: header-script}"></script>
+<script th:inline="javascript">
+    const listNganh = /*[[${listNganh}]]*/ [];
+    const activeTab = /*[[${activeTab}]]*/ 'dgnl';
+</script>
+<script>
+    function updateMonHoc() {
+                        const select = document.getElementById('selectToHop');
+                        if(!select) return;
+                        const selectedOption = select.options[select.selectedIndex];
+
+                        if (selectedOption && selectedOption.value) {
+                            const m1 = selectedOption.getAttribute('data-mon1') + " (x" + selectedOption.getAttribute('data-hs1') + ")";
+                            const m2 = selectedOption.getAttribute('data-mon2') + " (x" + selectedOption.getAttribute('data-hs2') + ")";
+                            const m3 = selectedOption.getAttribute('data-mon3') + " (x" + selectedOption.getAttribute('data-hs3') + ")";
+
+                            document.getElementById('labelMon1').innerText = m1;
+                            document.getElementById('labelMon2').innerText = m2;
+                            document.getElementById('labelMon3').innerText = m3;
+                        }
+                    }
+
+                    // Gọi hàm khi trang load xong để hiển thị đúng nhãn nếu đã có dữ liệu cũ
+                    window.onload = updateMonHoc;
+    function updateMonHoc() {
+                               const select = document.getElementById('selectToHop');
+                               const selectedOption = select.options[select.selectedIndex];
+
+                               if (selectedOption.value) {
+                                   // Lấy tên môn và hệ số từ data attributes
+                                   const m1 = selectedOption.getAttribute('data-mon1') + " (x" + selectedOption.getAttribute('data-hs1') + ")";
+                                   const m2 = selectedOption.getAttribute('data-mon2') + " (x" + selectedOption.getAttribute('data-hs2') + ")";
+                                   const m3 = selectedOption.getAttribute('data-mon3') + " (x" + selectedOption.getAttribute('data-hs3') + ")";
+
+                                   // Cập nhật nhãn hiển thị
+                                   document.getElementById('labelMon1').innerText = m1;
+                                   document.getElementById('labelMon2').innerText = m2;
+                                   document.getElementById('labelMon3').innerText = m3;
+                               }
+                           }
+   function loadToHopThpt() {
+   // Lấy giá trị mã ngành từ select
+   const maNganh = document.getElementById("selectNganhThpt").value;
+   const resultDiv = document.getElementById("resultToHopThpt");
+
+   if (!maNganh) {
+       resultDiv.innerHTML = ""; // Xóa trắng nếu không chọn ngành
+       return;
+   }
+
+   // Gửi request AJAX đến Controller
+   fetch(`/api/${maNganh}`)
+       .then(response => {
+           if (!response.ok) throw new Error('Network response was not ok');
+           return response.text(); // Nhận về HTML fragment
+       })
+       .then(html => {
+           resultDiv.innerHTML = html; // Cập nhật nội dung vào vùng hiển thị
+       })
+       .catch(error => {
+           console.error('Error:', error);
+       });
+}
+
+   lucide.createIcons();
+   function showTab(event, tabId) {
+       document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
+       document.querySelectorAll(".tab-btn").forEach(el => el.classList.remove("active"));
+       document.getElementById(tabId).classList.add("active");
+       event.currentTarget.classList.add("active");
+   }
+   function showTab(event, tabId) {
+   // Ẩn tất cả tab content
+   const tabContents = document.querySelectorAll(".tab-content");
+   tabContents.forEach(tab => {
+       tab.classList.remove("active");
+   });
+
+   // Bỏ active tất cả button
+   const tabButtons = document.querySelectorAll(".tab-btn");
+   tabButtons.forEach(btn => {
+       btn.classList.remove("active");
+   });
+
+   // Hiện tab được chọn
+   const selectedTab = document.getElementById(tabId);
+   if (selectedTab) {
+       selectedTab.classList.add("active");
+   }
+
+   // Active button vừa click
+   event.currentTarget.classList.add("active");
+}
+   window.addEventListener("DOMContentLoaded", function () {
+   if (activeTab) {
+       const btn = document.querySelector(`.tab-btn[onclick*="${activeTab}"]`);
+       if (btn) btn.click();
+   }
+});
+</script>
+</body>
+</html>

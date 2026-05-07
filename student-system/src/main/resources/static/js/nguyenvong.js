@@ -133,7 +133,7 @@ function renderList() {
     });
 }
 
-// SYNC FORM
+
 function syncToForm() {
 
     const container = document.getElementById("hiddenInputs");

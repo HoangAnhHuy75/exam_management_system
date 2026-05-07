@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style th:replace="~{header :: header-style}"></style>
+    <link rel="stylesheet" th:href="@{/css/tinhdiemdanhgianangluc.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+</head>
+
+<body>
+
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
+
+<script th:inline="javascript">
+    window.diem10 = [[${diem10}]];
+    window.listToHop = [[${listToHop}]];
+
+    console.log("🔥 BACKEND DATA");
+    console.log("diem10:", window.diem10);
+    console.log("listToHop:", window.listToHop);
+</script>
+
+<div class="tc-wrap">
+    <div class="tc-content">
+        <div class="tc-container">
+
+            <header class="page-header">
+                <h2>
+                    <i data-lucide="calculator"></i>
+                    Tra cứu cách tính điểm xét tuyển
+                </h2>
+            </header>
+
+            <a href="/tracuutinhdiemxettuyen" class="nav-link">
+                <i data-lucide="file-search"></i>
+                <span>Trở lại</span>
+            </a>
+
+            <div class="tc-body">
+
+                <h3 class="method-title">Tính điểm VSAT</h3>
+
+                <div class="form-grid">
+                    <div class="tc-form-group">
+                        <label>Ngành xét tuyển</label>
+                        <input type="text" th:value="${maNganh}" readonly>
+                    </div>
+                </div>
+                <div th:if="${toHopMax != null}">
+
+
+                    <p>
+                        Tổ hợp cao nhất:
+                        <b th:text="${toHopMax}"></b>
+                    </p>
+
+                    <p>
+                        Điểm:
+                        <b th:text="${#numbers.formatDecimal(diemMax, 1, 2)}"></b>
+                    </p>
+                </div>
+                <div class="detail-result-table">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Nội dung</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+
+                        <tr>
+                            <td>Khu vực</td>
+                            <td th:text="${khuVucVSAT}">--</td>
+                        </tr>
+
+                        <tr>
+                            <td>Đối tượng</td>
+                            <td th:text="${doiTuongVSAT}">--</td>
+                        </tr>
+
+                        <tr>
+                            <td>Điểm cộng khuyến khích (Gồm giải + CC)</td>
+                            <td id="diemCongDisplay">
+                                <!-- Lấy dcLocal từ kết quả đầu tiên hoặc hiển thị mặc định -->
+                                <span th:if="${not #lists.isEmpty(ketQuaToHop)}"
+                                      th:text="${#numbers.formatDecimal(ketQuaToHop[0].dcLocal, 1, 2)}"></span>
+                            </td>
+                        </tr>
+
+                        <!-- ============ LIST TỔ HỢP ============ -->
+                        <tr th:each="th : ${listToHop}" th:attr="data-matohop=${th.maToHop}">
+
+                            <td th:text="'Tổ hợp ' + ${th.maToHop}"></td>
+
+                            <td>
+
+                                <div>
+                                    <span th:text="${th.mon1}"></span>:
+                                    <input type="number"
+                                           class="input-diem"
+                                           th:name="${th.maToHop + '_' + th.mon1}"
+                                           value="0">
+                                    <input th:each="dm : ${ketQuaToHop}"
+                                           th:if="${dm.maToHop == th.maToHop}"
+                                           th:text="${#numbers.formatDecimal(dm.diemC1,1,2)} + ' + ((' +
+             ${#numbers.formatDecimal(dm.x1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA1,1,2)} + ') / (' +
+             ${#numbers.formatDecimal(dm.diemB1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA1,1,2)} + ')) * (' +
+             ${#numbers.formatDecimal(dm.diemD1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC1,1,2)} + ')'">
+                                </div>
+
+                                <div>
+                                    <span th:text="${th.mon2}"></span>:
+                                    <input type="number"
+                                           class="input-diem"
+                                           th:name="${th.maToHop + '_' + th.mon2}"
+                                           value="0">
+                                    <input th:each="dm : ${ketQuaToHop}"
+                                           th:if="${dm.maToHop == th.maToHop}"
+                                           th:text="${#numbers.formatDecimal(dm.diemC2,1,2)} + ' + ((' +
+             ${#numbers.formatDecimal(dm.x2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA2,1,2)} + ') / (' +
+             ${#numbers.formatDecimal(dm.diemB2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA2,1,2)} + ')) * (' +
+             ${#numbers.formatDecimal(dm.diemD2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC2,1,2)} + ')'">
+
+                                </div>
+
+                                <div>
+                                    <span th:text="${th.mon3}"></span>:
+                                    <input type="number"
+                                           class="input-diem"
+                                           th:name="${th.maToHop + '_' + th.mon3}"
+                                           value="0">
+                                    <input th:each="dm : ${ketQuaToHop}"
+                                           th:if="${dm.maToHop == th.maToHop}"
+                                           th:text="${#numbers.formatDecimal(dm.diemC3,1,2)} + ' + ((' +
+             ${#numbers.formatDecimal(dm.x3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA3,1,2)} + ') / (' +
+             ${#numbers.formatDecimal(dm.diemB3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA3,1,2)} + ')) * (' +
+             ${#numbers.formatDecimal(dm.diemD3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC3,1,2)} + ')'">
+
+                                </div>
+
+                                <div>
+                                    <b>Xét ngưỡng = Tổng 3 môn + điểm ưu tiên</b>
+
+                                    <span th:each="cs : ${ketQuaToHop}"
+                                          th:if="${cs.maToHop == th.maToHop}"
+                                          th:text="${#strings.concat(
+            #numbers.formatDecimal(cs.mon11,1,2),
+            ' + ',
+            #numbers.formatDecimal(cs.mon22,1,2),
+            ' + ',
+            #numbers.formatDecimal(cs.mon33,1,2),
+            ' + ',
+            #numbers.formatDecimal(khuVucVSAT,1,2),
+            ' + ',
+            #numbers.formatDecimal(doiTuongVSAT,1,2),
+            ' = ',
+            #numbers.formatDecimal(
+                (cs.mon11 != null ? cs.mon11 : 0)
+              + (cs.mon22 != null ? cs.mon22 : 0)
+              + (cs.mon33 != null ? cs.mon33 : 0)
+              + (khuVucVSAT != null ? khuVucVSAT : 0)
+              + (doiTuongVSAT != null ? doiTuongVSAT : 0),
+            1,2)
+      )}">
+</span>
+    </span>
+
+                                    <span th:if="${ketQuaToHop == null}">0.00</span>
+                                </div>
+
+                                <div>
+                                    <b>Điểm tổ hợp xét tuyển(ĐTHXT) =</b>
+
+                                    <span th:each="cs : ${ketQuaToHop}"
+                                          th:if="${cs.maToHop == th.maToHop}"
+                                          th:with="tongDiem=${(cs.mon11?:0)*(cs.hs11?:0) + (cs.mon22?:0)*(cs.hs22?:0) + (cs.mon33?:0)*(cs.hs33?:0)},
+               tongHS=${(cs.hs11?:0) + (cs.hs22?:0) + (cs.hs33?:0)}"
+                                          th:text="${cs.mona + ' * ' + #numbers.formatDecimal(cs.hs11,1,2) +
+                ' + ' + cs.monb + ' * ' + #numbers.formatDecimal(cs.hs22,1,2) +
+                ' + ' + cs.monc + ' * ' + #numbers.formatDecimal(cs.hs33,1,2) +
+                ' = ' + #numbers.formatDecimal(tongDiem / (tongHS == 0 ? 1 : tongHS) * 3, 1, 2)}">
+</span>
+</span>
+
+
+
+
+                                </div>
+
+                                <div>
+                                    <b>Độ lệch tổ hợp góc</b>
+
+                                    <span th:each="cs : ${ketQuaToHop}"
+                                          th:if="${cs.maToHop == th.maToHop}"
+                                          th:text="${#strings.concat(
+
+            #numbers.formatDecimal(cs.doLech,1,2),
+
+      )}">
+</span>
+
+
+
+
+                                </div>
+                                <div>
+                                    <b>Điểm ưu tiên</b>
+
+                                    <span th:each="cs : ${ketQuaToHop}"
+                                          th:if="${cs.maToHop == th.maToHop}"
+                                          th:text="${#numbers.formatDecimal(
+                (khuVucVSAT != null ? khuVucVSAT : 0)
+              + (doiTuongVSAT != null ? doiTuongVSAT : 0),
+              1, 2
+          )}">
+    </span>
+                                </div>
+
+                                <div>
+                                    <b>Điểm xét tuyển = ĐTHXT + DC + DUT + Độ lệch</b>
+                                    <div th:each="cs : ${ketQuaToHop}" th:if="${cs.maToHop == th.maToHop}">
+        <span th:text="${#numbers.formatDecimal(
+            ( (cs.mon11*cs.hs11 + cs.mon22*cs.hs22 + cs.mon33*cs.hs33) / (cs.hs11+cs.hs22+cs.hs33) * 3 )
+            , 1, 2)}"></span> (ĐTHXT)
+                                        + <span th:text="${#numbers.formatDecimal(cs.dcLocal, 1, 2)}"></span> (Điểm cộng)
+                                        + <span th:text="${#numbers.formatDecimal(khuVucVSAT + doiTuongVSAT, 1, 2)}"></span> (DUT)
+                                        + <span th:text="${#numbers.formatDecimal(cs.doLech, 1, 2)}"></span> (Lệch)
+                                        <br>
+                                        <strong style="color: #2563eb;" th:text="'= ' + ${#numbers.formatDecimal(cs.tongDiem, 1, 2)}"></strong>
+                                    </div>
+                                </div>
+
+
+                                <div>
+                                <b>Tổng tổ hợp:</b>
+
+                                <span th:each="kq : ${ketQuaToHop}"
+                                      th:if="${kq.maToHop == th.maToHop}"
+                                      th:text="${#numbers.formatDecimal(kq.tongDiem,1,2)}">
+    </span>
+
+                                <span th:if="${ketQuaToHop == null}">0.00</span>
+                            </div>
+
+
+
+                            </td>
+                        </tr>
+
+
+
+                        </tbody>
+                    </table>
+
+                </div>
+                <div>
+                    <p>
+                        Điểm sàn:
+                        <span th:text="${diemSan}"></span>
+                        -
+                        <b th:text="${isDatDiemSan} ? 'ĐẠT' : 'KHÔNG ĐẠT'"></b>
+                    </p>
+
+                    <p>
+                        Điểm trúng tuyển:
+                        <span th:text="${diemTrungTuyen}"></span>
+                        -
+                        <b th:text="${isDatTrungTuyen} ? 'ĐẬU' : 'RỚT'"></b>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ================= JS ================= -->
+<script>
+    const diem10 = window.diem10 || {};
+    const listToHop = window.listToHop || [];
+
+    console.log("🚀 INIT JS");
+    console.log("diem10:", diem10);
+    console.log("listToHop:", listToHop);
+
+    /* ================= FILL ================= */
+    function fillDiemMon() {
+
+        console.log("📌 fillDiemMon()");
+
+        if (!listToHop.length) {
+            console.warn("❌ listToHop rỗng");
+            return;
+        }
+
+        listToHop.forEach(th => {
+
+            const ma = th.maToHop;
+
+            const i1 = document.querySelector(`input[name="${ma}_${th.mon1}"]`);
+            const i2 = document.querySelector(`input[name="${ma}_${th.mon2}"]`);
+            const i3 = document.querySelector(`input[name="${ma}_${th.mon3}"]`);
+
+            if (i1) i1.value = diem10[th.mon1] ?? 0;
+            if (i2) i2.value = diem10[th.mon2] ?? 0;
+            if (i3) i3.value = diem10[th.mon3] ?? 0;
+        });
+    }
+
+    /* ================= TÍNH ĐIỂM ================= */
+  function tinhTong() {
+    // 1. Lấy điểm ưu tiên (Khu vực + Đối tượng)
+    let dut = parseFloat([[${khuVucVSAT}]] || 0) + parseFloat([[${doiTuongVSAT}]] || 0);
+
+    let max = 0;
+
+    listToHop.forEach(th => {
+        const row = document.querySelector(`tr[data-matohop="${th.maToHop}"]`);
+        // 2. Lấy dcLocal riêng cho từng tổ hợp (vì có thể khác nhau do coTiengAnh)
+        // Lưu ý: Bạn nên gắn dcLocal vào một data-attribute ở HTML để JS dễ lấy
+        let dcLocal = parseFloat(row.querySelector('.dc-local-val')?.value || [[${diemCongVSAT}]] || 0);
+
+        const inputs = row.querySelectorAll('input.input-diem');
+        let tongDiemBaMon = 0;
+        let tongHeSo = (th.hsMon1 || 1) + (th.hsMon2 || 1) + (th.hsMon3 || 1);
+
+        // Tính điểm 3 môn theo hệ số
+        let d1 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon1}"]`).value || 0);
+        let d2 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon2}"]`).value || 0);
+        let d3 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon3}"]`).value || 0);
+
+        let tongRaw = ((d1 * (th.hsMon1||1)) + (d2 * (th.hsMon2||1)) + (d3 * (th.hsMon3||1))) / tongHeSo * 3;
+
+        // Lấy độ lệch
+        let doLech = parseFloat(row.querySelector('.do-lech-val')?.innerText || 0);
+
+        let tongCuoi = tongRaw + doLech + dut + dcLocal;
+
+        if (tongCuoi > max) max = tongCuoi;
+    });
+
+    document.getElementById("res-tongDiem").innerText = max.toFixed(2);
+}
+
+    /* ================= EVENTS ================= */
+    function bindEvents() {
+        document.querySelectorAll(".input-diem").forEach(i => {
+            i.addEventListener("input", tinhTong);
+        });
+    }
+
+    /* ================= INIT ================= */
+    document.addEventListener("DOMContentLoaded", () => {
+
+        console.log("🚀 DOM READY");
+
+        fillDiemMon();
+        bindEvents();
+        tinhTong();
+    });
+    function noiSuy(x, a, b, c, d) {
+    if (b === a) return c;
+
+    return c + ((x - a) / (b - a)) * (d - c);
+}
+</script>
+
+</body>
+</html>

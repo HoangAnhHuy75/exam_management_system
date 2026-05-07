@@ -19,7 +19,6 @@
     <div class="profile-content">
         <div class="profile-container">
 
-            <!-- Card trái -->
             <div class="profile-card-left">
                 <div class="avatar-container">
                     <img th:src="${student != null and student.gioiTinh != null} ?
@@ -37,7 +36,6 @@
                 <h2 th:text="(${student?.ho} ?: '') + ' ' + (${student?.ten} ?: '')"></h2>
             </div>
 
-            <!-- Card phải -->
             <div class="profile-card-right">
                 <div class="card-header">
                     <h3>Thông tin định danh</h3>
@@ -83,7 +81,6 @@
     </div>
 </div>
 
-<!-- Script -->
 <script th:replace="~{header :: header-script}"></script>
 
 <script>

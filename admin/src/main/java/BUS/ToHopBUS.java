@@ -37,6 +37,23 @@ public class ToHopBUS {
 
         return tohopDao.update(t);
     }
+    
+    public int delete(ToHopDTO t){
+        int success = tohopDao.delete(t);
+        return success;
+    }
+    
+    // tìm 1 mã tổ hợp
+    public ToHopDTO findOneByTH(String maTH) {
+
+    for(ToHopDTO t : tohopDao.getAllToHop()) {
+        if(t.getMatohop().equals(maTH)) {
+            return t;
+        }
+    }
+        return null;
+    }
+    
     public int getIdbyIndex(int index){
         ArrayList<ToHopDTO> list = tohopDao.getAllToHop();
         if(index >=0 && index < list.size())

@@ -65,6 +65,23 @@ public class ToHopNganhDAO {
             return 0;
         }
     }
+    
+    // Xóa ngành
+    public int delete(ToHopNganhDTO t) {
+        Transaction tx = null;
+        try (Session se = HibernateUtil.getSessionFactory().openSession()) {
+            tx = se.beginTransaction();
+            se.delete(t);
+            tx.commit();
+            return 1;
+        } catch (Exception e) {
+            if(tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     // Thêm list
     public void insertList(List<ToHopNganhDTO> list) {
@@ -187,7 +204,6 @@ public class ToHopNganhDAO {
 
             int maNganhCol = getColumnIndex(headerRow, "MANGANH");
             int maToHopCol = getColumnIndex(headerRow, "MA_TO_HOP");
-            int tbKeysCol = getColumnIndex(headerRow, "tb_keys");
             int dolechCol = getColumnIndex(headerRow, "Độ lệch");
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
@@ -209,7 +225,9 @@ public class ToHopNganhDAO {
                 // ===== ONLY DB FIELDS =====
                 dto.setManganh(maNganh);
                 dto.setMatohop(maToHop);
-                dto.setTb_keys(getCell(row, tbKeysCol));
+                // tạo tb_keys từ 2 field
+                String tbKeys = maNganh + "_" + maToHop;
+                dto.setTb_keys(tbKeys);
 
                 // ===== PARSE MÔN + HỆ SỐ =====
                 Object[] result = parseMonAndHeSo(maToHop);

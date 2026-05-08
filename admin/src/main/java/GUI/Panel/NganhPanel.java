@@ -8,15 +8,18 @@ import BUS.NganhBUS;
 import DAO.NganhDAO;
 import DTO.NganhDTO;
 import GUIDialog.AddNganhDialog;
+import GUIDialog.DetailNganhDialog;
 import GUIDialog.UpdateNganhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -105,15 +108,13 @@ public class NganhPanel extends javax.swing.JPanel {
         columnModel.getColumn(2).setPreferredWidth(80);
         columnModel.getColumn(3).setPreferredWidth(80);
         columnModel.getColumn(4).setPreferredWidth(100);
-        columnModel.getColumn(5).setPreferredWidth(120);
-        columnModel.getColumn(6).setPreferredWidth(60);
-        columnModel.getColumn(7).setPreferredWidth(60);
-        columnModel.getColumn(8).setPreferredWidth(60);
-        columnModel.getColumn(9).setPreferredWidth(60);
-        columnModel.getColumn(10).setPreferredWidth(80);
-        columnModel.getColumn(11).setPreferredWidth(80);
-        columnModel.getColumn(12).setPreferredWidth(80);
-        columnModel.getColumn(13).setPreferredWidth(80);
+        // Giấu từ cột index 5 đến hết index 13
+        TableColumnModel column = major_table.getColumnModel();
+        for (int i = 5; i < columnModel.getColumnCount(); i++) {
+            columnModel.getColumn(i).setMinWidth(0);
+            columnModel.getColumn(i).setMaxWidth(0);
+            columnModel.getColumn(i).setPreferredWidth(0);
+        }
     }
     public void loadTenNganhToComboBox() {
         jComboBox1.removeAllItems(); // xóa dữ liệu cũ
@@ -335,11 +336,21 @@ public class NganhPanel extends javax.swing.JPanel {
         btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_delete.setForeground(new java.awt.Color(255, 255, 255));
         btn_delete.setText("Xóa");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
 
         btn_chitiet.setBackground(new java.awt.Color(0, 0, 255));
         btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
         btn_chitiet.setText("Chi tiết");
+        btn_chitiet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_chitietActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -499,6 +510,91 @@ public class NganhPanel extends javax.swing.JPanel {
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
         new UpdateNganhDialog((Frame) parentWindow, true, this, nganh).setVisible(true);
     }//GEN-LAST:event_major_updateActionPerformed
+
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        int row = major_table.getSelectedRow();
+        if(row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa ngành này không?", "Xác nhận xóa",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        if(confirm != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
+        String maNganh = major_table.getValueAt(row, 0).toString();
+
+        NganhDTO n = nganhB.findOneByNganh(maNganh);
+
+        if(n == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy dữ liệu");
+            return;
+        }
+        if(nganhB.delete(n) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa ngành thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            dataTable(nganhB.getListN());
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
+    private void btn_chitietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_chitietActionPerformed
+        int vitriRow = major_table.getSelectedRow();
+
+        if (vitriRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngành để xem chi tiết!");
+            return;
+        }
+
+        // Lấy dữ liệu từ table
+        
+        String maNganh = major_table.getValueAt(vitriRow, 0).toString();
+        String tenNganh = major_table.getValueAt(vitriRow, 1).toString();
+        String toHopGoc = major_table.getValueAt(vitriRow, 2).toString();
+        int chiTieu = Integer.parseInt(major_table.getValueAt(vitriRow, 3).toString());
+
+        java.math.BigDecimal diemSan = new java.math.BigDecimal(major_table.getValueAt(vitriRow, 4).toString());
+        Object value = major_table.getValueAt(vitriRow, 5);
+        java.math.BigDecimal diemTrungTuyen = null;
+
+        if (value != null && !value.toString().trim().isEmpty()) {
+            diemTrungTuyen = new java.math.BigDecimal(value.toString());
+        }
+        String xtt = major_table.getValueAt(vitriRow, 6).toString();
+        String dgnl = major_table.getValueAt(vitriRow, 7).toString();
+        String thpt = major_table.getValueAt(vitriRow, 8).toString();
+        String vsat = major_table.getValueAt(vitriRow, 9).toString();
+
+        Integer slXTT = (Integer) major_table.getValueAt(vitriRow, 10);
+        Integer slDGNL = (Integer) major_table.getValueAt(vitriRow, 11);
+        Integer slTHPT = (Integer) major_table.getValueAt(vitriRow, 12);
+        Integer slVSAT = (Integer) major_table.getValueAt(vitriRow, 13);
+
+        // Tạo DTO
+        NganhDTO nganh = new NganhDTO();
+        nganh.setIdNganh(nganhB.getIdbyIndex(vitriRow));
+        nganh.setMaNganh(maNganh);
+        nganh.setTenNganh(tenNganh);
+        nganh.setNToHopGoc(toHopGoc);
+        nganh.setNChiTieu(chiTieu);
+        nganh.setNDiemSan(diemSan);
+        nganh.setNDiemTrungTuyen(diemTrungTuyen);
+        nganh.setNTuyenThang(xtt);
+        nganh.setNDGNL(dgnl);
+        nganh.setNTHPT(thpt);
+        nganh.setNVSAT(vsat);
+        nganh.setSlXTT(slXTT);
+        nganh.setSlDGNL(slDGNL);
+        nganh.setSlTHPT(slTHPT);
+        nganh.setSlVSAT(slVSAT);
+
+        // Mở dialog
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        new DetailNganhDialog((Frame) parentWindow, true, this, nganh).setVisible(true);
+    }//GEN-LAST:event_btn_chitietActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

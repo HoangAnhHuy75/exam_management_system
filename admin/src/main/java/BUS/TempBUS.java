@@ -20,7 +20,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class NguyenVongBUS {
+public class TempBUS {
     private DiemThiBUS dtBus = new DiemThiBUS();
     private ThiSinhBUS tsBus = new ThiSinhBUS();
     private DiemCongBUS dcBus = new DiemCongBUS();
@@ -283,16 +283,22 @@ public class NguyenVongBUS {
                 String matohop = (String) row[0];
                 String key = cccd + "_" + maNganh + "_" + matohop + "_THPT";
                 DiemCongDTO dc = diemCongMap.get(key);
+
                 BigDecimal diemCC = (dc != null && dc.getDiemCC() != null) ? dc.getDiemCC() : BigDecimal.ZERO;
                 BigDecimal diemUTXT = (dc != null && dc.getDiemUtxt() != null) ? dc.getDiemUtxt() : BigDecimal.ZERO;
                 boolean hasTA = hasTiengAnh(row);
-                BigDecimal thxt = tinhTHXT(row, dt, diemCC, hasTA);
-                if (thxt == null) {
+                BigDecimal thxt;
+                if ("THPT".equals(dt.getD_phuongthuc())) {
+                    thxt = tinhTHXT(row, dt, diemCC, hasTA);
+                    if (thxt == null) {
+                        continue;
+                    }
+                } else if ("ĐGNL".equals(dt.getD_phuongthuc())) {
+                    thxt = BigDecimal.ZERO;
+                } else {
                     continue;
                 }
-                BigDecimal tong = hasTA
-                        ? thxt.add(diemUTXT)
-                        : thxt.add(diemCC).add(diemUTXT);
+                BigDecimal tong = hasTA ? thxt.add(diemUTXT) : thxt.add(diemCC).add(diemUTXT);
 
                 // ===== ưu tiên KV + ĐT =====
                 BigDecimal diemUT = tinhDiemKhuVucDoiTuong(tong, ts);

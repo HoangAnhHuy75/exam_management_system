@@ -16,6 +16,7 @@ import static org.apache.poi.ss.usermodel.CellType.STRING;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 /**
@@ -23,10 +24,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  * @author HP
  */
 public class DiemThiBUS {
+
     private DiemThiDAO diemThiDao = new DiemThiDAO();
     private ThiSinhDAO thiSinhDao = new ThiSinhDAO();
-    private HashSet<String> cccdCache = null;
+    private HashSet<String> keyCache = null;
     private ArrayList<DiemThiDTO> diemThiList = new ArrayList<>();
+
+    private enum FileType {
+        THPT,
+        DGNL,
+        UNKNOWN
+    }
 //    cache
 //    public ArrayList<DiemThiDTO> getList(){
 //
@@ -37,59 +45,119 @@ public class DiemThiBUS {
 //    return diemThiList;
 //}
     // lấy danh sách điểm thi
-    public ArrayList<DiemThiDTO> getList(){
+
+    public ArrayList<DiemThiDTO> getList() {
         diemThiList = diemThiDao.getAllDiem();
         return diemThiList;
     }
-    
+
     // load cccd combobox
-    public List<String> loadCbbCccd(){
+    public List<String> loadCbbCccd() {
         return thiSinhDao.getAllCCCD();
     }
+
     // load sbd khi chọn cccd
     public List<String> loadCbbSBD(String cccd) {
         return thiSinhDao.getSBDByCccd(cccd);
     }
+
     // thêm điểm
     public int insert(DiemThiDTO dt) {
-        if(checkDup(dt.getCccd())) {
+        if (checkDup(dt)) {
             return 0;
         }
         int success = diemThiDao.insert(dt);
+        if (success > 0) {
+            keyCache.add(buildKey(dt));
+        }
         return success;
     }
-    
+
     // sửa điểm
     public int update(DiemThiDTO dt) {
         int success = diemThiDao.update(dt);
         return success;
     }
-    
+
     // xóa điểm
     public int delete(DiemThiDTO dt) {
         int success = diemThiDao.delete(dt);
         return success;
     }
-    
+
     //kiểm tra trùng cccd
-    public boolean checkDup(String cccd) {
-        return diemThiDao.getAllDiem().stream()
-                .anyMatch(n -> n.getCccd().equalsIgnoreCase(cccd));
+    public boolean checkDup(DiemThiDTO dt) {
+
+        if (keyCache == null) {
+            keyCache = new HashSet<>();
+
+            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
+                keyCache.add(buildKey(item));
+            }
+        }
+
+        return keyCache.contains(buildKey(dt));
     }
-    
+
+    private String buildKey(DiemThiDTO dt) {
+        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim();
+    }
+
+    public int importExcel(String filePath) {
+        FileType type = detectFileType(filePath);
+        switch (type) {
+            case THPT:
+                return importFromExcel(filePath);
+            case DGNL:
+                return importDGNL(filePath);
+            default:
+                return -1;
+        }
+    }
+
+    private FileType detectFileType(String filePath) {
+        try (FileInputStream fis = new FileInputStream(new File(filePath)); Workbook work = WorkbookFactory.create(fis)) {
+            if (work.getNumberOfSheets() > 1) {
+                Sheet sheet1 = work.getSheetAt(1);
+                Row headerRow1 = sheet1.getRow(0);
+                if (headerRow1 != null) {
+                    boolean hasCMND = getColumnIndex(headerRow1, "CMND") != -1;
+                    boolean hasDIEM = getColumnIndex(headerRow1, "DIEM") != -1;
+                    if (hasCMND && hasDIEM) {
+                        return FileType.DGNL;
+                    }
+                }
+            }
+            Sheet sheet0 = work.getSheetAt(0);
+            Row headerRow0 = sheet0.getRow(0);
+            if (headerRow0 != null) {
+                boolean hasTO = getColumnIndex(headerRow0, "TO") != -1;
+                boolean hasVA = getColumnIndex(headerRow0, "VA") != -1;
+                if (hasTO && hasVA) {
+                    System.out.println("===> FILE THPT tại sheet 0");
+                    return FileType.THPT;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return FileType.UNKNOWN;
+    }
+
     //tìm kiếm theo cccd
     public ArrayList<DiemThiDTO> findBycccd(String cccd) {
         ArrayList<DiemThiDTO> rs = new ArrayList<>();
         String cancuoc = cccd != null ? cccd.toLowerCase() : "";
-        for(DiemThiDTO dt : diemThiDao.getAllDiem()) {
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             boolean matchCccd = cancuoc.isEmpty() || dt.getCccd().toLowerCase().contains(cancuoc);
-            if(matchCccd) {
+            if (matchCccd) {
                 rs.add(dt);
             }
         }
         return rs;
     }
-    
+
     // tìm 1 cccd
     public DiemThiDTO findOneByCCCD(String cccd) {
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
@@ -99,73 +167,77 @@ public class DiemThiBUS {
         }
         return null;
     }
-    
+
     //filter theo phương thức xét tuyển
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
         String ptText = convertPhuongThuc(pt);
         ArrayList<DiemThiDTO> list = new ArrayList<>();
-        
-        for(DiemThiDTO dt: diemThiDao.getAllDiem()) {
-            if(dt.getD_phuongthuc() == null) continue;
-            if(dt.getD_phuongthuc().equalsIgnoreCase(ptText)) {
+
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            if (dt.getD_phuongthuc() == null) {
+                continue;
+            }
+            if (dt.getD_phuongthuc().equalsIgnoreCase(ptText)) {
                 list.add(dt);
             }
         }
         return list;
     }
+
     //filter nâng cao (theo loại điểm và môn)
-    public ArrayList<DiemThiDTO> filterByLoaiDiemVaMon(String mon,String loai){
+    public ArrayList<DiemThiDTO> filterByLoaiDiemVaMon(String mon, String loai) {
         ArrayList<DiemThiDTO> list = new ArrayList<>();
-        for(DiemThiDTO dt : diemThiDao.getAllDiem()){
-            BigDecimal diem = layDiemTheoMon(dt, mon); 
-            if(diem == null) continue;
-            if(loai.equals("Giỏi") && diem.compareTo(new BigDecimal("8")) >= 0)
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            BigDecimal diem = layDiemTheoMon(dt, mon);
+            if (diem == null) {
+                continue;
+            }
+            if (loai.equals("Giỏi") && diem.compareTo(new BigDecimal("8")) >= 0) {
                 list.add(dt);
-            else if(loai.equals("Khá") && diem.compareTo(new BigDecimal("6.5")) >= 0 && diem.compareTo(new BigDecimal("8")) < 0)
+            } else if (loai.equals("Khá") && diem.compareTo(new BigDecimal("6.5")) >= 0 && diem.compareTo(new BigDecimal("8")) < 0) {
                 list.add(dt);
-            else if(loai.equals("Trung bình") && diem.compareTo(new BigDecimal("5")) >= 0 && diem.compareTo(new BigDecimal("6.5")) < 0 )
+            } else if (loai.equals("Trung bình") && diem.compareTo(new BigDecimal("5")) >= 0 && diem.compareTo(new BigDecimal("6.5")) < 0) {
                 list.add(dt);
-            else if(loai.equals("Yếu") && diem.compareTo(new BigDecimal("3.5")) >= 0 && diem.compareTo(new BigDecimal("5")) < 0)
+            } else if (loai.equals("Yếu") && diem.compareTo(new BigDecimal("3.5")) >= 0 && diem.compareTo(new BigDecimal("5")) < 0) {
                 list.add(dt);
-            else if(loai.equals("Kém") && diem.compareTo(new BigDecimal("3.5")) < 0)
+            } else if (loai.equals("Kém") && diem.compareTo(new BigDecimal("3.5")) < 0) {
                 list.add(dt);
+            }
         }
         return list;
     }
-    
+
     // Thống kê theo môn
     public HashMap<String, Integer> thongKetheoMon(String mon) {
-        HashMap<String,Integer> map = new HashMap<>();
+        HashMap<String, Integer> map = new HashMap<>();
         map.put("Giỏi", 0);
         map.put("Khá", 0);
         map.put("Trung bình", 0);
         map.put("Yếu", 0);
         map.put("Kém", 0);
-        
-        for(DiemThiDTO dt : diemThiDao.getAllDiem()) {
+
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             BigDecimal diem = layDiemTheoMon(dt, mon);
-           
-            if(diem == null) continue;
-            
-            if(diem.compareTo(new BigDecimal("8")) >= 0 ){
+
+            if (diem == null) {
+                continue;
+            }
+
+            if (diem.compareTo(new BigDecimal("8")) >= 0) {
                 map.put("Giỏi", map.get("Giỏi") + 1);
-            }
-            else if(diem.compareTo(new BigDecimal("6.5")) >= 0 ){
+            } else if (diem.compareTo(new BigDecimal("6.5")) >= 0) {
                 map.put("Khá", map.get("Khá") + 1);
-            }
-            else if(diem.compareTo(new BigDecimal("5")) >= 0 ){
+            } else if (diem.compareTo(new BigDecimal("5")) >= 0) {
                 map.put("Trung bình", map.get("Trung bình") + 1);
-            }
-            else if(diem.compareTo(new BigDecimal("3.5")) >= 0 ){
+            } else if (diem.compareTo(new BigDecimal("3.5")) >= 0) {
                 map.put("Yếu", map.get("Yếu") + 1);
-            }
-            else {
+            } else {
                 map.put("Kém", map.get("Kém") + 1);
             }
         }
         return map;
     }
-    
+
     public int updateList(List<DiemThiDTO> list) {
         try {
             if (list == null || list.isEmpty()) {
@@ -178,16 +250,17 @@ public class DiemThiBUS {
             return -1;
         }
     }
-    
-    public HashMap<String, DiemThiDTO> diemthiMap(){
+
+    public HashMap<String, DiemThiDTO> diemthiMap() {
         HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
-        for(DiemThiDTO dt : diemThiDao.getAllDiem())
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             diemthiMap.put(dt.getCccd(), dt);
+        }
         return diemthiMap;
     }
-    
+
     // lấy điểm theo môn
-    public BigDecimal layDiemTheoMon(DiemThiDTO dt,String mon) {
+    public BigDecimal layDiemTheoMon(DiemThiDTO dt, String mon) {
         switch (mon) {
             case "Toán":
                 return dt.getTO();
@@ -224,8 +297,7 @@ public class DiemThiBUS {
         }
         return null;
     }
-    
-    
+
     public int getColumnIndex(Row header, String columnName) {
         for (Cell cell : header) {
             if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
@@ -234,14 +306,16 @@ public class DiemThiBUS {
         }
         return -1;
     }
-    
-    public String getCell(Row row, int index){
-        if(index==-1)
+
+    public String getCell(Row row, int index) {
+        if (index == -1) {
             return null;
+        }
         Cell cell = row.getCell(index);
-        if(cell == null)
+        if (cell == null) {
             return null;
-         switch (cell.getCellType()) {
+        }
+        switch (cell.getCellType()) {
             case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
@@ -250,7 +324,7 @@ public class DiemThiBUS {
                 return cell.toString().trim();
         }
     }
-    
+
     private BigDecimal parseBigDecimal(String value) {
         try {
             if (value == null || value.trim().isEmpty()) {
@@ -261,13 +335,80 @@ public class DiemThiBUS {
             return null;
         }
     }
-    
+
+    // đọc file ĐGNL
+    public List<DiemThiDTO> readFileDGNL(String filePath) {
+        List<DiemThiDTO> list = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Workbook work = WorkbookFactory.create(fis);
+            Sheet sheet = work.getSheetAt(1);
+            Row headerRow = sheet.getRow(0);
+            int cccdCol = getColumnIndex(headerRow, "CMND");
+            int diemCol = getColumnIndex(headerRow, "DIEM");
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                String cccd = getCell(row, cccdCol);
+                if (cccd == null || cccd.trim().isEmpty()) {
+                    continue;
+                }
+                String diemStr = getCell(row, diemCol);
+                if (diemStr == null || diemStr.trim().isEmpty()) {
+                    continue;
+                }
+                DiemThiDTO dto = new DiemThiDTO();
+                dto.setCccd(cccd.trim());
+                dto.setD_phuongthuc("DGNL");
+                dto.setNL1(parseBigDecimal(diemStr));
+                list.add(dto);
+            }
+            work.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    // import điểm ĐGNL
+    public int importDGNL(String filePath) {
+        List<DiemThiDTO> importList = readFileDGNL(filePath);
+        if (importList == null || importList.isEmpty()) {
+            return 0;
+        }
+        if (keyCache == null) {
+            keyCache = new HashSet<>();
+            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
+                keyCache.add(buildKey(item));
+            }
+        }
+        List<DiemThiDTO> newList = new ArrayList<>();
+        for (DiemThiDTO dt : importList) {
+            if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
+                continue;
+            }
+            String key = buildKey(dt);
+            // tránh trùng DB + file
+            if (!keyCache.contains(key)) {
+                newList.add(dt);
+                keyCache.add(key);
+            }
+        }
+        if (!newList.isEmpty()) {
+            diemThiDao.saveAll(newList);
+        }
+        return newList.size();
+    }
+
     // đọc file
     public List<DiemThiDTO> readFile(String filePath) {
         List<DiemThiDTO> list = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(new File(filePath));
-            Workbook work = new XSSFWorkbook(fis);
+            Workbook work = WorkbookFactory.create(fis);
             Sheet sheet = work.getSheetAt(0);
             Row headerRow = sheet.getRow(0);
             int cccdCol = getColumnIndex(headerRow, "CCCD");
@@ -330,25 +471,30 @@ public class DiemThiBUS {
         }
         return list;
     }
-    
+
     // import điểm thi
     public int importFromExcel(String filePath) {
         List<DiemThiDTO> importList = readFile(filePath);
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-        if (cccdCache == null) {
-            cccdCache = new HashSet<>(diemThiDao.getAllCCCD());
+        if (keyCache == null) {
+            keyCache = new HashSet<>();
+
+            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
+                keyCache.add(buildKey(item));
+            }
         }
         List<DiemThiDTO> newList = new ArrayList<>();
         for (DiemThiDTO dt : importList) {
             if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
                 continue;
             }
-            String cccd = dt.getCccd().trim();
-            if (!cccdCache.contains(cccd)) {
+            String key = buildKey(dt);
+
+            if (!keyCache.contains(key)) {
                 newList.add(dt);
-                cccdCache.add(cccd); // tránh trùng DB + file
+                keyCache.add(key);
             }
         }
         if (!newList.isEmpty()) {
@@ -356,7 +502,7 @@ public class DiemThiBUS {
         }
         return newList.size();
     }
-    
+
     public String convertPhuongThuc(String pt) {
         switch (pt) {
             case "Tuyển thẳng":

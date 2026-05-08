@@ -446,10 +446,53 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                 JOptionPane.YES_NO_OPTION
         );
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            nvBus.xetTuyen();
-            dataTableNV(nvBus.getList());
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
         }
+
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setSize(300, 120);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setLayout(new BorderLayout());
+
+        JLabel text = new JLabel("Đang xét tuyển, vui lòng chờ...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        loadingDialog.add(text, BorderLayout.CENTER);
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+            String message = "";
+
+            @Override
+            protected Void doInBackground() {
+                try {
+                    nvBus.xetTuyen();
+                    message = "Xét tuyển hoàn tất!";
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi xét tuyển!";
+                }
+                return null;
+            }
+
+            @Override
+            protected void done() {
+                loadingDialog.dispose();
+                JOptionPane.showMessageDialog(null, message);
+                dataTableNV(nvBus.getList());
+            }
+        };
+
+        worker.execute();
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_xettuyenActionPerformed
 
 

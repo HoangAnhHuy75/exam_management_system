@@ -430,7 +430,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
                     // log debug
                     System.out.println("Đang import: " + file.getName());
 
-                    count = diemThiB.importFromExcel(filePath);
+                    count = diemThiB.importExcel(filePath);
 
                     if (count == 0) {
                         message = "File không có dữ liệu!";

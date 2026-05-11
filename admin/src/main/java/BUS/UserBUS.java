@@ -113,9 +113,8 @@ public class UserBUS {
 
         for (UserDTO u : userDAO.getAll()) {
             boolean matchUsername = u.getUsername() != null && u.getUsername().toLowerCase().contains(key);
-            boolean matchRole = u.getRole() != null && u.getRole().toLowerCase().contains(key);
 
-            if (matchUsername || matchRole) {
+            if (matchUsername) {
                 result.add(u);
             }
         }
@@ -132,31 +131,37 @@ public class UserBUS {
     }
 
     // ===== Login =====
-    public String login(String username, String password) {
-    if (username == null || password == null) {
-        return "EMPTY";
+    public UserDTO login(
+        String username,
+        String password
+) throws Exception {
+
+    if (username == null
+            || password == null
+            || username.trim().isEmpty()
+            || password.trim().isEmpty()) {
+
+        throw new Exception("Vui lòng nhập đầy đủ dữ liệu");
     }
 
-    UserDTO user = userDAO.findByUsername(username.trim());
+    UserDTO user =
+            userDAO.findByUsername(
+                    username.trim()
+            );
 
     if (user == null) {
-        return "NOT_FOUND";
+        throw new Exception("Tài khoản không tồn tại");
     }
-
-    
 
     if (!user.getPassword().equals(password)) {
-        return "WRONG_PASSWORD";
-    }
-    if (user.getEnabled() != null && !user.getEnabled()) {
-        return "BANNED";
-    }
-    // trả role
-    if ("ADMIN".equalsIgnoreCase(user.getRole())) {
-        return "ADMIN";
+        throw new Exception("Sai mật khẩu");
     }
 
-    return "USER";
+    if (Boolean.FALSE.equals(user.getEnabled())) {
+        throw new Exception("Tài khoản đã bị khóa");
+    }
+
+    return user;
 }
 
     // ===== Filter theo role + trạng thái =====
@@ -164,11 +169,10 @@ public class UserBUS {
         ArrayList<UserDTO> result = new ArrayList<>();
 
         for (UserDTO u : userDAO.getAll()) {
-            boolean matchRole = role.equals("Tất cả") || u.getRole().equalsIgnoreCase(role);
+            boolean matchRole = role.equals("Tất cả");
 
             boolean matchStatus = status.equals("Tất cả")
-                    || (status.equals("Active") && Boolean.TRUE.equals(u.getEnabled()))
-                    || (status.equals("Banned") && Boolean.FALSE.equals(u.getEnabled()));
+                    || (status.equals("Active") && Boolean.TRUE.equals(u.getEnabled()));
 
             if (matchRole && matchStatus) {
                 result.add(u);
@@ -193,9 +197,6 @@ public class UserBUS {
             return "Password phải >= 6 ký tự";
         }
 
-        if (u.getRole() == null || u.getRole().trim().isEmpty()) {
-            return "Vai trò không được để trống";
-        }
 
         return null;
     }

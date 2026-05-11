@@ -339,27 +339,148 @@ CREATE TABLE `xt_tohop_monthi` (
 
 DROP TABLE IF EXISTS xt_user;
 
-CREATE TABLE `xt_user` (
-    `iduser` INT NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(50) NOT NULL,
-    `password` VARCHAR(255) NOT NULL,
-    `role` VARCHAR(10) NOT NULL DEFAULT 'USER',
-    `enabled` TINYINT(1) DEFAULT 1,
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`iduser`),
-    UNIQUE KEY `username_UNIQUE` (`username`)
+CREATE TABLE xt_user (
+    iduser INT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    enabled TINYINT(1) DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (iduser),
+    UNIQUE KEY username_UNIQUE (username)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_bin;
 
+DROP TABLE IF EXISTS xt_role;
+
+CREATE TABLE xt_role (
+    idrole INT NOT NULL AUTO_INCREMENT,
+    role_name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idrole),
+    UNIQUE KEY role_name_UNIQUE (role_name)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS xt_permission;
+
+CREATE TABLE xt_permission (
+    idpermission INT NOT NULL AUTO_INCREMENT,
+    permission_name VARCHAR(100) NOT NULL,
+    PRIMARY KEY (idpermission),
+    UNIQUE KEY permission_name_UNIQUE (permission_name)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS xt_user_role;
+
+CREATE TABLE xt_user_role (
+    iduser INT NOT NULL,
+    idrole INT NOT NULL,
+    PRIMARY KEY (iduser, idrole),
+    CONSTRAINT fk_user_role_user FOREIGN KEY (iduser) REFERENCES xt_user (iduser) ON DELETE CASCADE,
+    CONSTRAINT fk_user_role_role FOREIGN KEY (idrole) REFERENCES xt_role (idrole) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+DROP TABLE IF EXISTS xt_role_permission;
+
+CREATE TABLE xt_role_permission (
+    idrole INT NOT NULL,
+    idpermission INT NOT NULL,
+    PRIMARY KEY (idrole, idpermission),
+    CONSTRAINT fk_role_permission_role FOREIGN KEY (idrole) REFERENCES xt_role (idrole) ON DELETE CASCADE,
+    CONSTRAINT fk_role_permission_permission FOREIGN KEY (idpermission) REFERENCES xt_permission (idpermission) ON DELETE CASCADE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
 INSERT INTO
-    xt_user (
-        username,
-        password,
-        role,
-        enabled
-    )
-VALUES ('admin', '123456', 'ADMIN', 1),
-    ('user01', '123456', 'USER', 1),
-    ('user02', '123456', 'USER', 1);
+    xt_role (role_name)
+VALUES ('ADMIN'),
+    ('STAFF'),
+    ('VIEWER');
+
+INSERT INTO xt_permission (permission_name) VALUES
+
+-- NGANH
+('nganh.read'), ('nganh.create'), ('nganh.update'), ('nganh.delete'),
+
+-- TOHOP
+('tohop.read'), ('tohop.create'), ('tohop.update'), ('tohop.delete'),
+
+-- NGANH_TOHOP
+('nganh_tohop.read'),
+('nganh_tohop.create'),
+('nganh_tohop.update'),
+('nganh_tohop.delete'),
+
+-- THISINH
+('thisinh.read'),
+('thisinh.create'),
+('thisinh.update'),
+('thisinh.delete'),
+
+-- DIEMTHI
+('diemthi.read'),
+('diemthi.create'),
+('diemthi.update'),
+('diemthi.delete'),
+
+-- DIEMCONG
+('diemcong.read'),
+('diemcong.create'),
+('diemcong.update'),
+('diemcong.delete'),
+
+-- NGUYENVONG
+('nguyenvong.read'), ('nguyenvong.create'),
+
+-- USER
+('user.read'), ('user.create'), ('user.update'), ('user.delete');
+
+INSERT INTO
+    xt_user (username, password, enabled)
+VALUES ('admin', '123456', 1),
+    ('staff01', '123456', 1),
+    ('viewer01', '123456', 1);
+
+INSERT INTO
+    xt_user_role (iduser, idrole)
+VALUES (1, 1),
+    (2, 2),
+    (3, 3);
+
+-- ADMIN: tất cả quyền
+INSERT INTO
+    xt_role_permission (idrole, idpermission)
+SELECT 1, idpermission
+FROM xt_permission;
+
+-- STAFF
+INSERT INTO
+    xt_role_permission (idrole, idpermission)
+SELECT 2, idpermission
+FROM xt_permission
+WHERE
+    permission_name IN (
+        'thisinh.read',
+        'thisinh.create',
+        'thisinh.update',
+        'thisinh.delete',
+        'diemthi.read',
+        'diemthi.create',
+        'diemthi.update',
+        'diemthi.delete',
+        'diemcong.read',
+        'diemcong.create',
+        'diemcong.update',
+        'diemcong.delete',
+        'nguyenvong.read',
+        'nguyenvong.create',
+        'nganh.read',
+        'tohop.read'
+    );
+
+-- VIEWER: chỉ xem
+INSERT INTO
+    xt_role_permission (idrole, idpermission)
+SELECT 3, idpermission
+FROM xt_permission
+WHERE
+    permission_name LIKE '%.read';
 /*!40101 SET character_set_client = @saved_cs_client */
 ;
 

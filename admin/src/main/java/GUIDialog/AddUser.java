@@ -5,15 +5,19 @@
 package GUIDialog;
 
 import BUS.NganhBUS;
+import BUS.PermissionBUS;
 import BUS.ToHopBUS;
 import BUS.UserBUS;
 import DTO.NganhDTO;
+import DTO.RoleDTO;
 import DTO.UserDTO;
 import GUI.Panel.UserPanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
@@ -29,6 +33,8 @@ public class AddUser extends javax.swing.JDialog {
     UserBUS userBus = new  UserBUS();
     Combobox_design cbb_design = new Combobox_design();
     JCheckBox chk_showPassword;
+    private ArrayList<JCheckBox> roleCheckboxes =
+        new ArrayList<>();
     /**
      * Creates new form AddNganhDialog
      */
@@ -40,13 +46,12 @@ public class AddUser extends javax.swing.JDialog {
     jPanel2.remove(jPasswordField1);
     addPasswordField();
     this.userPanel = userPanel;
+    addRoleCheckboxes();
+
     // setup combobox role
-    cbb_role.removeAllItems();
-    cbb_role.addItem("USER");
-    cbb_role.addItem("ADMIN");
     setLocationRelativeTo(null); // hiển thị giữa màn hình
     }
-   
+    
     private void addPasswordField() {
     JPanel passwordPanel = new JPanel(null);
 
@@ -92,6 +97,59 @@ public class AddUser extends javax.swing.JDialog {
     passwordPanel.setBounds(140, 90, 220, 30);
     jPanel2.add(passwordPanel);
 }
+    private void addRoleCheckboxes() {
+
+    PermissionBUS permissionBUS =
+            new PermissionBUS();
+
+    ArrayList<RoleDTO> roles =
+            permissionBUS.getAllRole();
+
+    javax.swing.JLabel lbRole =
+            new javax.swing.JLabel("Vai trò");
+
+    lbRole.setBounds(50, 155, 70, 20);
+
+    jPanel2.add(lbRole);
+
+    int x = 140;
+    int y = 150;
+
+    for (RoleDTO role : roles) {
+
+        JCheckBox chk =
+                new JCheckBox(
+                        role.getRoleName()
+                );
+
+        chk.setBackground(java.awt.Color.WHITE);
+
+        chk.putClientProperty(
+                "role",
+                role
+        );
+
+        chk.setBounds(x, y, 100, 25);
+
+        roleCheckboxes.add(chk);
+
+        jPanel2.add(chk);
+
+        x += 110;
+
+        // xuống dòng nếu quá dài
+        if (x > 330) {
+
+            x = 140;
+
+            y += 30;
+        }
+    }
+
+    jPanel2.repaint();
+
+    jPanel2.revalidate();
+}
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -106,8 +164,6 @@ public class AddUser extends javax.swing.JDialog {
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        cbb_role = new javax.swing.JComboBox<>();
         jtf_username = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -130,13 +186,6 @@ public class AddUser extends javax.swing.JDialog {
         jLabel3.setText("Mật khẩu");
         jPanel2.add(jLabel3);
         jLabel3.setBounds(50, 100, 70, 16);
-
-        jLabel4.setText("Vai trò");
-        jPanel2.add(jLabel4);
-        jLabel4.setBounds(50, 150, 90, 16);
-
-        jPanel2.add(cbb_role);
-        cbb_role.setBounds(140, 140, 220, 33);
 
         jtf_username.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -216,21 +265,43 @@ public class AddUser extends javax.swing.JDialog {
            
     String username = jtf_username.getText().trim();
     String password = new String(jPasswordField1.getPassword()).trim();
-    String role = (String) cbb_role.getSelectedItem();
 
     // ===== Validate =====
-    if (username.isEmpty() || password.isEmpty()||role == null) {
+    if (username.isEmpty() || password.isEmpty()) {
         JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
         return;
     }
+// ===== role =====
+Set<RoleDTO> roles =
+        new HashSet<>();
 
+for (JCheckBox chk : roleCheckboxes) {
+
+    if (chk.isSelected()) {
+
+        RoleDTO role =
+                (RoleDTO) chk.getClientProperty("role");
+
+        roles.add(role);
+    }
+}
+
+if (roles.isEmpty()) {
+
+    JOptionPane.showMessageDialog(
+            this,
+            "Vui lòng chọn ít nhất 1 role!"
+    );
+
+    return;
+}
     // ===== Tạo DTO =====
     UserDTO user = new UserDTO();
     user.setUsername(username);
     user.setPassword(password);
-    user.setRole(role);
+    user.setRoles(roles);
     user.setEnabled(true);
-
+    
     // ===== Gọi BUS =====
     String message = userBus.insert(user);
     if(message.equals("OK")){
@@ -257,13 +328,11 @@ public class AddUser extends javax.swing.JDialog {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> cbb_role;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPasswordField jPasswordField1;

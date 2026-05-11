@@ -10,12 +10,22 @@ import DTO.ToHopNganhDTO;
 import GUIDialog.AddToHopNganhDialog;
 import GUIDialog.UpdateToHopNganhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
+import java.io.File;
 import java.util.ArrayList;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -65,6 +75,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         btn_add.setIcon(new FlatSVGIcon("./resources/icon/add.svg",0.2f));
         btn_update.setIcon(new FlatSVGIcon("./resources/icon/edit.svg",0.2f));
         btn_import.setIcon(new FlatSVGIcon("./resources/icon/import.svg",0.2f));
+        btn_delete.setIcon(new FlatSVGIcon("./resources/icon/delete.svg",0.2f));
     }
 
     public void dataTable(ArrayList<ToHopNganhDTO> list) {
@@ -76,7 +87,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
                     "Môn 1", "HS1",
                     "Môn 2", "HS2",
                     "Môn 3", "HS3",
-                    "Độ lệch"
+                    "Độ lệch","tb_keys"
                 }
         ) {
             @Override
@@ -96,7 +107,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
                 t.getTh_mon1(), t.getHsmon1(),
                 t.getTh_mon2(), t.getHsmon2(),
                 t.getTh_mon3(), t.getHsmon3(),
-                t.getDolech()
+                t.getDolech(), t.getTb_keys()
             });
         }
 
@@ -107,7 +118,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         table_design.setUpTable(combination_major_table);
 
         TableColumnModel columnModel = combination_major_table.getColumnModel();
-
+        
         columnModel.getColumn(0).setPreferredWidth(100); // mã ngành
         columnModel.getColumn(1).setPreferredWidth(150); // tên ngành
         columnModel.getColumn(2).setPreferredWidth(100); // mã tổ hợp
@@ -120,6 +131,11 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         columnModel.getColumn(8).setPreferredWidth(50);
 
         columnModel.getColumn(9).setPreferredWidth(100);
+        TableColumn column = columnModel.getColumn(10); // index 10 = tb_keys
+
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setWidth(0);
     }
 
     /**
@@ -143,6 +159,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         btn_update = new javax.swing.JButton();
         btn_timkiem = new javax.swing.JButton();
         btn_refresh = new javax.swing.JButton();
+        btn_delete = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
         setPreferredSize(new java.awt.Dimension(1008, 1008));
@@ -240,6 +257,16 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
             }
         });
 
+        btn_delete.setBackground(new java.awt.Color(255, 0, 0));
+        btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_delete.setForeground(new java.awt.Color(255, 255, 255));
+        btn_delete.setText("Xóa");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -247,18 +274,20 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addGap(10, 10, 10)
-                .addComponent(jtf_timkiem, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                .addComponent(jtf_timkiem, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(132, 132, 132)
+                .addGap(46, 46, 46)
                 .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(54, 54, 54))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47))
             .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
@@ -273,9 +302,10 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
                         .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_update, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 838, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -285,35 +315,71 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_addActionPerformed
 
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
-        try {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Chọn file Excel");
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
 
-            int result = fileChooser.showOpenDialog(this);
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
 
-            if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File file = fileChooser.getSelectedFile();
+        File file = fileChooser.getSelectedFile();
+        String filePath = file.getAbsolutePath();
 
-                // GỌI BUS
-                int count = toH_ng_Bus.importFromExcel(file.getAbsolutePath());
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setLayout(new BorderLayout());
 
-                if (count == 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this, "File không có dữ liệu hoặc bị trùng!");
-                    return;
+        JLabel text = new JLabel("Đang import tổ hợp ngành...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        loadingDialog.add(text, BorderLayout.CENTER);
+
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+
+            int count = 0;
+            String message = "";
+
+            @Override
+            protected Void doInBackground() {
+                try {
+                    count = toH_ng_Bus.importFromExcel(filePath);
+
+                    if (count == 0) {
+                        message = "File không có dữ liệu hoặc bị trùng!";
+                    } else {
+                        message = "Import thành công " + count + " tổ hợp ngành!";
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi import: " + e.getMessage();
                 }
-
-                // reload lại bảng
-                dataTable(toH_ng_Bus.getAll());
-
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Import thành công " + count + " tổ hợp ngành!");
+                return null;
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Lỗi khi import: " + e.getMessage());
-        }
+            @Override
+            protected void done() {
+                loadingDialog.dispose(); // tắt loading
+
+                JOptionPane.showMessageDialog(null, message);
+
+                // reload bảng
+                dataTable(toH_ng_Bus.getAll());
+            }
+        };
+
+        worker.execute();
+
+        // hiển thị loading
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 
     private void btn_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_updateActionPerformed
@@ -357,9 +423,40 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         dataTable(toH_ng_Bus.getAll());
     }//GEN-LAST:event_btn_refreshActionPerformed
 
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        int row = combination_major_table.getSelectedRow();
+        if(row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa tổ hợp ngành này không?", "Xác nhận xóa",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        if(confirm != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
+        String tb_key = combination_major_table.getValueAt(row, 10).toString();
+
+        ToHopNganhDTO t = toH_ng_Bus.findOneByTHNganh(tb_key);
+
+        if(t == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy dữ liệu");
+            return;
+        }
+        if(toH_ng_Bus.delete(t) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa tổ hợp ngành thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            dataTable(toH_ng_Bus.getAll());
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
+    private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_import;
     private javax.swing.JButton btn_refresh;
     private javax.swing.JButton btn_timkiem;

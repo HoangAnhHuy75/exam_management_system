@@ -7,15 +7,25 @@ package GUI.Panel;
 import BUS.ThiSinhBUS;
 import DTO.ThiSinhDTO;
 import GUIDialog.AddThiSinhDialog;
+import GUIDialog.DetailThiSinhDialog;
 import GUIDialog.UpdateThiSinhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Window;
+import javax.swing.JLabel;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import java.io.File;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
@@ -79,6 +89,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_filter.setIcon(new FlatSVGIcon("./resources/icon/filter.svg", 0.2f));
         btn_import.setIcon(new FlatSVGIcon("./resources/icon/import.svg", 0.2f));
         btn_refresh.setIcon(new FlatSVGIcon("./resources/icon/refresh.svg", 0.25f));
+        btn_chitiet.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
         btn_timkiem.setIcon(new FlatSVGIcon("./resources/icon/look.svg", 0.3f));
         jtf_design.setUpJTF(jtf_timkiem);
         btn_design.setUpBtn(btn_timkiem, Color.white, Color.white);
@@ -131,18 +142,21 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         // format giống bảng tổ hợp
         table_design.centerTable(thisinh_table);
         table_design.setUpTable(thisinh_table);
-
+        
         TableColumnModel columnModel = thisinh_table.getColumnModel();
+        // 1. Định nghĩa danh sách các index cần ẩn
+        int[] columnsToHide = {1, 2, 6, 7, 8}; // SBD, Họ, SĐT, Email, Nơi sinh
 
+        // 2. Chạy vòng lặp để ẩn
+        for (int index : columnsToHide) {
+            columnModel.getColumn(index).setMinWidth(0);
+            columnModel.getColumn(index).setMaxWidth(0);
+            columnModel.getColumn(index).setPreferredWidth(0);
+        }
         columnModel.getColumn(0).setPreferredWidth(120); // CCCD
-        columnModel.getColumn(1).setPreferredWidth(100); // SBD
-        columnModel.getColumn(2).setPreferredWidth(70); // Họ tên
         columnModel.getColumn(3).setPreferredWidth(130); // Họ tên
         columnModel.getColumn(4).setPreferredWidth(120); // Ngày sinh
         columnModel.getColumn(5).setPreferredWidth(100); // Giới tính
-        columnModel.getColumn(6).setPreferredWidth(120); // SĐT
-        columnModel.getColumn(7).setPreferredWidth(200); // Email
-        columnModel.getColumn(8).setPreferredWidth(150); // Nơi sinh
         columnModel.getColumn(9).setPreferredWidth(100); // Đối tượng
         columnModel.getColumn(10).setPreferredWidth(100); // Khu vực
     }
@@ -183,6 +197,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         jtf_timkiem = new javax.swing.JTextField();
         btn_timkiem = new javax.swing.JButton();
         btn_refresh = new javax.swing.JButton();
+        btn_chitiet = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(204, 204, 204));
 
@@ -213,7 +228,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                         .addComponent(jLabel3)))
                 .addGap(452, 452, 452)
                 .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(409, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,7 +334,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_edit.setBackground(new java.awt.Color(52, 152, 219));
         btn_edit.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_edit.setForeground(new java.awt.Color(255, 255, 255));
-        btn_edit.setText("Sửa hồ sơ");
+        btn_edit.setText("Sửa");
         btn_edit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_editActionPerformed(evt);
@@ -330,11 +345,16 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_delete.setForeground(new java.awt.Color(255, 255, 255));
         btn_delete.setText("Xóa ");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
 
         btn_add.setBackground(new java.awt.Color(46, 204, 113));
         btn_add.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_add.setForeground(new java.awt.Color(255, 255, 255));
-        btn_add.setText("Thêm thí sinh");
+        btn_add.setText("Thêm ");
         btn_add.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btn_addActionPerformed(evt);
@@ -370,6 +390,16 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             }
         });
 
+        btn_chitiet.setBackground(new java.awt.Color(0, 0, 255));
+        btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
+        btn_chitiet.setText("Chi tiết");
+        btn_chitiet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_chitietActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -382,14 +412,16 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                 .addComponent(btn_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 109, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
             .addComponent(jScrollPane2)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -403,10 +435,11 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                     .addComponent(jtf_timkiem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
                     .addComponent(btn_timkiem, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(btn_refresh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -416,36 +449,55 @@ public class ThiSinhPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
-        try {
-            javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-            fileChooser.setDialogTitle("Chọn file Excel");
-
-            int result = fileChooser.showOpenDialog(this);
-
-            if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-                java.io.File file = fileChooser.getSelectedFile();
-
-                // GỌI BUS
-                int count = thisinhBus.importFromExcel(file.getAbsolutePath());
-
-                if (count == 0) {
-                    javax.swing.JOptionPane.showMessageDialog(this,
-                            "File không có dữ liệu hoặc bị trùng!");
-                    return;
-                }
-
-                // reload lại bảng
-                loadDataTable(thisinhBus.getAll()); // hoặc dataTable(...) tùy bạn đặt tên
-
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Import thành công " + count + " thí sinh!");
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Lỗi khi import: " + e.getMessage());
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
+        int result = fileChooser.showOpenDialog(this);
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
         }
+
+        File file = fileChooser.getSelectedFile();
+
+        // ===== LOADING DIALOG =====
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setSize(300, 120);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        JLabel text = new JLabel("Đang import thí sinh...", JLabel.CENTER);
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        loadingDialog.add(text, BorderLayout.CENTER);
+        loadingDialog.pack();
+
+        // ===== BACKGROUND TASK =====
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            int count = 0;
+            String message = "";
+            @Override
+            protected Void doInBackground() {
+                try {
+                    count = thisinhBus.importFromExcel(file.getAbsolutePath());
+                    if (count == 0) {
+                        message = "File không có dữ liệu hoặc tất cả bị trùng!";
+                    } else {
+                        message = "Import thành công " + count + " thí sinh!";
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    message = "Lỗi khi import: " + e.getMessage();
+                }
+                return null;
+            }
+            @Override
+            protected void done() {
+                loadingDialog.dispose();
+                JOptionPane.showMessageDialog(null, message);
+                loadDataTable(thisinhBus.getAll());
+            }
+        };
+        worker.execute();
+        loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
@@ -456,7 +508,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         String gt = (String) jComboBox2.getSelectedItem();
         String kv = (String) jComboBox1.getSelectedItem();
         String ns = (String) jComboBox3.getSelectedItem();
-        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.timKiem(gt, kv, ns);
+        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.filter(gt, kv, ns);
         loadDataTable(thisinhs);
     }//GEN-LAST:event_btn_filterActionPerformed
 
@@ -516,7 +568,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
     private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
         String text = jtf_timkiem.getText();
-        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.timKiem2(text);
+        ArrayList<ThiSinhDTO> thisinhs = thisinhBus.searchText(text);
         loadDataTable(thisinhs);
     }//GEN-LAST:event_btn_timkiemActionPerformed
 
@@ -530,9 +582,90 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         jtf_timkiem.setText("");
     }//GEN-LAST:event_btn_refreshActionPerformed
 
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        int row = thisinh_table.getSelectedRow();
+        if(row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa thí sinh này không?", "Xác nhận xóa",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        if(confirm != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
+        String cccd = thisinh_table.getValueAt(row,0).toString();
+
+        ThiSinhDTO ts = thisinhBus.findByCCCD(cccd);
+
+        if(ts == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy dữ liệu");
+            return;
+        }
+        if(thisinhBus.delete(ts) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa thí sinh thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            loadDataTable(thisinhBus.getAll());
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
+    private void btn_chitietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_chitietActionPerformed
+        int vitriRow = thisinh_table.getSelectedRow();
+        if (vitriRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn thí sinh!");
+            return;
+        }
+        int idthisinh = thisinhBus.getIDbyIndex(vitriRow);
+        String cccd = getSafeString(vitriRow, 0);
+        String sbd = getSafeString(vitriRow, 1);
+        String ho = getSafeString(vitriRow, 2);
+        String ten = getSafeString(vitriRow, 3);
+        String password = thisinhBus.getPasswordByCCCD(cccd);
+
+        Object objDate = thisinh_table.getValueAt(vitriRow, 4);
+        Date ngaysinh = null;
+
+        if (objDate instanceof Date) {
+            ngaysinh = (Date) objDate;
+        } else if (objDate instanceof String) {
+            try {
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+                ngaysinh = sdf.parse((String) objDate);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        String gioitinh = getSafeString(vitriRow, 5);
+        String dt = getSafeString(vitriRow, 6);
+        String email = getSafeString(vitriRow, 7);
+        String noisinh = getSafeString(vitriRow, 8);
+        String doituong = getSafeString(vitriRow, 9);
+        String khuvuc = getSafeString(vitriRow, 10);
+        ThiSinhDTO thisinh = new ThiSinhDTO();
+        thisinh.setIdthisinh(idthisinh);
+        thisinh.setCccd(cccd);
+        thisinh.setHo(ho);
+        thisinh.setTen(ten);
+        thisinh.setSobaodanh(sbd);
+        thisinh.setPassword(password);
+        thisinh.setNgaySinh(ngaysinh);
+        thisinh.setGioiTinh(gioitinh);
+        thisinh.setKhuVuc(khuvuc);
+        thisinh.setDoiTuong(doituong);
+        thisinh.setEmail(email);
+        thisinh.setDienThoai(dt);
+        thisinh.setNoiSinh(noisinh);
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        new DetailThiSinhDialog((Frame) parentWindow, true, this, thisinh).setVisible(true);
+    }//GEN-LAST:event_btn_chitietActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
+    private javax.swing.JButton btn_chitiet;
     private javax.swing.JButton btn_delete;
     private javax.swing.JButton btn_edit;
     private javax.swing.JButton btn_filter;

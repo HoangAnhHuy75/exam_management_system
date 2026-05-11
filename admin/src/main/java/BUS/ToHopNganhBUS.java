@@ -36,6 +36,22 @@ public class ToHopNganhBUS {
         return tohopnganhDao.update(tohopnganh);
     }
     
+    public int delete(ToHopNganhDTO t){
+        int success = tohopnganhDao.delete(t);
+        return success;
+    }
+    
+    // tìm 1 ngành
+    public ToHopNganhDTO findOneByTHNganh(String tb_key) {
+
+    for(ToHopNganhDTO t : tohopnganhDao.getAll()) {
+        if(t.getTb_keys().equals(tb_key)) {
+            return t;
+        }
+    }
+        return null;
+    }
+    
      public int getIdbyIndex(int index){
         ArrayList<ToHopNganhDTO> list = tohopnganhDao.getAll();
         if(index >=0 && index < list.size())
@@ -48,7 +64,6 @@ public class ToHopNganhBUS {
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-
         // map dữ liệu đã có
         HashMap<String, Boolean> existingMap = new HashMap<>();
         for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
@@ -57,16 +72,12 @@ public class ToHopNganhBUS {
                 existingMap.put(key, true);
             }
         }
-
         ArrayList<ToHopNganhDTO> newList = new ArrayList<>();
-
         for (ToHopNganhDTO t : importList) {
             if (t.getManganh() == null || t.getMatohop() == null) {
                 continue;
             }
-
             String key = (t.getManganh().trim() + "_" + t.getMatohop().trim()).toLowerCase();
-
             if (!existingMap.containsKey(key)) {
                 // chuẩn hóa
                 t.setManganh(t.getManganh().trim());
@@ -76,12 +87,10 @@ public class ToHopNganhBUS {
                 existingMap.put(key, true);
             }
         }
-
         if (!newList.isEmpty()) {
             tohopnganhDao.insertList(newList);
             tohopnganhList.addAll(newList);
         }
-
         return newList.size();
     }
 

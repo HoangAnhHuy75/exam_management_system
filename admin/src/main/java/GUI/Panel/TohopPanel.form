@@ -29,15 +29,17 @@
               <Component id="btn_timkiem" min="-2" pref="40" max="-2" attributes="0"/>
               <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
               <Component id="btn_refresh" min="-2" pref="115" max="-2" attributes="0"/>
-              <EmptySpace pref="67" max="32767" attributes="0"/>
+              <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="combination_import" min="-2" pref="128" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="combination_add" min="-2" pref="126" max="-2" attributes="0"/>
+              <Component id="combination_add" min="-2" pref="94" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="btn_update" min="-2" pref="120" max="-2" attributes="0"/>
+              <Component id="btn_update" min="-2" pref="91" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="btn_delete" min="-2" pref="82" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="btn_chitiet" min="-2" pref="102" max="-2" attributes="0"/>
+              <EmptySpace pref="14" max="32767" attributes="0"/>
           </Group>
           <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
       </Group>
@@ -50,12 +52,13 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jTextField1" min="-2" pref="40" max="-2" attributes="0"/>
                   <Component id="btn_timkiem" min="-2" pref="40" max="-2" attributes="0"/>
-                  <Component id="btn_refresh" min="-2" pref="39" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btn_refresh" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
+                      <Component id="combination_import" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="combination_add" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="btn_update" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                       <Component id="btn_delete" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="combination_add" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
-                      <Component id="combination_import" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
+                      <Component id="btn_chitiet" alignment="3" min="-2" pref="40" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -182,7 +185,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="Th&#xea;m t&#x1ed5; h&#x1ee3;p"/>
+        <Property name="text" type="java.lang.String" value="Th&#xea;m "/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="combination_addActionPerformed"/>
@@ -212,7 +215,7 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="ff" red="ff" type="rgb"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="S&#x1eed;a t&#x1ed5; h&#x1ee3;p"/>
+        <Property name="text" type="java.lang.String" value="S&#x1eed;a "/>
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_updateActionPerformed"/>
@@ -231,6 +234,26 @@
         </Property>
         <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_deleteActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btn_chitiet">
+      <Properties>
+        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="cc" green="33" red="0" type="rgb"/>
+        </Property>
+        <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+          <Font name="Segoe UI" size="12" style="1"/>
+        </Property>
+        <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+          <Color blue="ff" green="ff" red="ff" type="rgb"/>
+        </Property>
+        <Property name="text" type="java.lang.String" value="Chi ti&#x1ebf;t"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_chitietActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

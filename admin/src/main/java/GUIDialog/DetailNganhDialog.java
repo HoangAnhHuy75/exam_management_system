@@ -1,44 +1,59 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
- */
 package GUIDialog;
 
 import BUS.NganhBUS;
 import BUS.ToHopBUS;
 import DTO.NganhDTO;
 import GUI.Panel.NganhPanel;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import javax.swing.JOptionPane;
-import util.Combobox_design;
+import java.awt.event.ItemEvent;
 
-/**
- *
- * @author kiman
- */
-public class AddNganhDialog extends javax.swing.JDialog {
+public class DetailNganhDialog extends javax.swing.JDialog {
+    NganhDTO nganhDto;
     NganhPanel nganhPanel;
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
-    Combobox_design cbb_design = new Combobox_design();
-
-    /**
-     * Creates new form AddNganhDialog
-     */
-    public AddNganhDialog(java.awt.Frame parent, boolean modal, NganhPanel nganhPanel) {
+    public DetailNganhDialog(java.awt.Frame parent, boolean modal, NganhPanel nganhPanel, NganhDTO nganhDto) {
         super(parent, modal);
         initComponents();
-        this.nganhPanel = nganhPanel;
+        this.setTitle("Xem chi tiết ngành");
         this.setLocationRelativeTo(null);
-        this.setTitle("Thêm ngành");
+        this.nganhPanel=nganhPanel;
+        this.nganhDto = nganhDto;
         khoiTao();
     }
-
     public void khoiTao() {
-        setUpCombobox();
-        loadCbb();
+        toggleInputs();
+        setData();
+    }
+
+    public void setData() {
+        if (nganhDto == null) {
+            return;
+        }
+
+        jtf_manganh.setText(nganhDto.getMaNganh());
+        jtf_tennganh.setText(nganhDto.getTenNganh());
+        jtf_chitieu.setText(String.valueOf(nganhDto.getNChiTieu()));
+
+        // Điểm sàn
+        if (nganhDto.getNDiemSan() != null) {
+            jtf_diemsan.setText(nganhDto.getNDiemSan().toString());
+        }
+
+        // Combobox tổ hợp
+        jtf_tohop.setText(nganhDto.getNToHopGoc());
+
+        // Checkbox
+        jcheck_tuyenthang.setSelected("Y".equals(nganhDto.getNTuyenThang()));
+        jcheck_dgnl.setSelected("Y".equals(nganhDto.getNDGNL()));
+        jcheck_thpt.setSelected("Y".equals(nganhDto.getNTHPT()));
+        jcheck_vsat.setSelected("Y".equals(nganhDto.getNVSAT()));
+
+        // Số lượng
+        jtf_sltt.setText(nganhDto.getSlXTT() == null ? "" : nganhDto.getSlXTT().toString());
+        jtf_dgnl.setText(nganhDto.getSlDGNL() == null ? "" : nganhDto.getSlDGNL().toString());
+        jtf_thpt.setText(nganhDto.getSlTHPT() == null ? "" : nganhDto.getSlTHPT().toString());
+        jtf_vsat.setText(nganhDto.getSlVSAT() == null ? "" : nganhDto.getSlVSAT().toString());
+
         toggleInputs();
     }
 
@@ -61,17 +76,6 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jtf_thpt.setEnabled(jcheck_thpt.isSelected());
         jtf_vsat.setEnabled(jcheck_vsat.isSelected());
     }
-    public void setUpCombobox(){
-        cbb_design.setUpComBoBox(cbb_tohopgoc);
-    }
-    public void loadCbb() {
-        cbb_tohopgoc.removeAllItems(); // xóa dữ liệu cũ
-        HashMap<String, String> tohopMap = tohopBus.tohopMap();
-        cbb_tohopgoc.addItem("Chọn tổ hợp gốc"); // placeholder
-        for (String maTH : tohopMap.keySet()) {
-            cbb_tohopgoc.addItem(tohopMap.get(maTH));
-        }
-    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -91,7 +95,6 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel5 = new javax.swing.JLabel();
         jtf_chitieu = new javax.swing.JTextField();
         jtf_tennganh = new javax.swing.JTextField();
-        cbb_tohopgoc = new javax.swing.JComboBox<>();
         jcheck_dgnl = new javax.swing.JCheckBox();
         jcheck_tuyenthang = new javax.swing.JCheckBox();
         jcheck_vsat = new javax.swing.JCheckBox();
@@ -106,15 +109,15 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
         jtf_diemsan = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jtf_tohop = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(224, 224, 224));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel1.setText("Thêm ngành tuyển sinh");
+        jLabel1.setText("Xem chi tiết ngành tuyển sinh");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -123,7 +126,7 @@ public class AddNganhDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(25, 25, 25)
                 .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(370, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -139,6 +142,8 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel2.setText("Mã ngành");
         jPanel2.add(jLabel2);
         jLabel2.setBounds(30, 40, 54, 16);
+
+        jtf_sltt.setEditable(false);
         jPanel2.add(jtf_sltt);
         jtf_sltt.setBounds(460, 30, 150, 31);
 
@@ -153,55 +158,44 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel5.setText("Chỉ tiêu");
         jPanel2.add(jLabel5);
         jLabel5.setBounds(40, 220, 41, 16);
+
+        jtf_chitieu.setEditable(false);
         jPanel2.add(jtf_chitieu);
         jtf_chitieu.setBounds(120, 210, 150, 32);
+
+        jtf_tennganh.setEditable(false);
         jPanel2.add(jtf_tennganh);
         jtf_tennganh.setBounds(120, 90, 150, 32);
 
-        jPanel2.add(cbb_tohopgoc);
-        cbb_tohopgoc.setBounds(120, 150, 150, 33);
-
         jcheck_dgnl.setText("ĐGNL");
-        jcheck_dgnl.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcheck_dgnlActionPerformed(evt);
-            }
-        });
+        jcheck_dgnl.addActionListener(this::jcheck_dgnlActionPerformed);
         jPanel2.add(jcheck_dgnl);
         jcheck_dgnl.setBounds(150, 330, 97, 36);
 
         jcheck_tuyenthang.setText("Tuyển thẳng");
-        jcheck_tuyenthang.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcheck_tuyenthangActionPerformed(evt);
-            }
-        });
+        jcheck_tuyenthang.addActionListener(this::jcheck_tuyenthangActionPerformed);
         jPanel2.add(jcheck_tuyenthang);
         jcheck_tuyenthang.setBounds(30, 330, 97, 36);
 
         jcheck_vsat.setText("VSAT");
-        jcheck_vsat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcheck_vsatActionPerformed(evt);
-            }
-        });
+        jcheck_vsat.addActionListener(this::jcheck_vsatActionPerformed);
         jPanel2.add(jcheck_vsat);
         jcheck_vsat.setBounds(410, 330, 92, 36);
 
         jcheck_thpt.setText("THPT");
-        jcheck_thpt.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jcheck_thptActionPerformed(evt);
-            }
-        });
+        jcheck_thpt.addActionListener(this::jcheck_thptActionPerformed);
         jPanel2.add(jcheck_thpt);
         jcheck_thpt.setBounds(280, 330, 95, 36);
 
         jLabel6.setText("SL Tuyển Thẳng");
         jPanel2.add(jLabel6);
-        jLabel6.setBounds(345, 40, 100, 16);
+        jLabel6.setBounds(350, 40, 100, 16);
+
+        jtf_vsat.setEditable(false);
         jPanel2.add(jtf_vsat);
         jtf_vsat.setBounds(460, 210, 150, 31);
+
+        jtf_manganh.setEditable(false);
         jPanel2.add(jtf_manganh);
         jtf_manganh.setBounds(120, 30, 150, 31);
 
@@ -212,8 +206,12 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel8.setText("SL  ĐGNL");
         jPanel2.add(jLabel8);
         jLabel8.setBounds(350, 100, 60, 16);
+
+        jtf_dgnl.setEditable(false);
         jPanel2.add(jtf_dgnl);
         jtf_dgnl.setBounds(460, 90, 150, 31);
+
+        jtf_thpt.setEditable(false);
         jPanel2.add(jtf_thpt);
         jtf_thpt.setBounds(460, 150, 150, 31);
 
@@ -224,185 +222,75 @@ public class AddNganhDialog extends javax.swing.JDialog {
         jLabel10.setText("Điểm sàn");
         jPanel2.add(jLabel10);
         jLabel10.setBounds(40, 280, 60, 16);
+
+        jtf_diemsan.setEditable(false);
         jPanel2.add(jtf_diemsan);
         jtf_diemsan.setBounds(120, 270, 150, 30);
-
-        jButton1.setBackground(new java.awt.Color(51, 204, 0));
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Lưu thông tin");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel2.add(jButton1);
-        jButton1.setBounds(320, 390, 110, 40);
 
         jButton2.setBackground(new java.awt.Color(255, 0, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Hủy");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
+        jButton2.setText("Thoát");
+        jButton2.addActionListener(this::jButton2ActionPerformed);
         jPanel2.add(jButton2);
-        jButton2.setBounds(192, 390, 90, 40);
+        jButton2.setBounds(260, 390, 90, 40);
+
+        jtf_tohop.setEditable(false);
+        jPanel2.add(jtf_tohop);
+        jtf_tohop.setBounds(120, 150, 150, 30);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 640, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(60, 60, 60)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        String manganh = jtf_manganh.getText().trim();
-        String tennganh = jtf_tennganh.getText().trim();
-        String tohopgoc = (String) cbb_tohopgoc.getSelectedItem();
-
-        // ===== 1. CHECK RỖNG =====
-        if (manganh.isEmpty() || tennganh.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin!");
-            return;
-        }
-        if (tohopgoc == null || tohopgoc.equals("Chọn tổ hợp gốc")) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn tổ hợp gốc!");
-            return;
-        }
-
-        // ===== 2. CHECK TRÙNG =====
-        if (nganhBus.checkDup(manganh)) {
-            JOptionPane.showMessageDialog(this, "Mã ngành đã tồn tại!");
-            return;
-        }
-
-        int chitieu;
-        int slthpt = 0, slvsat = 0, sltt = 0, sldgnl = 0;
-        BigDecimal diemsan;
-
-        try {
-            chitieu = Integer.parseInt(jtf_chitieu.getText().trim());
-
-            // ===== 3. CHỈ PARSE KHI CHECKBOX ĐƯỢC CHỌN =====
-            if (jcheck_thpt.isSelected()) {
-                slthpt = Integer.parseInt(jtf_thpt.getText().trim());
-            }
-
-            if (jcheck_vsat.isSelected()) {
-                slvsat = Integer.parseInt(jtf_vsat.getText().trim());
-            }
-
-            if (jcheck_tuyenthang.isSelected()) {
-                sltt = Integer.parseInt(jtf_sltt.getText().trim());
-            }
-
-            if (jcheck_dgnl.isSelected()) {
-                sldgnl = Integer.parseInt(jtf_dgnl.getText().trim());
-            }
-
-            diemsan = new BigDecimal(jtf_diemsan.getText().trim());
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số!");
-            return;
-        }
-
-        // ===== 4. CHECK ÂM =====
-        if (chitieu < 0 || slthpt < 0 || slvsat < 0 || sltt < 0 || sldgnl < 0) {
-            JOptionPane.showMessageDialog(this, "Số lượng không được âm!");
-            return;
-        }
-
-        // ===== 5. CHECK ĐIỂM =====
-        if (diemsan.compareTo(BigDecimal.ZERO) < 0
-                || diemsan.compareTo(new BigDecimal("30")) > 0) {
-            JOptionPane.showMessageDialog(this, "Điểm sàn phải từ 0 → 30!");
-            return;
-        }
-
-        // ===== 6. CHECK TỔNG =====
-        if (slthpt + slvsat + sltt + sldgnl > chitieu) {
-            JOptionPane.showMessageDialog(this, "Tổng số lượng vượt chỉ tiêu!");
-            return;
-        }
-        
-        if (slthpt + slvsat + sltt + sldgnl < chitieu) {
-            JOptionPane.showMessageDialog(this, "Tổng số lượng không đúng với chỉ tiêu!");
-            return;
-        }
-
-
-
-        // ===== 8. TẠO DTO =====
-        NganhDTO nganhDto = new NganhDTO();
-        nganhDto.setMaNganh(manganh.toUpperCase());
-        nganhDto.setTenNganh(tennganh);
-        nganhDto.setNChiTieu(chitieu);
-        nganhDto.setNDiemSan(diemsan);
-        nganhDto.setNToHopGoc(tohopgoc);
-
-        nganhDto.setSlDGNL(sldgnl);
-        nganhDto.setSlTHPT(slthpt);
-        nganhDto.setSlXTT(sltt);
-        nganhDto.setSlVSAT(slvsat);
-
-        nganhDto.setNTuyenThang(jcheck_tuyenthang.isSelected() ? "Y" : "N");
-        nganhDto.setNDGNL(jcheck_dgnl.isSelected() ? "Y" : "N");
-        nganhDto.setNTHPT(jcheck_thpt.isSelected() ? "Y" : "N");
-        nganhDto.setNVSAT(jcheck_vsat.isSelected() ? "Y" : "N");
-
-        // ===== 9. INSERT =====
-        if (nganhBus.insert(nganhDto) == 1) {
-            JOptionPane.showMessageDialog(this, "Thêm ngành thành công!");
-            nganhPanel.dataTable(nganhBus.getListN());
-            this.dispose();
-        } else {
-            JOptionPane.showMessageDialog(this, "Thêm thất bại!");
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         this.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jcheck_tuyenthangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_tuyenthangActionPerformed
-        toggleInputs();
+        jcheck_tuyenthang.addActionListener(e -> {
+        // Luôn giữ nguyên trạng thái cũ bất chấp người dùng click
+        jcheck_tuyenthang.setSelected(!jcheck_tuyenthang.isSelected()); 
+        });
     }//GEN-LAST:event_jcheck_tuyenthangActionPerformed
 
     private void jcheck_dgnlActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_dgnlActionPerformed
-        toggleInputs();
+        jcheck_dgnl.addActionListener(e -> {
+        // Luôn giữ nguyên trạng thái cũ bất chấp người dùng click
+        jcheck_dgnl.setSelected(!jcheck_dgnl.isSelected()); 
+        });
     }//GEN-LAST:event_jcheck_dgnlActionPerformed
 
     private void jcheck_thptActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_thptActionPerformed
-        toggleInputs();
+        jcheck_thpt.addActionListener(e -> {
+        // Luôn giữ nguyên trạng thái cũ bất chấp người dùng click
+        jcheck_thpt.setSelected(!jcheck_thpt.isSelected()); 
+        });
     }//GEN-LAST:event_jcheck_thptActionPerformed
 
     private void jcheck_vsatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcheck_vsatActionPerformed
-        toggleInputs();
+        jcheck_vsat.addActionListener(e -> {
+        // Luôn giữ nguyên trạng thái cũ bất chấp người dùng click
+        jcheck_vsat.setSelected(!jcheck_vsat.isSelected()); 
+        });
     }//GEN-LAST:event_jcheck_vsatActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> cbb_tohopgoc;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
@@ -427,6 +315,7 @@ public class AddNganhDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtf_sltt;
     private javax.swing.JTextField jtf_tennganh;
     private javax.swing.JTextField jtf_thpt;
+    private javax.swing.JTextField jtf_tohop;
     private javax.swing.JTextField jtf_vsat;
     // End of variables declaration//GEN-END:variables
 }

@@ -113,7 +113,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
     public void dataTable(ArrayList<DiemThiDTO> listDiem) {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"cccd","SBD","Phương thức","TO","LI","HO","SI","SU","DI","VA","CNCN","CNNN","TI","KTPL","NK1","NK2","NL1","N1_THI","N1_CC"}
+                new String[]{"cccd","SBD","Phương thức","TO","LI","HO","SI","SU","DI","VA","TI","N1_THI","NL1","N1_CC"}
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -124,8 +124,8 @@ public class DiemThiPanel extends javax.swing.JPanel {
             model.addRow(new Object[]{
                 dt.getCccd(),dt.getSobaodanh(), convertPhuongThucToText(dt.getD_phuongthuc()),
                 dt.getTO(), dt.getLI(), dt.getHO(), dt.getSI(),
-                dt.getSU(), dt.getDI(), dt.getVA(), dt.getCNCN(), dt.getCNNN(), dt.getTI(),
-                dt.getKTPL(), dt.getNK1(), dt.getNK2(),dt.getNL1(),dt.getN1_THI(),dt.getN1_CC()
+                dt.getSU(), dt.getDI(), dt.getVA(), dt.getTI(),dt.getN1_THI(),
+                dt.getNL1(),dt.getN1_CC()
             });
         }
         table_diem.setModel(model);
@@ -133,24 +133,19 @@ public class DiemThiPanel extends javax.swing.JPanel {
         table_design.setUpTable(table_diem);
         TableColumnModel columnModel = table_diem.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100);
-        columnModel.getColumn(1).setPreferredWidth(150);
+        columnModel.getColumn(1).setPreferredWidth(130);
         columnModel.getColumn(2).setPreferredWidth(80);
         columnModel.getColumn(3).setPreferredWidth(80);
-        columnModel.getColumn(4).setPreferredWidth(60);
-        columnModel.getColumn(5).setPreferredWidth(60);
-        columnModel.getColumn(6).setPreferredWidth(60);
-        columnModel.getColumn(7).setPreferredWidth(60);
-        columnModel.getColumn(8).setPreferredWidth(60);
-        columnModel.getColumn(9).setPreferredWidth(60);
-        columnModel.getColumn(10).setPreferredWidth(60);
-        columnModel.getColumn(11).setPreferredWidth(60);
-        columnModel.getColumn(12).setPreferredWidth(60);
-        columnModel.getColumn(13).setPreferredWidth(60); 
-        columnModel.getColumn(14).setPreferredWidth(60); 
-        columnModel.getColumn(15).setPreferredWidth(60);
-        columnModel.getColumn(16).setPreferredWidth(60);
-        columnModel.getColumn(17).setPreferredWidth(85);
-        columnModel.getColumn(18).setPreferredWidth(85);
+        columnModel.getColumn(4).setPreferredWidth(80);
+        columnModel.getColumn(5).setPreferredWidth(80);
+        columnModel.getColumn(6).setPreferredWidth(80);
+        columnModel.getColumn(7).setPreferredWidth(80);
+        columnModel.getColumn(8).setPreferredWidth(80);
+        columnModel.getColumn(9).setPreferredWidth(80);
+        columnModel.getColumn(10).setPreferredWidth(80);
+        columnModel.getColumn(11).setPreferredWidth(80);
+        columnModel.getColumn(12).setPreferredWidth(85);
+        columnModel.getColumn(13).setPreferredWidth(85);
     }
     public void dataThongKe(HashMap<String, Integer> map) {
 
@@ -354,22 +349,20 @@ public class DiemThiPanel extends javax.swing.JPanel {
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(field_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(13, 13, 13)
-                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(10, 10, 10)
-                        .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1044, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(19, 19, 19)
+                .addComponent(field_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(5, 5, 5)
+                .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(13, 13, 13)
+                .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
+                .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(266, Short.MAX_VALUE))
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

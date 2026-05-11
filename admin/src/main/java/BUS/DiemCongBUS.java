@@ -144,8 +144,7 @@ public class DiemCongBUS {
     public HashMap<String, DiemCongDTO> diemcongMap(){
         HashMap<String,DiemCongDTO> diemcongMap = new HashMap<>();
         for(DiemCongDTO dc : diemCongDao.getAllDiemCong()){
-            String key = dc.getTs_cccd() + "_" + dc.getManganh() + "_" + dc.getMatohop() + "_" + dc.getPhuongthuc();
-            diemcongMap.put(key, dc);
+            diemcongMap.put(dc.getDc_keys(), dc);
         }
         return diemcongMap;
     }
@@ -219,7 +218,7 @@ public class DiemCongBUS {
                     diemCC = BigDecimal.ZERO;
                 }
                 BigDecimal diemquydoi = new BigDecimal(diemquydoiStr);
-                DiemThiDTO dt = diemthiMap.get(cccd);
+                DiemThiDTO dt = diemthiMap.get(cccd+"_THPT");
                 if (dt != null) {
                     dt.setN1_CC(diemquydoi);
                     listQuyDoiN1.add(dt);

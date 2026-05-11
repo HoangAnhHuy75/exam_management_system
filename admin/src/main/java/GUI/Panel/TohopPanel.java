@@ -7,12 +7,14 @@ package GUI.Panel;
 import BUS.ToHopBUS;
 import DTO.ToHopDTO;
 import GUIDialog.AddToHopDialog;
+import GUIDialog.DetailToHopDialog;
 import GUIDialog.UpdateToHopDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -93,10 +95,13 @@ public class TohopPanel extends javax.swing.JPanel {
 
         TableColumnModel columnModel = combination_table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100); // mã
-        columnModel.getColumn(1).setPreferredWidth(80);  // môn 1
-        columnModel.getColumn(2).setPreferredWidth(80);  // môn 2
-        columnModel.getColumn(3).setPreferredWidth(80);  // môn 3
         columnModel.getColumn(4).setPreferredWidth(200); // tên tổ hợp
+        //Ẩn các cột Môn 1, 2, 3 (Index 1, 2, 3)
+        for (int i = 1; i <= 3; i++) {
+            columnModel.getColumn(i).setMinWidth(0);
+            columnModel.getColumn(i).setMaxWidth(0);
+            columnModel.getColumn(i).setPreferredWidth(0);
+        }
     }
 
     /**
@@ -222,11 +227,21 @@ public class TohopPanel extends javax.swing.JPanel {
         btn_delete.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_delete.setForeground(new java.awt.Color(255, 255, 255));
         btn_delete.setText("Xóa");
+        btn_delete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_deleteActionPerformed(evt);
+            }
+        });
 
         btn_chitiet.setBackground(new java.awt.Color(0, 51, 204));
         btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
         btn_chitiet.setText("Chi tiết");
+        btn_chitiet.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_chitietActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -341,6 +356,58 @@ public class TohopPanel extends javax.swing.JPanel {
         dataTable(tohopBus.getListTH());
         jTextField1.setText("");
     }//GEN-LAST:event_btn_refreshActionPerformed
+
+    private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
+        int row = combination_table.getSelectedRow();
+        if(row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa tổ hợp này không?", "Xác nhận xóa",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        if(confirm != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
+        String maTH = combination_table.getValueAt(row,0).toString();
+
+        ToHopDTO t = tohopBus.findOneByTH(maTH);
+
+        if(t == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy dữ liệu");
+            return;
+        }
+        if(tohopBus.delete(t) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa tổ hợp thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            dataTable(tohopBus.getListTH());
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btn_deleteActionPerformed
+
+    private void btn_chitietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_chitietActionPerformed
+        int vitriRow = combination_table.getSelectedRow();
+        if (vitriRow == -1) {
+            javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn tổ hợp");
+            return;
+        }
+        String maTH = combination_table.getValueAt(vitriRow, 0).toString();
+        String mon1 = combination_table.getValueAt(vitriRow, 1).toString();
+        String mon2 = combination_table.getValueAt(vitriRow, 2).toString();
+        String mon3 = combination_table.getValueAt(vitriRow, 3).toString();
+        String tenTH = combination_table.getValueAt(vitriRow, 4).toString();
+        ToHopDTO tohopDto = new ToHopDTO();
+        tohopDto.setIdtohop(tohopBus.getIdbyIndex(vitriRow));
+        tohopDto.setMatohop(maTH);
+        tohopDto.setTentohop(tenTH);
+        tohopDto.setMon1(mon1);
+        tohopDto.setMon2(mon2);
+        tohopDto.setMon3(mon3);
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        new DetailToHopDialog((Frame) parentWindow, true,this,tohopDto).setVisible(true);
+    }//GEN-LAST:event_btn_chitietActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

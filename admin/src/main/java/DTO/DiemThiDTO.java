@@ -89,12 +89,17 @@ public class DiemThiDTO implements Serializable {
 
     @Column(name = "NK6", precision = 8, scale = 2)
     private BigDecimal NK6;
+    
+    @Column(name = "dotthi")
+    private String dotthi;
 
     public DiemThiDTO(Integer iddiemthi, String cccd, String sobaodanh, String d_phuongthuc,
-             BigDecimal TO, BigDecimal LI, BigDecimal HO, BigDecimal SI, BigDecimal SU,
-             BigDecimal DI, BigDecimal VA, BigDecimal GDCD, BigDecimal N1_THI, BigDecimal N1_CC, BigDecimal CNCN,
-             BigDecimal CNNN, BigDecimal TI, BigDecimal KTPL, BigDecimal NL1, BigDecimal NK1, BigDecimal NK2,
-            BigDecimal NK3, BigDecimal NK4, BigDecimal NK5, BigDecimal NK6) {
+            BigDecimal TO, BigDecimal LI, BigDecimal HO, BigDecimal SI, BigDecimal SU,
+            BigDecimal DI, BigDecimal VA, BigDecimal GDCD, BigDecimal N1_THI, BigDecimal N1_CC, BigDecimal CNCN,
+            BigDecimal CNNN, BigDecimal TI, BigDecimal KTPL, BigDecimal NL1, BigDecimal NK1, BigDecimal NK2,
+            BigDecimal NK3, BigDecimal NK4, BigDecimal NK5, BigDecimal NK6,
+            String dotthi) {
+
         this.iddiemthi = iddiemthi;
         this.cccd = cccd;
         this.sobaodanh = sobaodanh;
@@ -120,6 +125,7 @@ public class DiemThiDTO implements Serializable {
         this.NK4 = NK4;
         this.NK5 = NK5;
         this.NK6 = NK6;
+        this.dotthi = dotthi;
     }
 
     public DiemThiDTO() {
@@ -323,6 +329,14 @@ public class DiemThiDTO implements Serializable {
 
     public void setNK6(BigDecimal NK6) {
         this.NK6 = NK6;
+    }
+
+    public String getDotthi() {
+        return dotthi;
+    }
+
+    public void setDotthi(String dotthi) {
+        this.dotthi = dotthi;
     }
 
 }

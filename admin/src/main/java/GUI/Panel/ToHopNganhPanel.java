@@ -20,11 +20,12 @@ import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
+import javax.swing.SwingWorker;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.SwingWorker;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -86,7 +87,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
                     "Môn 1", "HS1",
                     "Môn 2", "HS2",
                     "Môn 3", "HS3",
-                    "Độ lệch"
+                    "Độ lệch","tb_keys"
                 }
         ) {
             @Override
@@ -106,7 +107,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
                 t.getTh_mon1(), t.getHsmon1(),
                 t.getTh_mon2(), t.getHsmon2(),
                 t.getTh_mon3(), t.getHsmon3(),
-                t.getDolech()
+                t.getDolech(), t.getTb_keys()
             });
         }
 
@@ -117,7 +118,7 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         table_design.setUpTable(combination_major_table);
 
         TableColumnModel columnModel = combination_major_table.getColumnModel();
-
+        
         columnModel.getColumn(0).setPreferredWidth(100); // mã ngành
         columnModel.getColumn(1).setPreferredWidth(150); // tên ngành
         columnModel.getColumn(2).setPreferredWidth(100); // mã tổ hợp
@@ -130,6 +131,11 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         columnModel.getColumn(8).setPreferredWidth(50);
 
         columnModel.getColumn(9).setPreferredWidth(100);
+        TableColumn column = columnModel.getColumn(10); // index 10 = tb_keys
+
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setWidth(0);
     }
 
     /**
@@ -418,7 +424,33 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_btn_refreshActionPerformed
 
     private void btn_deleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_deleteActionPerformed
-        // TODO add your handling code here:
+        int row = combination_major_table.getSelectedRow();
+        if(row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
+            return;
+        }
+        
+        int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa tổ hợp ngành này không?", "Xác nhận xóa",
+                JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
+        if(confirm != JOptionPane.OK_OPTION) {
+            return;
+        }
+        
+        String tb_key = combination_major_table.getValueAt(row, 10).toString();
+
+        ToHopNganhDTO t = toH_ng_Bus.findOneByTHNganh(tb_key);
+
+        if(t == null) {
+            JOptionPane.showMessageDialog(this, 
+                "Không tìm thấy dữ liệu");
+            return;
+        }
+        if(toH_ng_Bus.delete(t) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa tổ hợp ngành thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+            dataTable(toH_ng_Bus.getAll());
+        } else {
+            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btn_deleteActionPerformed
 
 

@@ -24,7 +24,22 @@ public class NganhBUS {
         int success = nganhDao.insert(n);
         return success;
     }
+    
+    public int delete(NganhDTO n){
+        int success = nganhDao.delete(n);
+        return success;
+    }
+    
+    // tìm 1 ngành
+    public NganhDTO findOneByNganh(String maNganh) {
 
+    for(NganhDTO n : nganhDao.getAllNganh()) {
+        if(n.getMaNganh().equals(maNganh)) {
+            return n;
+        }
+    }
+        return null;
+    }
     // Lấy danh sách ngành
     public ArrayList<NganhDTO> getListN() {
         nganhList = nganhDao.getAllNganh();

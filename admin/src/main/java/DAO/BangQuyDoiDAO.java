@@ -1,21 +1,21 @@
 package DAO;
 
-import DTO.NganhDTO;
+import DTO.BangQuyDoiDTO;
+import java.util.ArrayList;
+import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-import java.util.ArrayList;
-import java.util.List;
 import util.HibernateUtil;
 
-public class NganhDAO {
+public class BangQuyDoiDAO {
 
-    // Thêm 1 ngành
-    public int insert(NganhDTO n) {
+    // ================= INSERT =================
+    public int insert(BangQuyDoiDTO qd) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            session.save(n);
+            session.save(qd);
             tx.commit();
             return 1;
         } catch (Exception e) {
@@ -26,33 +26,17 @@ public class NganhDAO {
             return 0;
         }
     }
-    
-    public int update(NganhDTO n) {
+
+    // ================= UPDATE =================
+    public int update(BangQuyDoiDTO qd) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            session.update(n); // update object
+            session.update(qd);
             tx.commit();
             return 1;
         } catch (Exception e) {
-            e.printStackTrace();
             if (tx != null) {
-                tx.rollback();
-            }
-            return 0;
-        }
-    }
-    
-    // Xóa ngành
-    public int delete(NganhDTO n) {
-        Transaction tx = null;
-        try (Session se = HibernateUtil.getSessionFactory().openSession()) {
-            tx = se.beginTransaction();
-            se.delete(n);
-            tx.commit();
-            return 1;
-        } catch (Exception e) {
-            if(tx != null) {
                 tx.rollback();
             }
             e.printStackTrace();
@@ -60,10 +44,31 @@ public class NganhDAO {
         }
     }
 
-    // Lấy tất cả ngành
-    public ArrayList<NganhDTO> getAllNganh() {
+    // ================= DELETE =================
+    public int delete(BangQuyDoiDTO qd) {
+        Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<NganhDTO> query = session.createQuery("FROM NganhDTO", NganhDTO.class);
+            tx = session.beginTransaction();
+            session.delete(qd);
+            tx.commit();
+            return 1;
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            return 0;
+        }
+    }
+
+    // ================= GET ALL =================
+    public ArrayList<BangQuyDoiDTO> getAll() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<BangQuyDoiDTO> query =
+                    session.createQuery(
+                            "FROM BangQuyDoiDTO",
+                            BangQuyDoiDTO.class
+                    );
             return new ArrayList<>(query.list());
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,13 +76,13 @@ public class NganhDAO {
         }
     }
 
-    // Lưu danh sách ngành vào DB
-    public void insertList(List<NganhDTO> list) {
+    // ================= INSERT LIST =================
+    public void insertList(List<BangQuyDoiDTO> list) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            for (NganhDTO n : list) {
-                session.save(n);
+            for (BangQuyDoiDTO qd : list) {
+                session.save(qd);
             }
             tx.commit();
         } catch (Exception e) {

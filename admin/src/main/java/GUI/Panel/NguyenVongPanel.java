@@ -6,20 +6,15 @@ package GUI.Panel;
 
 import BUS.DiemThiBUS;
 import BUS.NguyenVongBUS;
-import DTO.DiemThiDTO;
 import DTO.NguyenVongDTO;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.util.ArrayList;
 import javax.swing.JLabel;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import java.io.File;
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
@@ -430,7 +425,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
 
     private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
         String text = jtf_timkiem.getText();
-//        dataTable(nganhB.timkiemText(text));
+        dataTableNV(nvBus.timKiemText(text));
     }//GEN-LAST:event_btn_timkiemActionPerformed
 
     private void btn_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refreshActionPerformed

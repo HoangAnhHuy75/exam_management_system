@@ -59,6 +59,23 @@ public class ToHopDAO {
             return 0;
         }
     }
+    
+    // Xóa tổ hợp
+    public int delete(ToHopDTO t) {
+        Transaction tx = null;
+        try (Session se = HibernateUtil.getSessionFactory().openSession()) {
+            tx = se.beginTransaction();
+            se.delete(t);
+            tx.commit();
+            return 1;
+        } catch (Exception e) {
+            if(tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
     // Thêm danh sách tổ hợp
     public void insertList(List<ToHopDTO> list) {

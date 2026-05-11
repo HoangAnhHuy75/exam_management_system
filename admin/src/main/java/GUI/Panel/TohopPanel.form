@@ -234,6 +234,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="X&#xf3;a"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_deleteActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="btn_chitiet">
       <Properties>
@@ -248,6 +251,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Chi ti&#x1ebf;t"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_chitietActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

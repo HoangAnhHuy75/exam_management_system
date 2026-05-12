@@ -3,371 +3,486 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <title>Chi tiết tính điểm VSAT</title>
     <style th:replace="~{header :: header-style}"></style>
     <link rel="stylesheet" th:href="@{/css/tinhdiemdanhgianangluc.css}">
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <style>
+        /* ==========================================================================
+     1. ROOT VARIABLES
+     ========================================================================== */
+  :root {
+      /* Colors - University Standard */
+      --primary-color: #003366;
+      --primary-light: #2563eb;
+      --primary-dark: #1e40af;
+      --secondary-color: #a50000;
+
+      /* Semantic Colors */
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --error: #dc2626;
+      --error-bg: #fef2f2;
+      --info: #3b82f6;
+      --info-bg: #eff6ff;
+
+      /* Neutrals */
+      --bg-body: #f4f7f9;
+      --bg-card: #ffffff;
+      --bg-alt: #f8fafc;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+      --border-soft: #cbd5e1;
+
+      /* Spacing & Borders */
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+      --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ==========================================================================
+     2. RESET + BASE
+     ========================================================================== */
+  * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+  }
+
+  body {
+      font-family: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+  }
+
+  /* ==========================================================================
+     3. MAIN LAYOUT
+     ========================================================================== */
+  .tc-wrap {
+      padding: 2.5rem 1rem;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+  }
+
+  .tc-content {
+      width: 100%;
+      max-width: 1100px;
+  }
+
+  .tc-container {
+      background: var(--bg-card);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      overflow: hidden;
+  }
+
+  .tc-body {
+      padding: 2rem 2.5rem;
+  }
+
+  /* ==========================================================================
+     4. HEADER
+     ========================================================================== */
+  .page-header {
+      padding: 2rem 2.5rem;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border-color);
+  }
+
+  .page-header h2 {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--primary-color);
+      font-size: 1.6rem;
+      font-weight: 800;
+  }
+
+  .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 1.5rem 0;
+      color: var(--primary-light);
+      font-weight: 600;
+      text-decoration: none;
+      transition: var(--transition);
+  }
+
+  .nav-link:hover {
+      color: var(--primary-dark);
+      transform: translateX(-4px);
+  }
+
+  /* ==========================================================================
+     5. SUMMARY BOX
+     ========================================================================== */
+  .result-summary {
+      background: var(--info-bg);
+      padding: 1.5rem 2rem;
+      border-radius: var(--radius-md);
+      border: 1px solid #dbeafe;
+      margin-bottom: 2rem;
+  }
+
+  .result-summary h3 {
+      color: var(--primary-dark);
+      margin-bottom: 0.75rem;
+      font-size: 1.2rem;
+  }
+
+  .text-success { color: var(--success); font-weight: 700; }
+  .text-danger { color: var(--error); font-weight: 700; }
+
+  /* ==========================================================================
+     6. TABLES (Detailed V-SAT)
+     ========================================================================== */
+  .detail-result-table {
+      margin-top: 1.5rem;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+  }
+
+  .detail-result-table table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+  }
+
+  .detail-result-table th {
+      background: var(--bg-alt);
+      padding: 1rem;
+      color: var(--text-main);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+      border-bottom: 2px solid var(--border-color);
+  }
+
+  .detail-result-table td {
+      padding: 1.25rem;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: top;
+  }
+
+  /* Mon Section */
+  .mon-section {
+      padding: 1rem 0;
+      border-bottom: 1px solid #f1f5f9;
+  }
+
+  .mon-section:last-child {
+      border-bottom: none;
+  }
+
+  /* ==========================================================================
+     7. FORM CONTROLS (Input Diem)
+     ========================================================================== */
+  .input-diem {
+      width: 80px;
+      padding: 6px 10px;
+      border: 1px solid var(--border-soft);
+      border-radius: 6px;
+      text-align: center;
+      background: var(--bg-alt);
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-left: 8px;
+  }
+
+  /* ==========================================================================
+     8. FORMULA BOX (Step-by-step)
+     ========================================================================== */
+  .formula-box {
+      background: #f8fafc;
+      border-left: 4px solid var(--primary-light);
+      padding: 1rem;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      color: var(--text-main);
+      border-radius: 4px;
+      line-height: 1.6;
+      font-family: 'JetBrains Mono', 'Consolas', monospace;
+  }
+
+  .formula-box b {
+      color: var(--primary-dark);
+      display: block;
+      margin-bottom: 4px;
+  }
+
+  code {
+      display: block;
+      padding: 10px;
+      background: #1e293b;
+      color: #f8fafc;
+      border-radius: 6px;
+      margin: 8px 0;
+      font-size: 0.85rem;
+  }
+
+  /* ==========================================================================
+     9. ACTION BUTTONS & PAGINATION
+     ========================================================================== */
+  .pagination-container {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      align-items: center;
+  }
+
+  .btn-page {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 20px;
+      background: white;
+      border: 1px solid var(--border-soft);
+      border-radius: 8px;
+      color: var(--text-main);
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+  }
+
+  .btn-page:hover:not(:disabled) {
+      background: var(--bg-alt);
+      border-color: var(--primary-light);
+      color: var(--primary-light);
+  }
+
+  .btn-page:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+  }
+
+  /* ==========================================================================
+     10. FINAL STATUS BOXES
+     ========================================================================== */
+  .final-status {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 2px solid var(--bg-alt);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+  }
+
+  .final-status > div {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+  }
+
+  /* ==========================================================================
+     11. ANIMATIONS
+     ========================================================================== */
+  @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+  }
+
+  .tc-container {
+      animation: fadeIn 0.4s ease-out;
+  }
+
+  /* ==========================================================================
+     12. RESPONSIVE
+     ========================================================================== */
+  @media (max-width: 768px) {
+      .tc-body {
+          padding: 1.5rem;
+      }
+
+      .detail-result-table table,
+      .detail-result-table thead,
+      .detail-result-table tbody,
+      .detail-result-table th,
+      .detail-result-table td,
+      .detail-result-table tr {
+          display: block;
+      }
+
+      .detail-result-table thead {
+          display: none;
+      }
+
+      .detail-result-table td {
+          border: none;
+          border-bottom: 1px solid var(--border-color);
+          width: 100% !important;
+      }
+
+      .final-status {
+          grid-template-columns: 1fr;
+      }
+  }
+    </style>
 </head>
 
 <body>
 
-<header th:replace="~{header :: header}"
-        th:with="activePage='register', portalName=${portalName}">
-</header>
-
-<script th:inline="javascript">
-    window.diem10 = [[${diem10}]];
-    window.listToHop = [[${listToHop}]];
-
-    console.log("🔥 BACKEND DATA");
-    console.log("diem10:", window.diem10);
-    console.log("listToHop:", window.listToHop);
-</script>
+<header th:replace="~{header :: header}" th:with="activePage='register', portalName=${portalName}"></header>
 
 <div class="tc-wrap">
     <div class="tc-content">
         <div class="tc-container">
 
             <header class="page-header">
-                <h2>
-                    <i data-lucide="calculator"></i>
-                    Tra cứu cách tính điểm xét tuyển
-                </h2>
+                <h2><i data-lucide="calculator"></i> Kết quả chi tiết tính điểm VSAT</h2>
             </header>
 
-            <a href="/tracuutinhdiemxettuyen" class="nav-link">
-                <i data-lucide="file-search"></i>
-                <span>Trở lại</span>
+            <a href="/tracuutinhdiemxettuyen" class="nav-link" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; color: #2563eb; margin-bottom: 20px; font-weight: 500;">
+                <i data-lucide="arrow-left" style="width: 18px;"></i> <span>Quay lại công cụ nhập điểm</span>
             </a>
 
             <div class="tc-body">
-
-                <h3 class="method-title">Tính điểm VSAT</h3>
-
-                <div class="form-grid">
-                    <div class="tc-form-group">
-                        <label>Ngành xét tuyển</label>
-                        <input type="text" th:value="${maNganh}" readonly>
+                <!-- Tóm tắt kết quả -->
+                <div class="result-summary" style="background: #eff6ff; padding: 25px; border-radius: 12px; border: 1px solid #dbeafe; margin-bottom: 25px;">
+                    <h3 style="margin-top:0; color: #1e40af;">Ngành: <span th:text="${maNganhTen ?: 'Chưa xác định'}"></span></h3>
+                    <div th:if="${toHopMax != null}">
+                        <p>Tổ hợp tối ưu nhất: <strong class="text-success" th:text="${toHopMax}"></strong></p>
+                        <p>Điểm xét tuyển cao nhất: <strong class="text-success" style="font-size: 1.8em;" th:text="${#numbers.formatDecimal(diemMax ?: 0, 1, 2)}"></strong></p>
                     </div>
                 </div>
-                <div th:if="${toHopMax != null}">
 
-
-                    <p>
-                        Tổ hợp cao nhất:
-                        <b th:text="${toHopMax}"></b>
-                    </p>
-
-                    <p>
-                        Điểm:
-                        <b th:text="${#numbers.formatDecimal(diemMax, 1, 2)}"></b>
-                    </p>
-                </div>
+                <!-- Bảng chi tiết tổ hợp -->
                 <div class="detail-result-table">
                     <table>
                         <thead>
                         <tr>
-                            <th>Nội dung</th>
-                            <th>Chi tiết</th>
+                            <th style="width: 15%;">Tổ hợp</th>
+                            <th style="width: 85%;">Quy trình tính toán chi tiết</th>
                         </tr>
                         </thead>
-
                         <tbody>
-
-                        <tr>
-                            <td>Khu vực</td>
-                            <td th:text="${khuVucVSAT}">--</td>
-                        </tr>
-
-                        <tr>
-                            <td>Đối tượng</td>
-                            <td th:text="${doiTuongVSAT}">--</td>
-                        </tr>
-
-                        <tr>
-                            <td>Điểm cộng khuyến khích (Gồm giải + CC)</td>
-                            <td id="diemCongDisplay">
-                                <!-- Lấy dcLocal từ kết quả đầu tiên hoặc hiển thị mặc định -->
-                                <span th:if="${not #lists.isEmpty(ketQuaToHop)}"
-                                      th:text="${#numbers.formatDecimal(ketQuaToHop[0].dcLocal, 1, 2)}"></span>
+                        <tr th:each="cs : ${ketQuaToHop}">
+                            <td style="vertical-align: top; text-align: center;">
+                                <b style="font-size: 1.2em; color: #1e40af;" th:text="${cs.maToHop}"></b><br>
+                                <small th:text="'(' + ${cs.mona} + '-' + ${cs.monb} + '-' + ${cs.monc} + ')'"></small>
                             </td>
-                        </tr>
-
-                        <!-- ============ LIST TỔ HỢP ============ -->
-                        <tr th:each="th : ${listToHop}" th:attr="data-matohop=${th.maToHop}">
-
-                            <td th:text="'Tổ hợp ' + ${th.maToHop}"></td>
 
                             <td>
-
-                                <div>
-                                    <span th:text="${th.mon1}"></span>:
-                                    <input type="number"
-                                           class="input-diem"
-                                           th:name="${th.maToHop + '_' + th.mon1}"
-                                           value="0">
-                                    <input th:each="dm : ${ketQuaToHop}"
-                                           th:if="${dm.maToHop == th.maToHop}"
-                                           th:text="${#numbers.formatDecimal(dm.diemC1,1,2)} + ' + ((' +
-             ${#numbers.formatDecimal(dm.x1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA1,1,2)} + ') / (' +
-             ${#numbers.formatDecimal(dm.diemB1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA1,1,2)} + ')) * (' +
-             ${#numbers.formatDecimal(dm.diemD1,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC1,1,2)} + ')'">
-                                </div>
-
-                                <div>
-                                    <span th:text="${th.mon2}"></span>:
-                                    <input type="number"
-                                           class="input-diem"
-                                           th:name="${th.maToHop + '_' + th.mon2}"
-                                           value="0">
-                                    <input th:each="dm : ${ketQuaToHop}"
-                                           th:if="${dm.maToHop == th.maToHop}"
-                                           th:text="${#numbers.formatDecimal(dm.diemC2,1,2)} + ' + ((' +
-             ${#numbers.formatDecimal(dm.x2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA2,1,2)} + ') / (' +
-             ${#numbers.formatDecimal(dm.diemB2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA2,1,2)} + ')) * (' +
-             ${#numbers.formatDecimal(dm.diemD2,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC2,1,2)} + ')'">
-
-                                </div>
-
-                                <div>
-                                    <span th:text="${th.mon3}"></span>:
-                                    <input type="number"
-                                           class="input-diem"
-                                           th:name="${th.maToHop + '_' + th.mon3}"
-                                           value="0">
-                                    <input th:each="dm : ${ketQuaToHop}"
-                                           th:if="${dm.maToHop == th.maToHop}"
-                                           th:text="${#numbers.formatDecimal(dm.diemC3,1,2)} + ' + ((' +
-             ${#numbers.formatDecimal(dm.x3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA3,1,2)} + ') / (' +
-             ${#numbers.formatDecimal(dm.diemB3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemA3,1,2)} + ')) * (' +
-             ${#numbers.formatDecimal(dm.diemD3,1,2)} + ' - ' + ${#numbers.formatDecimal(dm.diemC3,1,2)} + ')'">
-
-                                </div>
-
-                                <div>
-                                    <b>Xét ngưỡng = Tổng 3 môn + điểm ưu tiên</b>
-
-                                    <span th:each="cs : ${ketQuaToHop}"
-                                          th:if="${cs.maToHop == th.maToHop}"
-                                          th:text="${#strings.concat(
-            #numbers.formatDecimal(cs.mon11,1,2),
-            ' + ',
-            #numbers.formatDecimal(cs.mon22,1,2),
-            ' + ',
-            #numbers.formatDecimal(cs.mon33,1,2),
-            ' + ',
-            #numbers.formatDecimal(khuVucVSAT,1,2),
-            ' + ',
-            #numbers.formatDecimal(doiTuongVSAT,1,2),
-            ' = ',
-            #numbers.formatDecimal(
-                (cs.mon11 != null ? cs.mon11 : 0)
-              + (cs.mon22 != null ? cs.mon22 : 0)
-              + (cs.mon33 != null ? cs.mon33 : 0)
-              + (khuVucVSAT != null ? khuVucVSAT : 0)
-              + (doiTuongVSAT != null ? doiTuongVSAT : 0),
-            1,2)
-      )}">
-</span>
-    </span>
-
-                                    <span th:if="${ketQuaToHop == null}">0.00</span>
-                                </div>
-
-                                <div>
-                                    <b>Điểm tổ hợp xét tuyển(ĐTHXT) =</b>
-
-                                    <span th:each="cs : ${ketQuaToHop}"
-                                          th:if="${cs.maToHop == th.maToHop}"
-                                          th:with="tongDiem=${(cs.mon11?:0)*(cs.hs11?:0) + (cs.mon22?:0)*(cs.hs22?:0) + (cs.mon33?:0)*(cs.hs33?:0)},
-               tongHS=${(cs.hs11?:0) + (cs.hs22?:0) + (cs.hs33?:0)}"
-                                          th:text="${cs.mona + ' * ' + #numbers.formatDecimal(cs.hs11,1,2) +
-                ' + ' + cs.monb + ' * ' + #numbers.formatDecimal(cs.hs22,1,2) +
-                ' + ' + cs.monc + ' * ' + #numbers.formatDecimal(cs.hs33,1,2) +
-                ' = ' + #numbers.formatDecimal(tongDiem / (tongHS == 0 ? 1 : tongHS) * 3, 1, 2)}">
-</span>
-</span>
-
-
-
-
-                                </div>
-
-                                <div>
-                                    <b>Độ lệch tổ hợp góc</b>
-
-                                    <span th:each="cs : ${ketQuaToHop}"
-                                          th:if="${cs.maToHop == th.maToHop}"
-                                          th:text="${#strings.concat(
-
-            #numbers.formatDecimal(cs.doLech,1,2),
-
-      )}">
-</span>
-
-
-
-
-                                </div>
-                                <div>
-                                    <b>Điểm ưu tiên</b>
-
-                                    <span th:each="cs : ${ketQuaToHop}"
-                                          th:if="${cs.maToHop == th.maToHop}"
-                                          th:text="${#numbers.formatDecimal(
-                (khuVucVSAT != null ? khuVucVSAT : 0)
-              + (doiTuongVSAT != null ? doiTuongVSAT : 0),
-              1, 2
-          )}">
-    </span>
-                                </div>
-
-                                <div>
-                                    <b>Điểm xét tuyển = ĐTHXT + DC + DUT + Độ lệch</b>
-                                    <div th:each="cs : ${ketQuaToHop}" th:if="${cs.maToHop == th.maToHop}">
-        <span th:text="${#numbers.formatDecimal(
-            ( (cs.mon11*cs.hs11 + cs.mon22*cs.hs22 + cs.mon33*cs.hs33) / (cs.hs11+cs.hs22+cs.hs33) * 3 )
-            , 1, 2)}"></span> (ĐTHXT)
-                                        + <span th:text="${#numbers.formatDecimal(cs.dcLocal, 1, 2)}"></span> (Điểm cộng)
-                                        + <span th:text="${#numbers.formatDecimal(khuVucVSAT + doiTuongVSAT, 1, 2)}"></span> (DUT)
-                                        + <span th:text="${#numbers.formatDecimal(cs.doLech, 1, 2)}"></span> (Lệch)
-                                        <br>
-                                        <strong style="color: #2563eb;" th:text="'= ' + ${#numbers.formatDecimal(cs.tongDiem, 1, 2)}"></strong>
+                                <!-- 1. Nội suy 3 môn -->
+                                <div th:each="idx : ${#numbers.sequence(1,3)}" class="mon-section">
+                                    <span style="font-weight: 600;" th:text="${idx == 1 ? cs.mona : (idx == 2 ? cs.monb : cs.monc)}"></span>:
+                                    <input type="text" class="input-diem" th:value="${#numbers.formatDecimal(idx == 1 ? cs.x1 : (idx == 2 ? cs.x2 : cs.x3), 1, 2)}" readonly>
+                                    <div class="formula-box">
+                                        <i>Nội suy:</i> <span th:with="cA=${idx==1?cs.diemA1:(idx==2?cs.diemA2:cs.diemA3)}, cB=${idx==1?cs.diemB1:(idx==2?cs.diemB2:cs.diemB3)}, cC=${idx==1?cs.diemC1:(idx==2?cs.diemC2:cs.diemC3)}, cD=${idx==1?cs.diemD1:(idx==2?cs.diemD2:cs.diemD3)}, cX=${idx==1?cs.x1:(idx==2?cs.x2:cs.x3)}, mR=${idx==1?cs.mon11:(idx==2?cs.mon22:cs.mon33)}"
+                                                              th:text="${#numbers.formatDecimal(cC ?: 0, 1, 2)} + ' + ((' + ${#numbers.formatDecimal(cX ?: 0, 1, 2)} + ' - ' + ${#numbers.formatDecimal(cA ?: 0, 1, 2)} + ') / (' + ${#numbers.formatDecimal(cB ?: 0, 1, 2)} + ' - ' + ${#numbers.formatDecimal(cA ?: 0, 1, 2)} + ')) * (' + ${#numbers.formatDecimal(cD ?: 0, 1, 2)} + ' - ' + ${#numbers.formatDecimal(cC ?: 0, 1, 2)} + ') = ' + ${#numbers.formatDecimal(mR ?: 0, 1, 2)}"></span>
                                     </div>
                                 </div>
 
+                                <!-- 2. Xét ngưỡng (Tổng 3 môn quy đổi + UT) -->
+                                <div class="formula-box" style="border-left-color: #10b981;">
+                                    <b>Xét ngưỡng sàn:</b>
+                                    <span th:text="${#numbers.formatDecimal(cs.mon11 ?: 0, 1, 2)} + ' + ' + ${#numbers.formatDecimal(cs.mon22 ?: 0, 1, 2)} + ' + ' + ${#numbers.formatDecimal(cs.mon33 ?: 0, 1, 2)} + ' + ' + ${#numbers.formatDecimal((khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0), 1, 2)} + ' = ' + ${#numbers.formatDecimal((cs.mon11 ?: 0) + (cs.mon22 ?: 0) + (cs.mon33 ?: 0) + (khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0), 1, 2)}"></span>
+                                </div>
 
-                                <div>
-                                <b>Tổng tổ hợp:</b>
+                                <!-- 3. ĐTHXT -->
+                                <div style="margin-bottom: 10px;">
+                                    <b>Điểm tổ hợp xét tuyển (ĐTHXT):</b><br>
+                                    <code th:text="'((' + ${#numbers.formatDecimal(cs.mon11,1,2)} + '*' + ${cs.hs11} + ' + ' + ${#numbers.formatDecimal(cs.mon22,1,2)} + '*' + ${cs.hs22} + ' + ' + ${#numbers.formatDecimal(cs.mon33,1,2)} + '*' + ${cs.hs33} + ') / ' + (${cs.hs11 + cs.hs22 + cs.hs33}) + ') * 3 = ' + ${#numbers.formatDecimal(cs.tongDiem - (cs.dcLocal ?: 0) - ((khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0)) + (cs.doLech ?: 0), 1, 2)}"></code>
+                                </div>
 
-                                <span th:each="kq : ${ketQuaToHop}"
-                                      th:if="${kq.maToHop == th.maToHop}"
-                                      th:text="${#numbers.formatDecimal(kq.tongDiem,1,2)}">
-    </span>
+                                <!-- 4. Độ lệch & Ưu tiên -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                                    <div><b>Độ lệch:</b> <span class="text-danger" th:text="${#numbers.formatDecimal(cs.doLech ?: 0, 1, 2)}"></span></div>
+                                    <div><b>Điểm ưu tiên:</b> <span class="text-success" th:text="${#numbers.formatDecimal((khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0), 1, 2)}"></span></div>
+                                </div>
 
-                                <span th:if="${ketQuaToHop == null}">0.00</span>
-                            </div>
-
-
-
+                                <!-- 5. Điểm xét tuyển cuối cùng -->
+                                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                                    <b>Điểm xét tuyển = ĐTHXT + DC + DUT - Độ lệch</b><br>
+                                    <span th:text="${#numbers.formatDecimal(cs.tongDiem - (cs.dcLocal ?: 0) - ((khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0)) + (cs.doLech ?: 0), 1, 2)}"></span> (ĐTHXT)
+                                    + <span th:text="${#numbers.formatDecimal(cs.dcLocal ?: 0, 1, 2)}"></span> (Cộng)
+                                    + <span th:text="${#numbers.formatDecimal((khuVucVSAT ?: 0) + (doiTuongVSAT ?: 0), 1, 2)}"></span> (DUT)
+                                    - <span th:text="${#numbers.formatDecimal(cs.doLech ?: 0, 1, 2)}"></span> (Lệch)
+                                    <br>
+                                    <strong class="text-success" style="font-size: 1.4em;" th:text="'Tổng tổ hợp: ' + ${#numbers.formatDecimal(cs.tongDiem ?: 0, 1, 2)}"></strong>
+                                </div>
                             </td>
                         </tr>
-
-
-
                         </tbody>
                     </table>
-
                 </div>
-                <div>
-                    <p>
-                        Điểm sàn:
-                        <span th:text="${diemSan}"></span>
-                        -
-                        <b th:text="${isDatDiemSan} ? 'ĐẠT' : 'KHÔNG ĐẠT'"></b>
-                    </p>
 
-                    <p>
-                        Điểm trúng tuyển:
-                        <span th:text="${diemTrungTuyen}"></span>
-                        -
-                        <b th:text="${isDatTrungTuyen} ? 'ĐẬU' : 'RỚT'"></b>
-                    </p>
+                <!-- Phân trang -->
+                <div class="pagination-container" th:if="${totalPages > 1}">
+                    <button type="button" class="btn-page" th:disabled="${currentPage == 0}" onclick="changePage(this.getAttribute('data-page'))" th:data-page="${currentPage - 1}">
+                        <i data-lucide="chevron-left"></i> Trước
+                    </button>
+                    <span th:text="'Trang ' + (${currentPage} + 1) + ' / ' + ${totalPages}"></span>
+                    <button type="button" class="btn-page" th:disabled="${currentPage + 1 >= totalPages}" onclick="changePage(this.getAttribute('data-page'))" th:data-page="${currentPage + 1}">
+                        Tiếp <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Trạng thái cuối cùng -->
+                <div class="final-status" style="margin-top: 40px; border-top: 2px solid #f1f5f9; padding-top: 25px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <b style="color: #64748b; display: block; margin-bottom: 5px;">Ngưỡng sàn:</b>
+                        <span style="font-size: 1.2em; font-weight: 600;" th:text="${#numbers.formatDecimal(diemSan ?: 0, 1, 2)}"></span>
+                        <span th:class="${isDatDiemSan ? 'text-success' : 'text-danger'}" th:text="${isDatDiemSan ? ' (ĐẠT)' : ' (KHÔNG ĐẠT)'}"></span>
+                    </div>
+                    <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;">
+                        <b style="color: #64748b; display: block; margin-bottom: 5px;">Điểm trúng tuyển:</b>
+                        <span style="font-size: 1.2em; font-weight: 600;" th:text="${res_diemTrungTuyen == -1 ? 'Đang cập nhật' : #numbers.formatDecimal(res_diemTrungTuyen ?: 0, 1, 2)}"></span>
+                        <th:block th:if="${res_diemTrungTuyen != -1}">
+                            <span th:class="${isDatTrungTuyen ? 'text-success' : 'text-danger'}" th:text="${isDatTrungTuyen ? ' (ĐẬU)' : ' (RỚT)'}"></span>
+                        </th:block>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ================= JS ================= -->
+<!-- Form ẩn dùng để POST lại dữ liệu khi chuyển trang -->
+<!-- Form ẩn bảo toàn dữ liệu khi sang trang -->
+<form id="pagingForm" method="POST" action="/tinhvsat">
+    <input type="hidden" name="action" value="TINH">
+    <input type="hidden" name="maNganhVSAT" th:value="${maNganhVSAT}">
+    <input type="hidden" name="diemCongVSAT" th:value="${diemCongVSAT}">
+    <input type="hidden" name="khuVucVSAT" th:value="${khuVucVSAT}">
+    <input type="hidden" name="doiTuongVSAT" th:value="${doiTuongVSAT}">
+    <input type="hidden" name="toan" th:value="${toan}">
+    <input type="hidden" name="van" th:value="${van}">
+    <input type="hidden" name="ly" th:value="${ly}">
+    <input type="hidden" name="hoa" th:value="${hoa}">
+    <input type="hidden" name="sinh" th:value="${sinh}">
+    <input type="hidden" name="su" th:value="${su}">
+    <input type="hidden" name="dia" th:value="${dia}">
+    <input type="hidden" name="anh" th:value="${anh}">
+    <input type="hidden" name="cc_ketquaVSAT" th:value="${cc_ketquaVSAT}">
+    <input type="hidden" name="cong_toan" th:value="${cong_toan}">
+    <input type="hidden" name="cong_van" th:value="${cong_van}">
+    <input type="hidden" name="cong_ly" th:value="${cong_ly}">
+    <input type="hidden" name="cong_hoa" th:value="${cong_hoa}">
+    <input type="hidden" name="cong_sinh" th:value="${cong_sinh}">
+    <input type="hidden" name="cong_su" th:value="${cong_su}">
+    <input type="hidden" name="cong_dia" th:value="${cong_dia}">
+    <input type="hidden" name="cong_anh" th:value="${cong_anh}">
+    <input type="hidden" name="page" id="pageInput" value="0">
+    <!-- Thêm CSRF nếu có Spring Security -->
+    <input type="hidden" th:if="${_csrf}" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+</form>
 <script>
-    const diem10 = window.diem10 || {};
-    const listToHop = window.listToHop || [];
-
-    console.log("🚀 INIT JS");
-    console.log("diem10:", diem10);
-    console.log("listToHop:", listToHop);
-
-    /* ================= FILL ================= */
-    function fillDiemMon() {
-
-        console.log("📌 fillDiemMon()");
-
-        if (!listToHop.length) {
-            console.warn("❌ listToHop rỗng");
-            return;
-        }
-
-        listToHop.forEach(th => {
-
-            const ma = th.maToHop;
-
-            const i1 = document.querySelector(`input[name="${ma}_${th.mon1}"]`);
-            const i2 = document.querySelector(`input[name="${ma}_${th.mon2}"]`);
-            const i3 = document.querySelector(`input[name="${ma}_${th.mon3}"]`);
-
-            if (i1) i1.value = diem10[th.mon1] ?? 0;
-            if (i2) i2.value = diem10[th.mon2] ?? 0;
-            if (i3) i3.value = diem10[th.mon3] ?? 0;
-        });
+    function changePage(p) {
+        document.getElementById('pageInput').value = p;
+        document.getElementById('pagingForm').submit();
     }
-
-    /* ================= TÍNH ĐIỂM ================= */
-  function tinhTong() {
-    // 1. Lấy điểm ưu tiên (Khu vực + Đối tượng)
-    let dut = parseFloat([[${khuVucVSAT}]] || 0) + parseFloat([[${doiTuongVSAT}]] || 0);
-
-    let max = 0;
-
-    listToHop.forEach(th => {
-        const row = document.querySelector(`tr[data-matohop="${th.maToHop}"]`);
-        // 2. Lấy dcLocal riêng cho từng tổ hợp (vì có thể khác nhau do coTiengAnh)
-        // Lưu ý: Bạn nên gắn dcLocal vào một data-attribute ở HTML để JS dễ lấy
-        let dcLocal = parseFloat(row.querySelector('.dc-local-val')?.value || [[${diemCongVSAT}]] || 0);
-
-        const inputs = row.querySelectorAll('input.input-diem');
-        let tongDiemBaMon = 0;
-        let tongHeSo = (th.hsMon1 || 1) + (th.hsMon2 || 1) + (th.hsMon3 || 1);
-
-        // Tính điểm 3 môn theo hệ số
-        let d1 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon1}"]`).value || 0);
-        let d2 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon2}"]`).value || 0);
-        let d3 = parseFloat(document.querySelector(`input[name="${th.maToHop}_${th.mon3}"]`).value || 0);
-
-        let tongRaw = ((d1 * (th.hsMon1||1)) + (d2 * (th.hsMon2||1)) + (d3 * (th.hsMon3||1))) / tongHeSo * 3;
-
-        // Lấy độ lệch
-        let doLech = parseFloat(row.querySelector('.do-lech-val')?.innerText || 0);
-
-        let tongCuoi = tongRaw + doLech + dut + dcLocal;
-
-        if (tongCuoi > max) max = tongCuoi;
-    });
-
-    document.getElementById("res-tongDiem").innerText = max.toFixed(2);
-}
-
-    /* ================= EVENTS ================= */
-    function bindEvents() {
-        document.querySelectorAll(".input-diem").forEach(i => {
-            i.addEventListener("input", tinhTong);
-        });
-    }
-
-    /* ================= INIT ================= */
-    document.addEventListener("DOMContentLoaded", () => {
-
-        console.log("🚀 DOM READY");
-
-        fillDiemMon();
-        bindEvents();
-        tinhTong();
-    });
-    function noiSuy(x, a, b, c, d) {
-    if (b === a) return c;
-
-    return c + ((x - a) / (b - a)) * (d - c);
-}
+    document.addEventListener("DOMContentLoaded", () => lucide.createIcons());
 </script>
 
 </body>

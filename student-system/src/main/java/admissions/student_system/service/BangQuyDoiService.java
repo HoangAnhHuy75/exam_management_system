@@ -16,7 +16,6 @@ public class BangQuyDoiService {
     private BangQuyDoiRepository repo;
     @Autowired
     private BangChenhLechService chenhLechService;
-
     public double tinhDiemUuTien(String phuongThuc,
                                  double diem,
                                  String toHopThiSinh,
@@ -25,7 +24,14 @@ public class BangQuyDoiService {
                                  double diemKhuVuc,
                                  double diemCongThanhTich) {
 
-        double diemQuyDoi = tinhDiemQuyDoi(phuongThuc, diem, toHopThiSinh, toHopGoc);
+        double diemQuyDoi;
+
+        if ("THPT".equalsIgnoreCase(phuongThuc) || "VSAT".equalsIgnoreCase(phuongThuc)) {
+            diemQuyDoi = diem;
+        } else {
+            diemQuyDoi = tinhDiemQuyDoi(phuongThuc, diem, toHopThiSinh, toHopGoc);
+        }
+        // ------------------------
 
         double MĐUT = diemDoiTuong + diemKhuVuc;
 
@@ -38,7 +44,7 @@ public class BangQuyDoiService {
         if (tongDiem < 22.5) {
             diemUuTien = MĐUT;
         } else {
-            diemUuTien = ((30.0 - diemQuyDoi - diemCongThanhTich) / 7.5) * MĐUT;
+            diemUuTien = ((30.0 - tongDiem) / 7.5) * MĐUT;
         }
 
         if (diemUuTien < 0) {
@@ -48,198 +54,238 @@ public class BangQuyDoiService {
         return Math.round(diemUuTien * 100.0) / 100.0;
     }
 
-    public double tinhDiemMonVSAT(
-            String phuongThuc,
-            String monInput,
-            double diem
-    ) {
+    /**
+     * Hàm tính điểm quy đổi cho từng môn V-SAT (thang 10)
+     * Đảm bảo chặn trên, chặn dưới và nội suy chính xác.
+     */
+    public double tinhDiemMonVSAT(String phuongThuc, String monInput, double diem) {
+        // 1. Chặn tuyệt đối đầu vào (Điểm âm hoặc bằng 0 trả về 0)
+        if (diem <= 0) return 0.0;
 
+        // 2. Chuẩn hóa mã môn học
         String monKey = monInput.toUpperCase();
-
         String mon;
         switch (monKey) {
             case "TOAN", "TO" -> mon = "TO";
-            case "VAN", "VA" -> mon = "VA";
-            case "LY", "LI" -> mon = "LI";
-            case "HOA", "HO" -> mon = "HO";
+            case "VAN", "VA"  -> mon = "VA";
+            case "LY", "LI"   -> mon = "LI";
+            case "HOA", "HO"  -> mon = "HO";
             case "SINH", "SI" -> mon = "SI";
-            case "SU" -> mon = "SU";
-            case "DIA", "DI" -> mon = "DI";
-            case "ANH", "N1" -> mon = "N1";
-            default -> {
-                return 0.0;
+            case "SU"         -> mon = "SU";
+            case "DIA", "DI"  -> mon = "DI";
+            case "ANH", "N1"  -> mon = "N1";
+            default -> { return 0.0; }
+        }
+
+        // 3. Tìm khoảng chính xác (A <= diem <= B)
+        BangQuyDoi row = repo.findKhoangChuaDiemTheoMon(phuongThuc, mon, diem)
+                .stream().findFirst().orElse(null);
+
+        // 4. Nếu không thấy khoảng khớp, thực hiện cơ chế chặn biên
+        if (row == null) {
+            // Tìm hàng "tiệm cận dưới" (Hàng có dDiemB lớn nhất nhưng vẫn <= điểm nhập vào)
+            row = repo.findTiemCanDuoiTheoMon(phuongThuc, mon, diem);
+
+            if (row == null) {
+                // Kiểm tra trường hợp điểm quá cao (vượt trần cao nhất trong DB)
+                row = repo.findMaxTheoMon(phuongThuc, mon);
+
+                // Nếu điểm vẫn nhỏ hơn cả mức sàn thấp nhất (dDiemA) của hàng thấp nhất
+                if (row != null && diem < row.getDDiemA().doubleValue()) {
+                    return 0.0;
+                }
             }
         }
 
-        List<BangQuyDoi> list = repo.findKhoangChuaDiemTheoMon(phuongThuc, mon, diem);
+        // Nếu DB hoàn toàn không có dữ liệu cho môn này
+        if (row == null) return 0.0;
 
-        if (list == null || list.isEmpty()) {
-            return 0.0;
-        }
-
-        BangQuyDoi row = list.get(0);
-
+        // 5. Lấy các giá trị A, B, C, D từ hàng đã chọn
         BigDecimal a = row.getDDiemA();
         BigDecimal b = row.getDDiemB();
         BigDecimal c = row.getDDiemC();
         BigDecimal d = row.getDDiemD();
 
-        if (a == null || b == null || c == null || d == null) {
-            return 0.0;
-        }
+        // Kiểm tra dữ liệu DB tránh lỗi Null
+        if (a == null || b == null || c == null || d == null) return 0.0;
 
+        // 6. Ràng buộc giá trị x để nội suy (x không được nằm ngoài [a, b])
         BigDecimal x = BigDecimal.valueOf(diem);
+        if (x.compareTo(a) < 0) x = a;
+        if (x.compareTo(b) > 0) x = b;
 
+        // 7. Tính tỷ lệ nội suy (Ratio)
+        // Nếu a == b thì ratio = 1 (lấy mức điểm cao nhất d)
         BigDecimal ratio = (b.compareTo(a) == 0)
-                ? BigDecimal.ZERO
-                : x.subtract(a)
-                .divide(b.subtract(a), 10, RoundingMode.HALF_UP);
+                ? BigDecimal.ONE
+                : x.subtract(a).divide(b.subtract(a), 10, RoundingMode.HALF_UP);
 
+        // 8. Công thức quy đổi: c + ratio * (d - c)
         BigDecimal result = c.add(ratio.multiply(d.subtract(c)));
 
-        return result.setScale(15, RoundingMode.HALF_UP).doubleValue();
+        // 9. Chốt chặn cuối cùng (Kết quả phải nằm trong [0, 10])
+        if (result.compareTo(BigDecimal.valueOf(10.0)) > 0) {
+            result = BigDecimal.valueOf(10.0);
+        }
+        if (result.compareTo(BigDecimal.ZERO) < 0) {
+            result = BigDecimal.ZERO;
+        }
+
+        return result.setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
-    public double tinhDiemQuyDoi(
-            String phuongThuc,
-            double diem,
-            String toHopThiSinh,
-            String toHopGoc
-    ) {
+    public double tinhDiemQuyDoi(String phuongThuc, double diem, String toHopThiSinh, String toHopGoc) {
 
-        // 1. nội suy điểm theo phương thức
+        if (diem <= 0) return 0.0;
+
+        // 2. Tìm khoảng chính xác (A <= diem <= B)
         BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng cho phương thức: " + phuongThuc + " và điểm: " + diem
-                ));
+                .stream().findFirst().orElse(null);
 
+        // 3. Nếu không thấy khoảng chính xác
+        if (row == null) {
+            // Tìm thằng lớn nhất mà vẫn nhỏ hơn điểm thí sinh (Tiệm cận dưới)
+            row = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);
+
+            // Nếu vẫn không thấy (nghĩa là điểm thí sinh còn nhỏ hơn cả mức thấp nhất của DB)
+            if (row == null) {
+                // Có thể trả về 0 hoặc lấy hàng thấp nhất tùy chính sách
+                return 0.0;
+            }
+
+            // Nếu điểm thí sinh lớn hơn cả mức cao nhất trong DB
+            BangQuyDoi maxRow = repo.findMaxAbsolute(phuongThuc, toHopGoc);
+            if (diem > maxRow.getDDiemB().doubleValue()) {
+                row = maxRow;
+            }
+        }
         BigDecimal a = row.getDDiemA();
         BigDecimal b = row.getDDiemB();
+        if (a.compareTo(b) > 0) {
+            a = b;
+        }
         BigDecimal c = row.getDDiemC();
         BigDecimal d = row.getDDiemD();
 
-        if (a == null || b == null || c == null || d == null) {
-            throw new RuntimeException("Dữ liệu quy đổi bị null");
-        }
-
+        // Ràng buộc giá trị x để không vượt quá biên sau khi đã chọn được hàng
+        // Ví dụ: Nhập 1200 nhưng hàng max chỉ đến 1122, thì x sẽ là 1122
         BigDecimal x = BigDecimal.valueOf(diem);
+        if (x.compareTo(a) < 0) x = a;
+        if (x.compareTo(b) > 0) x = b;
 
+        // Tính tỷ lệ nội suy (Ratio)
         BigDecimal ratio = (b.compareTo(a) == 0)
                 ? BigDecimal.ZERO
                 : x.subtract(a).divide(b.subtract(a), 10, RoundingMode.HALF_UP);
 
+        // Tính điểm quy đổi: c + ratio * (d - c)
         BigDecimal diemQuyDoi = c.add(ratio.multiply(d.subtract(c)));
 
-        // =========================
-        // CHỈ THPT MỚI CÓ CHÊNH LỆCH
-        // =========================
+        // Xử lý chênh lệch tổ hợp
         BigDecimal ketQua;
-
         if ("DGNL".equalsIgnoreCase(phuongThuc)) {
             ketQua = diemQuyDoi;
         } else {
-            BigDecimal chenhLech = chenhLechService.findChenhLech(
-                    toHopGoc,
-                    toHopThiSinh
-            );
-
+            BigDecimal chenhLech = chenhLechService.findChenhLech(toHopGoc, toHopThiSinh);
             ketQua = diemQuyDoi.subtract(chenhLech);
+            if (ketQua.compareTo(BigDecimal.ZERO) < 0) {
+                ketQua = BigDecimal.ZERO;
+            }
+        }
+
+        BigDecimal maxAllowed = new BigDecimal("30.0");
+        if (ketQua.compareTo(maxAllowed) > 0) {
+            ketQua = maxAllowed;
         }
 
         return ketQua.setScale(2, RoundingMode.HALF_UP).doubleValue();
-    }    public double diema(String phuongThuc, double diem,String toHopGoc) {
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem,toHopGoc)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng cho phương thức: " + phuongThuc + " và điểm: " + diem
-                ));
+    }
+    public double diema(String phuongThuc, double diem, String toHopGoc) {
+        if (diem <= 0) return 0.0;
+        // Tìm khoảng chính xác, nếu không thấy thì tìm thằng tiệm cận dưới hoặc trên cùng
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+                .stream().findFirst()
+                .orElseGet(() -> {
+                    BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);
+                    return (nearest != null) ? nearest : repo.findMaxAbsolute(phuongThuc, toHopGoc);
+                });
 
-        if (row.getDDiemA() == null) {
-            throw new RuntimeException("diemA bị null");
-        }
-
-        return row.getDDiemA().doubleValue();
+        return (row != null && row.getDDiemA() != null) ? row.getDDiemA().doubleValue() : 0.0;
     }
 
-    public double diemb(String phuongThuc, double diem,String toHopGoc) {
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem,toHopGoc)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng cho phương thức: " + phuongThuc + " và điểm: " + diem
-                ));
+    public double diemb(String phuongThuc, double diem, String toHopGoc) {
+        if (diem <= 0) return 0.0;
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+                .stream().findFirst()
+                .orElseGet(() -> {
+                    BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);
+                    return (nearest != null) ? nearest : repo.findMaxAbsolute(phuongThuc, toHopGoc);
+                });
 
-        if (row.getDDiemB() == null) {
-            throw new RuntimeException("diemB bị null");
-        }
-
-        return row.getDDiemB().doubleValue();
+        return (row != null && row.getDDiemB() != null) ? row.getDDiemB().doubleValue() : 0.0;
     }
 
-    public double diemc(String phuongThuc, double diem,String toHopGoc) {
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem,  toHopGoc)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng cho phương thức: " + phuongThuc + " và điểm: " + diem
-                ));
+    public double diemc(String phuongThuc, double diem, String toHopGoc) {
+        if (diem <= 0) return 0.0;
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+                .stream().findFirst()
+                .orElseGet(() -> {
+                    BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);
+                    return (nearest != null) ? nearest : repo.findMaxAbsolute(phuongThuc, toHopGoc);
+                });
 
-        if (row.getDDiemC() == null) {
-            throw new RuntimeException("diemC bị null");
-        }
-
-        return row.getDDiemC().doubleValue();
+        return (row != null && row.getDDiemC() != null) ? row.getDDiemC().doubleValue() : 0.0;
     }
 
-    public double diemd(String phuongThuc, double diem,String toHopGoc) {
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem,toHopGoc)
-                .stream()
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng cho phương thức: " + phuongThuc + " và điểm: " + diem
-                ));
+    public double diemd(String phuongThuc, double diem, String toHopGoc) {
+        if (diem <= 0) return 0.0;
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+                .stream().findFirst()
+                .orElseGet(() -> {
+                    BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);
+                    return (nearest != null) ? nearest : repo.findMaxAbsolute(phuongThuc, toHopGoc);
+                });
 
-        if (row.getDDiemD() == null) {
-            throw new RuntimeException("diemD bị null");
-        }
-
-        return row.getDDiemD().doubleValue();
+        return (row != null && row.getDDiemD() != null) ? row.getDDiemD().doubleValue() : 0.0;
     }
     public double tinhDiemABCDVSAT(String phuongThuc, String mon, double diem, String value) {
+        // 1. Chặn dưới tuyệt đối: Nếu điểm <= 0, trả về 0 luôn
+        if (diem <= 0) return 0.0;
 
+        // 2. Tìm khoảng chính xác (A < diem <= B)
         BangQuyDoi row = repo.findKhoangVSAT(phuongThuc, mon, diem)
                 .stream()
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException(
-                        "Không tìm thấy khoảng VSAT cho môn: " + mon + " với điểm: " + diem
-                ));
+                .orElse(null);
+
+        // 3. Cơ chế chặn biên nếu không tìm thấy khoảng chính xác
+        if (row == null) {
+            // Tìm hàng có dDiemB lớn nhất nhưng vẫn nhỏ hơn điểm nhập vào
+            row = repo.findTiemCanDuoiTheoMon(phuongThuc, mon, diem);
+
+            // Nếu vẫn không thấy, tìm hàng có điểm cao nhất (chặn trên)
+            if (row == null) {
+                row = repo.findMaxTheoMon(phuongThuc, mon);
+
+                // Nếu điểm nhập vào thậm chí còn nhỏ hơn cả mức sàn thấp nhất của môn đó
+                if (row != null && diem < row.getDDiemA().doubleValue()) {
+                    return 0.0;
+                }
+            }
+        }
+
+        // 4. Nếu DB hoàn toàn không có dữ liệu cho môn này
+        if (row == null) return 0.0;
 
         BigDecimal result;
-
         switch (value.toLowerCase()) {
-            case "a":
-                result = row.getDDiemA();
-                break;
-            case "b":
-                result = row.getDDiemB();
-                break;
-            case "c":
-                result = row.getDDiemC();
-                break;
-            case "d":
-                result = row.getDDiemD();
-                break;
-            default:
-                throw new RuntimeException("Value phải là a, b, c hoặc d");
+            case "a" -> result = row.getDDiemA();
+            case "b" -> result = row.getDDiemB();
+            case "c" -> result = row.getDDiemC();
+            case "d" -> result = row.getDDiemD();
+            default -> throw new IllegalArgumentException("Value phải là a, b, c hoặc d");
         }
 
-        if (result == null) {
-            throw new RuntimeException("Dữ liệu bị null");
-        }
-
-        return result.setScale(2, RoundingMode.HALF_UP).doubleValue();
+        return (result != null) ? result.setScale(2, RoundingMode.HALF_UP).doubleValue() : 0.0;
     }
 
 }

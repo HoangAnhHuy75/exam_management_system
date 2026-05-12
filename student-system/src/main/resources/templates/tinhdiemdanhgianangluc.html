@@ -29,7 +29,10 @@
                 <i data-lucide="file-search"></i>
                 <span>Trở lại</span>
             </a>
-
+            <div class="nganh-info" style="margin-bottom: 15px;">
+                <strong style="color: #1f2937;">Ngành xét tuyển: </strong>
+                <span th:text="${tenNganh}" style="color: #2563eb; font-weight: 600;">Tên ngành</span>
+            </div>
             <div class="tc-body">
 
                 <!-- TAB ĐGNL -->
@@ -81,28 +84,37 @@
                         <div class="result-box">
                             <strong>Kết quả:</strong>
 
-                            <span th:if="${isDatTrungTuyen == true}"
-                                  style="color: green; font-weight: bold;">
-                                ĐẠT TRÚNG TUYỂN
-                            </span>
+                            <!-- 1. Trường hợp chưa có dữ liệu điểm trúng tuyển (-1) -->
+                            <span th:if="${res_diemTrungTuyen == -1}"
+                                  style="color: #6b7280; font-style: italic;">
+        Chưa có dữ liệu điểm trúng tuyển
+    </span>
 
-                            <span th:if="${isDatTrungTuyen != true}"
-                                  style="color: red; font-weight: bold;">
-                                CHƯA ĐẠT
-                            </span>
+                            <!-- 2. Trường hợp đã có điểm trúng tuyển (khác -1) -->
+                            <th:block th:if="${res_diemTrungTuyen != -1}">
+        <span th:if="${isDatTrungTuyen == true}"
+              style="color: green; font-weight: bold;">
+            ĐẠT TRÚNG TUYỂN
+        </span>
+
+                                <span th:if="${isDatTrungTuyen != true}"
+                                      style="color: red; font-weight: bold;">
+            CHƯA ĐẠT
+        </span>
+                            </th:block>
 
                             <br>
 
+                            <!-- Giữ nguyên phần điểm sàn -->
                             <span th:if="${isDatDiemSan}"
                                   style="color: green;">
-                                ĐẠT ĐIỂM SÀN
-                            </span>
+        ĐẠT ĐIỂM SÀN
+    </span>
 
                             <span th:if="${!isDatDiemSan}"
                                   style="color: red;">
-                                CHƯA ĐẠT ĐIỂM SÀN
-                            </span>
-
+        CHƯA ĐẠT ĐIỂM SÀN
+    </span>
                         </div>
 
                     </div>

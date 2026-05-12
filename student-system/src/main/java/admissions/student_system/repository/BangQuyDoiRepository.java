@@ -50,4 +50,26 @@ ORDER BY b.dDiemA DESC
             String mon,
             double diem
     );
+    // Tìm hàng có dDiemB lớn nhất nhưng vẫn nhỏ hơn hoặc bằng điểm của thí sinh
+    @Query("""
+    SELECT b FROM BangQuyDoi b 
+    WHERE b.dPhuongThuc = :pt AND b.dToHop = :th AND b.dDiemB <= :score 
+    ORDER BY b.dDiemB DESC LIMIT 1
+""")
+    BangQuyDoi findTiemCanDuoi(@Param("pt") String phuongThuc, @Param("th") String toHop, @Param("score") Double score);
+
+    // Tìm hàng có dDiemB cao nhất (dành cho trường hợp điểm quá cao)
+    @Query("SELECT b FROM BangQuyDoi b WHERE b.dPhuongThuc = :pt AND b.dToHop = :th ORDER BY b.dDiemB DESC LIMIT 1")
+    BangQuyDoi findMaxAbsolute(@Param("pt") String phuongThuc, @Param("th") String toHop);
+    // Tìm hàng tiệm cận dưới cho từng môn
+    @Query("""
+    SELECT b FROM BangQuyDoi b 
+    WHERE b.dPhuongThuc = :pt AND b.dMon = :mon AND b.dDiemB <= :score 
+    ORDER BY b.dDiemB DESC LIMIT 1
+""")
+    BangQuyDoi findTiemCanDuoiTheoMon(@Param("pt") String pt, @Param("mon") String mon, @Param("score") Double score);
+
+    // Tìm hàng có điểm cao nhất của môn đó
+    @Query("SELECT b FROM BangQuyDoi b WHERE b.dPhuongThuc = :pt AND b.dMon = :mon ORDER BY b.dDiemB DESC LIMIT 1")
+    BangQuyDoi findMaxTheoMon(@Param("pt") String pt, @Param("mon") String mon);
 }

@@ -22,12 +22,13 @@
     <div class="profile-content">
         <div class="profile-container">
 
+            <div>
             <!-- Header công cụ -->
             <header class="page-header">
                 <h2><i data-lucide="calculator"></i> Tra cứu cách tính điểm xét tuyển</h2>
                 <p class="description">Công cụ hỗ trợ thí sinh dự toán điểm xét tuyển theo các phương thức khác nhau.</p>
             </header>
-
+            </div>
             <!-- Tabs Điều hướng -->
             <div class="tabs-header">
                 <button class="tab-btn active" onclick="showTab(event, 'dgnl')">Đánh giá năng lực (ĐGNL)</button>
@@ -38,11 +39,12 @@
             <!-- Tab DGNL -->
             <div class="tc-container">
                 <form th:action="@{/tinhdgnl}" method="post">
+                    <!-- Tab DGNL -->
                     <div id="dgnl" class="tab-content active">
                         <h3 class="method-title">Phương thức Đánh giá năng lực (Thang 1200)</h3>
 
                         <div class="form-grid">
-
+                            <!-- Thông tin cơ bản -->
                             <div class="tc-form-group">
                                 <label>Chọn ngành xét tuyển:</label>
                                 <select name="maNganh" required>
@@ -56,9 +58,10 @@
 
                             <div class="tc-form-group">
                                 <label>Điểm cộng (<=3):</label>
-                                <input name="diemCong"
-                                       type="number"
-                                       th:value="${diemCong}">                            </div>
+                                <input name="diemCong" step="0.1" min="0" max="3"
+                                       oninput="if(value>3)value=3;if(value<0)value=0"
+                                       autocomplete="off" type="number" th:value="${diemCong}">
+                            </div>
 
                             <div class="tc-form-group">
                                 <label>Khu vực ưu tiên:</label>
@@ -81,67 +84,56 @@
 
                             <div class="tc-form-group">
                                 <label>Nhập điểm đánh giá năng lực</label>
-                                <input name="diemDGNL"
-                                       type="number"
-                                       step="0.1"
-                                       th:value="${diemDGNL}"
-                                       placeholder="Nhập điểm (0 - 1200)">                            </div>
-
-                            <div class="tc-form-group">
-                                <label>Chọn loại chứng chỉ:</label>
-                                <select name="cc_loai">
-                                    <option value="IELTS" th:selected="${cc_loai == 'IELTS'}">IELTS</option>
-                                    <option value="TOEFL_IBT" th:selected="${cc_loai == 'TOEFL_IBT'}">TOEFL iBT</option>
-                                    <option value="TOEFL_ITP" th:selected="${cc_loai == 'TOEFL_ITP'}">TOEFL ITP</option>
-                                    <option value="TOEIC" th:selected="${cc_loai == 'TOEIC'}">TOEIC</option>
-                                    <option value="PTE" th:selected="${cc_loai == 'PTE'}">PTE Academic</option>
-                                    <option value="LINGUASKILL" th:selected="${cc_loai == 'LINGUASKILL'}">Linguaskill</option>
-                                    <option value="APTIS_GENERAL" th:selected="${cc_loai == 'APTIS_GENERAL'}">Aptis General</option>
-                                    <option value="APTIS_ADVANCED" th:selected="${cc_loai == 'APTIS_ADVANCED'}">Aptis Advanced</option>
-                                    <option value="VSTEP" th:selected="${cc_loai == 'VSTEP'}">VSTEP</option>
-                                </select>
+                                <input name="diemDGNL" type="number" step="1" min="0" max="1200"
+                                       oninput="if(value>1200)value=1200;if(value<0)value=0"
+                                       th:value="${diemDGNL}" placeholder="Nhập điểm (0 - 1200)" autocomplete="off">
                             </div>
 
-                            <div class="tc-form-group">
-                                <label>Nhập điểm chứng chỉ:</label>
-                                <input name="cc_diem"
-                                       type="number"
-                                       th:value="${cc_diem}"
-                                       placeholder="Ví dụ: 6.5">                            </div>
+                            <!-- BẮT ĐẦU KHỐI CHỨNG CHỈ (GIỐNG VSAT) -->
+                            <div class="tc-box">
+                                <h3><i data-lucide="languages"></i> Quy đổi điểm cộng chứng chỉ Tiếng Anh</h3>
+                                <div class="form-grid" style="margin-top: 15px;">
+                                    <div class="tc-form-group">
+                                        <label>Chọn loại chứng chỉ:</label>
+                                        <select name="cc_loai">
+                                            <option value="IELTS" th:selected="${cc_loai == 'IELTS'}">IELTS</option>
+                                            <option value="TOEFL_IBT" th:selected="${cc_loai == 'TOEFL_IBT'}">TOEFL iBT</option>
+                                            <option value="TOEFL_ITP" th:selected="${cc_loai == 'TOEFL_ITP'}">TOEFL ITP</option>
+                                            <option value="TOEIC" th:selected="${cc_loai == 'TOEIC'}">TOEIC</option>
+                                            <option value="PTE" th:selected="${cc_loai == 'PTE'}">PTE Academic</option>
+                                            <option value="LINGUASKILL" th:selected="${cc_loai == 'LINGUASKILL'}">Linguaskill</option>
+                                            <option value="APTIS_GENERAL" th:selected="${cc_loai == 'APTIS_GENERAL'}">Aptis General</option>
+                                            <option value="APTIS_ADVANCED" th:selected="${cc_loai == 'APTIS_ADVANCED'}">Aptis Advanced</option>
+                                            <option value="VSTEP" th:selected="${cc_loai == 'VSTEP'}">VSTEP</option>
+                                        </select>
+                                    </div>
 
-                            <div class="tc-form-group">
-                                <label>Chọn phương thức:</label>
-                                <select name="cc_phuongThuc">
-                                    <option value="DGNL" th:selected="${cc_phuongThuc == 'DGNL'}">
-                                        ĐGNL (1200)
-                                    </option>
-                                </select>
+                                    <div class="tc-form-group">
+                                        <label>Nhập điểm chứng chỉ:</label>
+                                        <input name="cc_diem" type="number" step="0.1" th:value="${cc_diem}" placeholder="Ví dụ: 6.5">
+                                    </div>
+
+                                    <div class="tc-form-group">
+                                        <label>Chọn phương thức:</label>
+                                        <select name="cc_phuongThuc">
+                                            <option value="DGNL" th:selected="${cc_phuongThuc == 'DGNL'}">ĐGNL (1200)</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="tc-result">
+                                        <p>Kết quả điểm cộng: <strong th:text="${cc_ketqua}"></strong></p>
+                                        <input type="hidden" name="cc_ketqua" th:value="${cc_ketqua}">
+                                    </div>
+                                </div>
                             </div>
+                            <!-- KẾT THÚC KHỐI CHỨNG CHỈ -->
 
-                            <!-- ===== 2 NÚT ===== -->
                             <div class="tc-actions">
-
-                                <button type="submit" name="action" value="TINH">
-                                    Tính điểm ĐGNL
-                                </button>
-
-                                <button type="submit" name="action" value="QUYDOI">
-                                    Quy đổi điểm
-                                </button>
-
+                                <button type="submit" name="action" value="TINH">Tính điểm ĐGNL</button>
+                                <button type="submit" name="action" value="QUYDOI">Quy đổi điểm</button>
                             </div>
-
-                            <!-- RESULT -->
-                            <div class="tc-result">
-                                <p>Kết quả điểm cộng:
-                                    <strong th:text="${cc_ketqua}"></strong>
-                                </p>
-                                <input type="hidden" name="cc_ketqua" th:value="${cc_ketqua}">
-                            </div>
-
                         </div>
                     </div>
-
                 </form>
 
             </div>
@@ -165,7 +157,11 @@
                         </div>
                         <div class="tc-form-group">
                             <label>Điểm cộng (<=3):</label>
-                            <input name="diemCongVSAT" type="number" th:value="${diemCongVSAT}">
+                            <input name="diemCongVSAT" type="number"  step="0.1"
+                                   min="0"
+                                   max="3"
+                                   oninput="if(value>3)value=3;if(value<0)value=0"
+                                   autocomplete="off" th:value="${diemCongVSAT}">
                         </div>
                         <div class="tc-form-group">
                             <label>Khu vực ưu tiên:</label>
@@ -192,8 +188,12 @@
                             <div class="tc-form-group">
                                 <label>Toán (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="toan" type="number" placeholder="Điểm" th:value="${toan}">
-                                    <input name="cong_toan" type="number" step="0.1" placeholder="Cộng" th:value="${cong_toan}">
+                                    <input name="toan" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${toan}">
+                                    <input name="cong_toan" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_toan}">
                                 </div>
                             </div>
 
@@ -201,8 +201,12 @@
                             <div class="tc-form-group">
                                 <label>Văn (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="van" type="number" placeholder="Điểm" th:value="${van}">
-                                    <input name="cong_van" type="number" step="0.1" placeholder="Cộng" th:value="${cong_van}">
+                                    <input name="van" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${van}">
+                                    <input name="cong_van" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_van}">
                                 </div>
                             </div>
 
@@ -210,8 +214,12 @@
                             <div class="tc-form-group">
                                 <label>Lý (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="ly" type="number" placeholder="Điểm" th:value="${ly}">
-                                    <input name="cong_ly" type="number" step="0.1" placeholder="Cộng" th:value="${cong_ly}">
+                                    <input name="ly" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${ly}">
+                                    <input name="cong_ly" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_ly}">
                                 </div>
                             </div>
 
@@ -219,8 +227,12 @@
                             <div class="tc-form-group">
                                 <label>Hóa (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="hoa" type="number" placeholder="Điểm" th:value="${hoa}">
-                                    <input name="cong_hoa" type="number" step="0.1" placeholder="Cộng" th:value="${cong_hoa}">
+                                    <input name="hoa" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${hoa}">
+                                    <input name="cong_hoa" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_hoa}">
                                 </div>
                             </div>
 
@@ -228,8 +240,12 @@
                             <div class="tc-form-group">
                                 <label>Sinh (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="sinh" type="number" placeholder="Điểm" th:value="${sinh}">
-                                    <input name="cong_sinh" type="number" step="0.1" placeholder="Cộng" th:value="${cong_sinh}">
+                                    <input name="sinh" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${sinh}">
+                                    <input name="cong_sinh" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_sinh}">
                                 </div>
                             </div>
 
@@ -237,8 +253,12 @@
                             <div class="tc-form-group">
                                 <label>Sử (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="su" type="number" placeholder="Điểm" th:value="${su}">
-                                    <input name="cong_su" type="number" step="0.1" placeholder="Cộng" th:value="${cong_su}">
+                                    <input name="su" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${su}">
+                                    <input name="cong_su" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_su}">
                                 </div>
                             </div>
 
@@ -246,8 +266,12 @@
                             <div class="tc-form-group">
                                 <label>Địa (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="dia" type="number" placeholder="Điểm" th:value="${dia}">
-                                    <input name="cong_dia" type="number" step="0.1" placeholder="Cộng" th:value="${cong_dia}">
+                                    <input name="dia" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${dia}">
+                                    <input name="cong_dia" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_dia}">
                                 </div>
                             </div>
 
@@ -255,13 +279,16 @@
                             <div class="tc-form-group">
                                 <label>Anh (Điểm / Cộng)</label>
                                 <div style="display:flex; gap:8px;">
-                                    <input name="anh" type="number" placeholder="Điểm" th:value="${anh}">
-                                    <input name="cong_anh" type="number" step="0.1" placeholder="Cộng" th:value="${cong_anh}">
+                                    <input name="anh" type="number" step="0.1" min="0" max="150"
+                                           oninput="if(value>150)value=150;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Điểm" th:value="${anh}">
+                                    <input name="anh_cong" type="number" step="0.1" min="0" max="2"
+                                           oninput="if(value>2)value=2;if(value<0)value=0"
+                                           autocomplete="off" placeholder="Cộng" th:value="${cong_anh}">
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="tc-box">
+                        </div>                        <div class="tc-box">
                             <h3><i data-lucide="languages"></i> Quy đổi điểm cộng chứng chỉ Tiếng Anh</h3>
 
                             <div class="form-grid">
@@ -376,7 +403,12 @@
                             </div>
                             <div>
                                 <label style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Điểm cộng (khác):</label>
-                                <input type="number" step="0.01" name="diemCongTHPT" th:value="${diemCongTHPT}" placeholder="Nhập điểm cộng"
+                                <input type="number"
+                                       step="0.1"
+                                       min="0"
+                                       max="3"
+                                       oninput="if(value>3)value=3;if(value<0)value=0"
+                                       autocomplete="off" name="diemCongTHPT" th:value="${diemCongTHPT}" placeholder="Nhập điểm cộng"
                                        style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
                             </div>
 
@@ -384,17 +416,27 @@
                             <div id="inputDiemContainer" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-top: 20px;">
                                 <div>
                                     <label id="labelMon1" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 1</label>
-                                    <input type="number" step="0.01" name="diemMon1" th:value="${diemMon1}" placeholder="Nhập điểm"
+                                    <input type="number"
+                                           step="0.1" min="0" max="10"
+                                           oninput="if(value>10)value=10;if(value<0)value=0"
+                                           autocomplete="off"
+                                           name="diemMon1" th:value="${diemMon1}" placeholder="Nhập điểm"
                                            style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
                                 </div>
                                 <div>
                                     <label id="labelMon2" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 2</label>
-                                    <input type="number" step="0.01" name="diemMon2" th:value="${diemMon2}" placeholder="Nhập điểm"
+                                    <input type="number" min="0" max="10"
+                                           oninput="if(value>10)value=10;if(value<0)value=0"
+                                           autocomplete="off" step="0.01" name="diemMon2" th:value="${diemMon2}" placeholder="Nhập điểm"
                                            style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
                                 </div>
                                 <div>
-                                    <label id="labelMon3" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 3</label>
-                                    <input type="number" step="0.01" name="diemMon3" th:value="${diemMon3}" placeholder="Nhập điểm"
+                                    <label id="labelMon3" min="0" max="10"
+                                           oninput="if(value>10)value=10;if(value<0)value=0"
+                                           autocomplete="off" style="color: #6b7280; font-size: 0.85em; display: block; margin-bottom: 5px;">Môn 3</label>
+                                    <input type="number" min="0" max="10"
+                                           oninput="if(value>10)value=10;if(value<0)value=0"
+                                           autocomplete="off" step="0.01" name="diemMon3" th:value="${diemMon3}" placeholder="Nhập điểm"
                                            style="width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
                                 </div>
                             </div>
@@ -405,6 +447,8 @@
                              style="padding: 10px; color: #ef4444; font-size: 0.9em; border: 1px dashed #fca5a5; border-radius: 8px;">
                             ⚠️ Ngành này chưa có thông tin tổ hợp môn.
                         </div>
+                        <div class="tc-box">
+                            <h3><i data-lucide="languages"></i> Quy đổi điểm cộng chứng chỉ Tiếng Anh</h3>
 
                         <div class="form-grid">
                             <div class="tc-form-group">
@@ -436,6 +480,7 @@
                                 <input type="hidden" name="cc_ketquaTHPT" th:value="${cc_ketquaTHPT}">
                             </div>
                         </div>
+                    </div>
                     </div>
 
                     <div class="tc-actions_thpt">

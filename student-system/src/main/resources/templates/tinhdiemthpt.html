@@ -3,11 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết tính điểm THPT</title>
     <style th:replace="~{header :: header-style}"></style>
     <link rel="stylesheet" th:href="@{/css/tinhdiemdanhgianangluc.css}">
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
 </head>
+<style>
+    /* ==========================================================================
+   1. ROOT VARIABLES
+   ========================================================================== */
+:root {
+    /* Colors - University Standard */
+    --primary-color: #003366;
+    --primary-light: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary-color: #a50000;
 
+    /* Semantic Colors */
+    --success: #059669;
+    --success-bg: #ecfdf5;
+    --error: #dc2626;
+    --error-bg: #fef2f2;
+    --info-bg: #eff6ff;
+
+    /* Neutrals */
+    --bg-body: #f4f7f9;
+    --bg-card: #ffffff;
+    --bg-alt: #f8fafc;
+    --text-main: #1f2937;
+    --text-muted: #6b7280;
+    --border-color: #e5e7eb;
+
+    /* Layout */
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --transition: all 0.2s ease;
+}
+
+/* ==========================================================================
+   2. RESET + BASE
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   3. MAIN LAYOUT
+   ========================================================================== */
+.tc-wrap {
+    padding: 2rem 1rem;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.tc-content {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.tc-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+}
+
+.tc-body {
+    padding: 1.5rem 2.5rem 2.5rem;
+}
+
+/* ==========================================================================
+   4. PAGE HEADER
+   ========================================================================== */
+.page-header {
+    padding: 1.5rem 2.5rem;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.nav-link {
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    opacity: 0.8;
+    transform: translateX(-3px);
+}
+
+/* ==========================================================================
+   5. FORM GROUPS (Read-only Display)
+   ========================================================================== */
+.tc-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tc-form-group label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.tc-form-group input[readonly] {
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+    color: var(--text-main);
+}
+
+/* ==========================================================================
+   6. TABLES (Detailed THPT Score)
+   ========================================================================== */
+.detail-result-table h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin-top: 1.5rem;
+}
+
+.detail-result-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.detail-result-table th {
+    background: var(--bg-alt);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.detail-result-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+    vertical-align: middle;
+}
+
+.detail-result-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Highlight Formula Rows */
+code {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #1e293b;
+    color: #f8fafc;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+}
+
+.text-danger { color: var(--error); font-weight: 600; }
+
+/* ==========================================================================
+   7. STATUS BOX (Results Notification)
+   ========================================================================== */
+.status-container {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-card);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.status-container strong {
+    min-width: 180px;
+    display: inline-block;
+}
+
+/* ==========================================================================
+   8. ANIMATIONS
+   ========================================================================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.detail-result-table {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* ==========================================================================
+   9. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .tc-body {
+        padding: 1.5rem;
+    }
+
+    .detail-result-table table,
+    .detail-result-table thead,
+    .detail-result-table tbody,
+    .detail-result-table th,
+    .detail-result-table td,
+    .detail-result-table tr {
+        display: block;
+    }
+
+    .detail-result-table thead {
+        display: none;
+    }
+
+    .detail-result-table td {
+        padding: 10px 15px;
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-result-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+    }
+}
+</style>
 <body>
 
 <header th:replace="~{header :: header}"
@@ -31,12 +283,12 @@
                 <div class="form-grid" style="margin-bottom: 20px;">
                     <div class="tc-form-group">
                         <label>Ngành xét tuyển:</label>
+                        <!-- Hiển thị tên ngành nếu có -->
                         <input type="text" th:value="${maNganhthpt}" readonly style="background: #f3f4f6; font-weight: bold;">
                     </div>
                 </div>
 
                 <div class="detail-result-table">
-                    <!-- Chỉ lấy tổ hợp đầu tiên trong list để hiển thị chi tiết -->
                     <div th:each="kq : ${ketQuaToHopTHPT}">
                         <h3 style="color: #1f2937; margin-bottom: 10px;">
                             Tổ hợp xét tuyển: <span th:text="${kq.maToHop}" style="color: #10b981;"></span>
@@ -50,34 +302,19 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <!-- 1. MÔN 1 -->
                             <tr>
                                 <td>Môn 1 (<strong><span th:text="${kq.mon1Name}"></span></strong>)</td>
-                                <td>
-                                    Hệ số: <span th:text="${kq.hs1}"></span> |
-                                    Điểm: <span th:text="${kq.diem1}"></span>
-                                </td>
+                                <td>Hệ số: <span th:text="${kq.hs1}"></span> | Điểm: <span th:text="${#numbers.formatDecimal(kq.diem1, 1, 2)}"></span></td>
                             </tr>
-
-                            <!-- 2. MÔN 2 -->
                             <tr>
                                 <td>Môn 2 (<strong><span th:text="${kq.mon2Name}"></span></strong>)</td>
-                                <td>
-                                    Hệ số: <span th:text="${kq.hs2}"></span> |
-                                    Điểm: <span th:text="${kq.diem2}"></span>
-                                </td>
+                                <td>Hệ số: <span th:text="${kq.hs2}"></span> | Điểm: <span th:text="${#numbers.formatDecimal(kq.diem2, 1, 2)}"></span></td>
                             </tr>
-
-                            <!-- 3. MÔN 3 -->
                             <tr>
                                 <td>Môn 3 (<strong><span th:text="${kq.mon3Name}"></span></strong>)</td>
-                                <td>
-                                    Hệ số: <span th:text="${kq.hs3}"></span> |
-                                    Điểm: <span th:text="${kq.diem3}"></span>
-                                </td>
+                                <td>Hệ số: <span th:text="${kq.hs3}"></span> | Điểm: <span th:text="${#numbers.formatDecimal(kq.diem3, 1, 2)}"></span></td>
                             </tr>
 
-                            <!-- 4. CÔNG THỨC ĐTHXT -->
                             <tr>
                                 <td><b>Điểm tổ hợp (ĐTHXT)</b></td>
                                 <td>
@@ -87,40 +324,36 @@
                                 </td>
                             </tr>
 
-                            <!-- 5. ĐIỂM CỘNG -->
                             <tr>
                                 <td>Điểm cộng (DC)</td>
                                 <td>
-                                    <span th:text="${kq.dcCC}">0</span> (Quy đổi CC) +
-                                    <span th:text="${diemCongTHPT}">0</span> (Cộng khác) =
+                                    <span th:text="${kq.dcCC ?: 0}">0</span> (Quy đổi CC) +
+                                    <span th:text="${diemCongTHPT ?: 0}">0</span> (Thành tích) =
                                     <strong th:text="${#numbers.formatDecimal(res_tongDiemCong, 1, 2)}"></strong>
                                 </td>
                             </tr>
 
-                            <!-- 6. ĐIỂM ƯU TIÊN -->
                             <tr>
                                 <td>Điểm ưu tiên (DUT)</td>
                                 <td>
-                                    <span th:text="${khuVucTHPT}">0</span> (Khu vực) +
-                                    <span th:text="${doiTuongTHPT}">0</span> (Đối tượng) =
+                                    <span th:text="${khuVucTHPT ?: 0}">0</span> (KV) +
+                                    <span th:text="${doiTuongTHPT ?: 0}">0</span> (ĐT) =
                                     <strong th:text="${#numbers.formatDecimal(res_dut, 1, 2)}"></strong>
                                 </td>
                             </tr>
 
-                            <!-- 7. ĐỘ LỆCH -->
                             <tr>
-                                <td>Độ lệch tổ hợp</td>
+                                <td>Mức chênh lệch tổ hợp</td>
                                 <td>
-                                    <strong th:text="${#numbers.formatDecimal(res_doLech, 1, 2)}"></strong>
+                                    <strong class="text-danger" th:text="${#numbers.formatDecimal(res_doLech ?: 0, 1, 2)}"></strong>
                                 </td>
                             </tr>
 
-                            <!-- TỔNG KẾT -->
                             <tr style="background: #eff6ff; font-weight: bold;">
                                 <td style="color: #1e40af;">ĐIỂM XÉT TUYỂN (ĐXT)</td>
                                 <td>
-                                    <code>ĐTHXT + DC + DUT + Độ lệch</code><br>
-                                    <span th:text="${#numbers.formatDecimal(res_dthxt, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_tongDiemCong, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_dut, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_doLech, 1, 2)} + ' = '"></span>
+                                    <code>ĐTHXT + DC + DUT - Độ lệch</code><br>
+                                    <span th:text="${#numbers.formatDecimal(res_dthxt, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_tongDiemCong, 1, 2)} + ' + ' + ${#numbers.formatDecimal(res_dut, 1, 2)} + ' - ' + ${#numbers.formatDecimal(res_doLech, 1, 2)} + ' = '"></span>
                                     <span style="font-size: 1.3em; color: #2563eb;" th:text="${#numbers.formatDecimal(res_tongDiem, 1, 2)}"></span>
                                 </td>
                             </tr>
@@ -129,18 +362,23 @@
                     </div>
                 </div>
 
-                <!-- KHU VỰC THÔNG BÁO ĐẬU/RỚT -->
+                <!-- THÔNG BÁO KẾT QUẢ -->
                 <div style="margin-top: 25px; padding: 20px; border-radius: 10px; border: 1px solid #e5e7eb; background: #fff;">
                     <div style="margin-bottom: 10px;">
-                        <strong>Điểm trúng tuyển năm trước:</strong>
-                        <span th:text="${nganhDiemChuan}" style="color: #2563eb; font-weight: bold;"></span>
-                        <span style="margin-left: 15px;">- Kết quả dự kiến: </span>
-                        <b th:if="${isDatTrungTuyen}" style="color: #059669;">🎉 ĐỦ ĐIỂM ĐẬU</b>
-                        <b th:if="${!isDatTrungTuyen}" style="color: #dc2626;">❌ CHƯA ĐẠT</b>
+                        <strong>Điểm chuẩn trúng tuyển:</strong>
+                        <th:block th:if="${res_diemTrungTuyen != -1}">
+                            <span th:text="${#numbers.formatDecimal(res_diemTrungTuyen, 1, 2)}" style="color: #2563eb; font-weight: bold;"></span>
+                            <span style="margin-left: 15px;">- Kết quả dự kiến: </span>
+                            <b th:if="${isDatTrungTuyen}" style="color: #059669;">🎉 ĐỦ ĐIỂM ĐẬU</b>
+                            <b th:if="${!isDatTrungTuyen}" style="color: #dc2626;">❌ CHƯA ĐẠT</b>
+                        </th:block>
+                        <th:block th:if="${res_diemTrungTuyen == -1}">
+                            <span style="color: #6b7280; font-style: italic;">Đang cập nhật...</span>
+                        </th:block>
                     </div>
                     <div>
                         <strong>Điểm sàn nhận hồ sơ:</strong>
-                        <span th:text="${nganhDiemSan}" style="color: #2563eb; font-weight: bold;"></span>
+                        <span th:text="${#numbers.formatDecimal(res_diemSan ?: 0, 1, 2)}" style="color: #2563eb; font-weight: bold;"></span>
                         <span style="margin-left: 15px;">- Trạng thái: </span>
                         <b th:if="${isDatDiemSan}" style="color: #059669;">ĐẠT NGƯỠNG</b>
                         <b th:if="${!isDatDiemSan}" style="color: #dc2626;">DƯỚI NGƯỠNG</b>

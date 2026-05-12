@@ -23,7 +23,20 @@ public class ToHopNganh {
     private String maNganh;
 
     @Column(name = "matohop")
-    private String maToHop;
+    private String maToHopFull;
+
+    public String getMaToHop() {
+
+        if (maToHopFull == null || !maToHopFull.contains("(")) {
+            return maToHopFull;
+        }
+
+        return maToHopFull.substring(0, maToHopFull.indexOf("("));
+    }
+
+    public void setMaToHop(String maToHop) {
+        this.maToHopFull = maToHop;
+    }
 
     @Column(name = "th_mon1")
     private String mon1;

@@ -3,108 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kết quả Tra cứu Xét tuyển | The Academic Architect</title>
+    <title>Kết quả Tra cứu Xét tuyển | Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --success-bg: #ecfdf5;
-            --success-text: #059669;
-            --fail-bg: #fef2f2;
-            --fail-text: #dc2626;
-            --primary-blue: #2563eb;
-            --bg-body: #f9fafb;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border-color: #e2e8f0;
-        }
-
-        body {
-            background-color: var(--bg-body);
-            margin: 0; padding: 0;
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-        }
-
-        .result-wrap { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-        .card { background: #ffffff; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1); padding: 40px; border: 1px solid #f3f4f6; }
-
-        .student-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px dashed #e5e7eb; }
-        .student-info h3 { margin: 0; font-size: 1.4rem; }
-
-        .status-banner { text-align: center; padding: 20px; border-radius: 12px; font-weight: 800; font-size: 1.3rem; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; gap: 12px; }
-        .banner-success { background-color: var(--success-bg); color: var(--success-text); border: 1px solid #d1fae5; }
-        .banner-fail { background-color: var(--fail-bg); color: var(--fail-text); border: 1px solid #fee2e2; }
-
-        /* Bảng danh sách NV */
-        .all-nv-section { margin-top: 40px; border-top: 2px solid #f1f5f9; pt: 30px; }
-        .nv-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.9rem; }
-        .nv-table th { background: #f8fafc; text-align: left; padding: 12px; border: 1px solid var(--border-color); color: var(--text-muted); font-weight: 600; }
-        .nv-table td { padding: 12px; border: 1px solid var(--border-color); }
-        .row-pass { background-color: #f0fdf4; font-weight: 600; color: #166534; }
-
-        /* Điểm số chính */
-        .score-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .score-table td { padding: 12px; border-bottom: 1px solid #f1f5f9; }
-        .value-cell { text-align: right; font-weight: 700; font-family: monospace; font-size: 1.1rem; }
-        .final-row { background-color: #eff6ff; color: #1e40af; }
-
-        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: 600; border: none; cursor: pointer; }
-        .btn-back { color: var(--primary-blue); background: #eff6ff; }
-        .btn-print { background: var(--primary-blue); color: white; }
-
-        @media print { .btn-group, .btn-back { display: none !important; } }
-    </style>
     <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+    <style>
+        /* ==========================================================================
+      1. ROOT VARIABLES
+      ========================================================================== */
+   :root {
+       /* Colors - University Tone */
+       --primary-color: #003366;
+       --primary-light: #004a94;
+       --primary-dark: #002244;
+       --secondary-color: #a50000;
+       --secondary-light: #d40000;
+
+       /* Backgrounds */
+       --bg-body: #f4f7f9;
+       --bg-card: #ffffff;
+       --bg-input: #ffffff;
+       --bg-alt: #f8fafc;
+
+       /* Text */
+       --text-main: #1e293b;
+       --text-muted: #64748b;
+       --text-light: #94a3b8;
+       --text-white: #ffffff;
+
+       /* Status Colors */
+       --success: #10b981;
+       --success-bg: #f0fdf4;
+       --error: #ef4444;
+       --error-bg: #fef2f2;
+       --warning: #f59e0b;
+       --info: #3b82f6;
+
+       /* Border & Shadows */
+       --border-color: #e2e8f0;
+       --border-focus: #003366;
+       --radius-md: 12px;
+       --radius-lg: 16px;
+       --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+       --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+       --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.05);
+
+       /* Transitions */
+       --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+   }
+
+   /* ==========================================================================
+      2. RESET + BASE
+      ========================================================================== */
+   * {
+       margin: 0;
+       padding: 0;
+       box-sizing: border-box;
+   }
+
+   body {
+       font-family: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
+       background-color: var(--bg-body);
+       color: var(--text-main);
+       line-height: 1.6;
+       -webkit-font-smoothing: antialiased;
+   }
+
+   /* ==========================================================================
+      3. MAIN LAYOUT
+      ========================================================================== */
+   .container, .result-wrap {
+       width: 100%;
+       max-width: 1100px;
+       margin: 0 auto;
+       padding: 2rem 1rem;
+   }
+
+   .card {
+       background: var(--bg-card);
+       border-radius: var(--radius-lg);
+       box-shadow: var(--shadow-lg);
+       padding: 2.5rem;
+       border: 1px solid var(--border-color);
+       margin-bottom: 2rem;
+       width: 100%;
+   }
+
+   .grid-container {
+       display: grid;
+       grid-template-columns: repeat(12, 1fr);
+       gap: 1.5rem;
+   }
+
+   .full-width {
+       grid-column: 1 / -1 !important;
+   }
+
+   /* ==========================================================================
+      4. HEADER
+      ========================================================================== */
+   .logo, .student-header {
+       text-align: center;
+       margin-bottom: 2.5rem;
+       display: flex;
+       flex-direction: column;
+       align-items: center;
+       gap: 0.5rem;
+   }
+
+   .student-header {
+       flex-direction: row;
+       justify-content: space-between;
+       align-items: flex-end;
+       text-align: left;
+   }
+
+   .logo h1, .student-info h3 {
+       color: var(--primary-color);
+       font-size: 1.85rem;
+       font-weight: 800;
+       letter-spacing: -0.02em;
+   }
+
+   .logo p, .student-info p {
+       color: var(--text-muted);
+       font-size: 1rem;
+   }
+
+   /* ==========================================================================
+      5. TABS
+      ========================================================================== */
+   .tabs, .tab-container {
+       display: flex;
+       width: 100%;
+       background: var(--bg-alt);
+       border-radius: var(--radius-md);
+       padding: 6px;
+       margin-bottom: 2rem;
+       border: 1px solid var(--border-color);
+       grid-column: 1 / -1;
+   }
+
+   .tab-item, .nav-tab {
+       flex: 1;
+       text-align: center;
+       padding: 12px 16px;
+       cursor: pointer;
+       font-weight: 600;
+       color: var(--text-muted);
+       border-radius: var(--radius-sm);
+       transition: var(--transition);
+       border: none;
+       background: transparent;
+       font-size: 0.95rem;
+   }
+
+   .tab-item.active, .nav-tab.active {
+       background: var(--primary-color);
+       color: var(--text-white);
+       box-shadow: var(--shadow-sm);
+   }
+
+   /* ==========================================================================
+      6. FORM GRID
+      ========================================================================== */
+   .form-grid {
+       display: grid;
+       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+       gap: 1.5rem;
+       margin-bottom: 1.5rem;
+   }
+
+   .form-group {
+       display: flex;
+       flex-direction: column;
+       gap: 0.5rem;
+   }
+
+   /* ==========================================================================
+      7. FORM CONTROLS
+      ========================================================================== */
+   label {
+       font-size: 0.9rem;
+       font-weight: 700;
+       color: var(--primary-navy);
+   }
+
+   input, select, textarea {
+       width: 100%;
+       padding: 0.8rem 1rem;
+       border: 1.5px solid var(--border-color);
+       border-radius: var(--radius-md);
+       font-family: inherit;
+       font-size: 1rem;
+       transition: var(--transition);
+       outline: none;
+       background-color: var(--bg-input);
+   }
+
+   input:focus, select:focus {
+       border-color: var(--primary-color);
+       box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.08);
+   }
+
+   /* ==========================================================================
+      8. RESULT BOX & TABLES
+      ========================================================================== */
+   .status-banner {
+       padding: 1.5rem;
+       border-radius: var(--radius-md);
+       font-weight: 700;
+       font-size: 1.2rem;
+       margin-bottom: 2rem;
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       gap: 0.75rem;
+       text-align: center;
+   }
+
+   .banner-success { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
+   .banner-fail { background: var(--error-bg); color: var(--error); border: 1px solid #fecaca; }
+
+   .score-table, .nv-table {
+       width: 100%;
+       border-collapse: separate;
+       border-spacing: 0;
+       margin: 1.5rem 0;
+   }
+
+   .score-table td, .nv-table td, .nv-table th {
+       padding: 1.2rem;
+       border-bottom: 1px solid var(--border-color);
+   }
+
+   .nv-table th {
+       background: var(--bg-alt);
+       font-weight: 700;
+       text-transform: uppercase;
+       font-size: 0.8rem;
+       color: var(--text-muted);
+       letter-spacing: 0.05em;
+   }
+
+   .nv-table tbody tr:hover { background-color: #f8fafc; }
+
+   .row-pass td {
+       background-color: var(--success-bg) !important;
+       color: #15803d;
+       font-weight: 600;
+   }
+
+   .final-row { background-color: var(--bg-alt); font-weight: 800; }
+
+   /* ==========================================================================
+      9. ACTION BUTTONS
+      ========================================================================== */
+   .btn-group {
+       display: flex;
+       gap: 1rem;
+       margin-top: 2rem;
+       grid-column: 1 / -1;
+   }
+
+   .btn {
+       padding: 0.8rem 1.5rem;
+       border-radius: var(--radius-md);
+       font-weight: 600;
+       cursor: pointer;
+       transition: var(--transition);
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       gap: 0.5rem;
+       border: none;
+       font-size: 1rem;
+       text-decoration: none;
+   }
+
+   .btn-primary, .btn-submit {
+       background: var(--primary-color);
+       color: white;
+   }
+
+   .btn-primary:hover { background: var(--primary-light); transform: translateY(-2px); shadow: var(--shadow-md); }
+
+   .btn-back, .btn-secondary {
+       background: white;
+       color: var(--text-muted);
+       border: 1px solid var(--border-color);
+   }
+
+   .btn-back:hover { background: var(--bg-alt); color: var(--primary-color); }
+
+   /* ==========================================================================
+      10. ALERTS
+      ========================================================================== */
+   .error, .alert-danger {
+       background: var(--error-bg);
+       color: var(--error);
+       padding: 1rem 1.5rem;
+       border-radius: var(--radius-md);
+       border-left: 4px solid var(--error);
+       margin-bottom: 1.5rem;
+   }
+
+   .register-link {
+       text-align: center;
+       margin-top: 2rem;
+   }
+
+   .register-link a {
+       color: var(--primary-color);
+       font-weight: 700;
+   }
+
+   /* ==========================================================================
+      11. ANIMATIONS
+      ========================================================================== */
+   @keyframes fadeIn {
+       from { opacity: 0; transform: translateY(15px); }
+       to { opacity: 1; transform: translateY(0); }
+   }
+
+   .card, .result-wrap {
+       animation: fadeIn 0.5s ease-out forwards;
+   }
+
+   /* ==========================================================================
+      12. RESPONSIVE
+      ========================================================================== */
+   @media (max-width: 768px) {
+       .student-header {
+           flex-direction: column;
+           align-items: flex-start;
+           gap: 1.5rem;
+       }
+
+       .card { padding: 1.5rem; }
+
+       .nv-table thead { display: none; }
+
+       .nv-table tr {
+           display: block;
+           margin-bottom: 1rem;
+           border: 1px solid var(--border-color);
+           border-radius: var(--radius-md);
+           padding: 0.5rem;
+       }
+
+       .nv-table td {
+           display: flex;
+           justify-content: space-between;
+           text-align: right;
+           border-bottom: 1px solid #f1f5f9;
+           padding: 0.8rem 1rem;
+       }
+
+       .nv-table td:last-child { border-bottom: none; }
+
+       .nv-table td::before {
+           content: attr(data-label);
+           font-weight: 700;
+           color: var(--text-muted);
+           text-align: left;
+       }
+
+       .btn-group { flex-direction: column; }
+       .btn { width: 100%; }
+   }
+    </style>
 </head>
 <body>
 
 <div class="result-wrap">
-    <div class="student-header">
+    <!-- Header thông tin thí sinh -->
+    <header class="student-header">
         <div class="student-info">
-            <h3 th:text="'Thí sinh: ' + ${studentName != null ? studentName : 'Họ tên Thí sinh'}">Nguyễn Văn A</h3>
-            <p>Số CCCD: <span th:text="${cccd}">00120300XXXX</span></p>
+            <h3 th:text="${studentName != null ? studentName : 'Thí sinh chưa xác định'}">Nguyễn Văn A</h3>
+            <p>
+                <i data-lucide="contact-2" style="width:18px"></i>
+                CCCD: <span th:text="${cccd}">00120300XXXX</span>
+            </p>
         </div>
-        <a th:href="@{/tracuutinhdiemxettuyen}" class="btn btn-back"><i data-lucide="arrow-left"></i> Quay lại</a>
-    </div>
+        <a th:href="@{/tracuutinhdiemxettuyen}" class="btn btn-back">
+            <i data-lucide="chevron-left"></i> Trở lại cổng tra cứu
+        </a>
+    </header>
 
-    <div class="card">
-        <!-- HIỂN THỊ BANNER CHO NGUYỆN VỌNG CAO NHẤT TRÚNG TUYỂN -->
+    <main class="card">
+        <!-- KHỐI KẾT QUẢ CHÍNH (TRÚNG TUYỂN) -->
         <div th:if="${ketQua == 'TRUNG_TUYEN'}">
             <div class="status-banner banner-success">
-                <i data-lucide="party-popper"></i> CHÚC MỪNG BẠN ĐÃ TRÚNG TUYỂN!
+                <i data-lucide="award" style="width: 28px; height: 28px;"></i>
+                CHÚC MỪNG BẠN ĐÃ TRÚNG TUYỂN!
             </div>
 
-            <p style="text-align: center; color: #475569; margin-top: -20px; margin-bottom: 30px;">
-                Bạn đã trúng tuyển vào nguyện vọng số <strong th:text="${nv.nvTt}">1</strong>
-            </p>
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <p style="color: var(--text-light);">Bạn đã xuất sắc trúng tuyển vào nguyện vọng ưu tiên số <b th:text="${nv.nvTt}" style="color: var(--success-emerald)">1</b></p>
+            </div>
 
-            <!-- Bảng điểm chi tiết của NV trúng tuyển -->
             <table class="score-table">
-                <tr><td>Ngành trúng tuyển</td><td class="value-cell" th:text="${nv.nvManganh}">-</td></tr>
-                <tr><td>Tổ hợp môn</td><td class="value-cell" th:text="${nv.ttThm}">-</td></tr>
-                <tr><td>Điểm thi quy đổi</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemThxt,1,2)}">0.00</td></tr>
-                <tr><td>Điểm ưu tiên & Cộng</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemUtqd + nv.diemCong,1,2)}">0.00</td></tr>
-                <tr class="final-row"><td>TỔNG ĐIỂM XÉT TUYỂN</td><td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemXettuyen,1,2)}">0.00</td></tr>
+                <tr>
+                    <td><i data-lucide="graduation-cap" style="width:16px; margin-right:8px; vertical-align:middle"></i>Ngành trúng tuyển</td>
+                    <td class="value-cell" th:text="${nv.nvManganh}">-</td>
+                </tr>
+                <tr>
+                    <td><i data-lucide="book-open" style="width:16px; margin-right:8px; vertical-align:middle"></i>Tổ hợp môn</td>
+                    <td class="value-cell" th:text="${nv.ttThm}">-</td>
+                </tr>
+                <tr>
+                    <td><i data-lucide="pencil-line" style="width:16px; margin-right:8px; vertical-align:middle"></i>Điểm thi quy đổi</td>
+                    <td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemThxt,1,2)}">0.00</td>
+                </tr>
+                <tr>
+                    <td><i data-lucide="plus-circle" style="width:16px; margin-right:8px; vertical-align:middle"></i>Điểm ưu tiên & Cộng</td>
+                    <td class="value-cell" th:text="${#numbers.formatDecimal(nv.diemUtqd + nv.diemCong,1,2)}">0.00</td>
+                </tr>
+                <tr class="final-row">
+                    <td><strong>TỔNG ĐIỂM XÉT TUYỂN</strong></td>
+                    <td class="value-cell"><strong th:text="${#numbers.formatDecimal(nv.diemXettuyen,1,2)}">0.00</strong></td>
+                </tr>
             </table>
         </div>
 
+        <!-- KHỐI KẾT QUẢ CHÍNH (CHƯA TRÚNG TUYỂN) -->
         <div th:if="${ketQua == 'KHONG_TRUNG_TUYEN'}">
             <div class="status-banner banner-fail">
-                <i data-lucide="frown"></i> KẾT QUẢ: CHƯA TRÚNG TUYỂN
+                <i data-lucide="info"></i> THÔNG BÁO: CHƯA TRÚNG TUYỂN
             </div>
+            <p style="text-align: center; color: var(--text-light);">Rất tiếc, bạn chưa đạt điểm trúng tuyển vào các nguyện vọng đã đăng ký.</p>
         </div>
 
-        <!-- PHẦN DANH SÁCH TẤT CẢ 11 NGUYỆN VỌNG -->
-        <div class="all-nv-section">
-            <h4 style="display: flex; align-items: center; gap: 8px;">
-                <i data-lucide="layers" style="width: 20px; color: var(--primary-blue);"></i>
-                Danh sách nguyện vọng đã đăng ký
+        <!-- DANH SÁCH TẤT CẢ NGUYỆN VỌNG -->
+        <section class="all-nv-section" style="margin-top: 3rem;">
+            <h4 style="display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; color: var(--primary-navy);">
+                <i data-lucide="list-checks" style="color: var(--accent-blue);"></i>
+                Chi tiết danh sách nguyện vọng
             </h4>
-            <div style="overflow-x: auto;">
+
+            <div class="table-responsive">
                 <table class="nv-table">
                     <thead>
                     <tr>
-                        <th>TT</th>
+                        <th>Thứ tự</th>
                         <th>Mã ngành</th>
                         <th>Phương thức</th>
                         <th>Tổ hợp</th>
@@ -114,30 +455,37 @@
                     </thead>
                     <tbody>
                     <tr th:each="item : ${danhSachNv}" th:classappend="${item.nvKetqua == 'Trúng tuyển'} ? 'row-pass' : ''">
-                        <td th:text="${item.nvTt}">1</td>
-                        <td th:text="${item.nvManganh}">7480201</td>
-                        <td th:text="${item.ttPhuongthuc}">Học bạ</td>
-                        <td th:text="${item.ttThm}">A00</td>
-                        <td th:text="${#numbers.formatDecimal(item.diemXettuyen,1,2)}">28.25</td>
-                        <td>
-                                <span th:if="${item.nvKetqua == 'Trúng tuyển'}">
-                                    <i data-lucide="check-circle-2" style="width:14px; vertical-align: middle;"></i> Trúng tuyển
+                        <td data-label="Thứ tự" th:text="${item.nvTt}">1</td>
+                        <td data-label="Mã ngành" th:text="${item.nvManganh}">7480201</td>
+                        <td data-label="Phương thức" th:text="${item.ttPhuongthuc}">Học bạ</td>
+                        <td data-label="Tổ hợp" th:text="${item.ttThm}">A00</td>
+                        <td data-label="Điểm xét" th:text="${#numbers.formatDecimal(item.diemXettuyen,1,2)}">28.25</td>
+                        <td data-label="Kết quả">
+                                <span th:if="${item.nvKetqua == 'Trúng tuyển'}" class="badge-status">
+                                    <i data-lucide="check-circle" style="width:14px; color: var(--success-emerald)"></i> Đỗ
                                 </span>
-                            <span th:if="${item.nvKetqua != 'Trúng tuyển'}" th:text="${item.nvKetqua}" style="color: #94a3b8;"></span>
+                            <span th:if="${item.nvKetqua != 'Trúng tuyển'}" th:text="${item.nvKetqua}" style="color: var(--text-light); font-size: 0.85rem;"></span>
                         </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </section>
 
-        <div class="btn-group" style="margin-top: 30px; display: flex; justify-content: space-between;">
-            <button onclick="window.print()" class="btn btn-print"><i data-lucide="printer"></i> In kết quả</button>
-            <p style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">Ngày cập nhật: <span th:text="${#calendars.format(#calendars.createNow(), 'dd/MM/yyyy HH:mm')}"></span></p>
-        </div>
-    </div>
+        <footer style="margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-soft); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-light); font-style: italic;">
+                Cập nhật lúc: <span th:text="${#calendars.format(#calendars.createNow(), 'dd/MM/yyyy HH:mm')}"></span>
+            </span>
+            <button onclick="window.print()" class="btn btn-back" style="padding: 0.5rem 1rem;">
+                <i data-lucide="printer" style="width:16px"></i> In kết quả
+            </button>
+        </footer>
+    </main>
 </div>
 
-<script>lucide.createIcons();</script>
+<script>
+    // Khởi tạo icons Lucide
+    lucide.createIcons();
+</script>
 </body>
 </html>

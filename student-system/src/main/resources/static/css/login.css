@@ -1,152 +1,414 @@
-* {
+/* ==========================================================================
+   1. ROOT VARIABLES
+   ========================================================================== */
+:root {
+    /* Colors */
+    --primary-color: #003366;
+    --primary-light: #004080;
+    --primary-dark: #002244;
+    --secondary-color: #a50000;
+    --secondary-light: #c80000;
+
+    --bg-body: #f4f7f9;
+    --bg-card: #ffffff;
+    --bg-input: #ffffff;
+
+    --text-main: #1a202c;
+    --text-muted: #64748b;
+    --text-light: #94a3b8;
+    --text-white: #ffffff;
+
+    --border-color: #e2e8f0;
+    --border-focus: #003366;
+
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+
+    /* Spacing & Sizing */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+
+    --container-max: 1200px;
+}
+
+/* ==========================================================================
+   2. RESET + BASE
+   ========================================================================== */
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
-    font-family: 'Be Vietnam Pro', Arial, sans-serif;
-    background: linear-gradient(135deg, #0f172a 0%, #1e2937 100%);
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #e2e8f0;
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
 }
 
+body {
+    font-family: 'Be Vietnam Pro', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition);
+}
+
+ul, ol {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* ==========================================================================
+   3. MAIN LAYOUT
+   ========================================================================== */
 .container {
     width: 100%;
-    max-width: 420px;
+    max-width: var(--container-max);
+    margin: 0 auto;
     padding: 20px;
 }
 
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 2rem;
+    width: 100%;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.full-width {
+    grid-column: 1 / -1 !important;
+}
+
+/* ==========================================================================
+   4. HEADER
+   ========================================================================== */
 .logo {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: 2.5rem;
+    padding: 1rem;
 }
 
 .logo h1 {
-    font-size: 28px;
+    color: var(--primary-color);
+    font-size: 2rem;
     font-weight: 800;
-    color: #ffffff;
-    letter-spacing: -0.5px;
-    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
 }
 
 .logo p {
-    color: #94a3b8;
-    font-size: 15px;
-    font-weight: 500;
+    color: var(--text-muted);
+    font-size: 1rem;
+    font-weight: 400;
 }
 
-/* Card */
-.card {
-    background: #ffffff;
-    padding: 40px 32px;
-    border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
-    text-align: left;
-}
-
-.card h2 {
-    font-size: 24px;
-    font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 12px;
-}
-
-.card > p {
-    color: #64748b;
-    font-size: 15px;
-    line-height: 1.5;
-    margin-bottom: 30px;
-}
-
-/* Error message */
-.error {
-    background: #fee2e2;
-    color: #b91c1c;
-    padding: 12px 16px;
-    border-radius: 8px;
-    font-size: 14px;
-    margin-bottom: 20px;
-    border-left: 4px solid #ef4444;
-}
-
-/* Form */
-.form-group {
-    margin-bottom: 24px;
-}
-
-label {
-    display: block;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: #334155;
-    margin-bottom: 8px;
-    letter-spacing: 0.5px;
-}
-
-input {
+/* ==========================================================================
+   5. TABS (Full Width Navigation)
+   ========================================================================== */
+.tabs, .tab-container {
+    display: flex;
     width: 100%;
-    padding: 14px 16px;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    font-size: 16px;
-    transition: all 0.2s ease;
+    background: #f8fafc;
+    border-radius: var(--radius-md);
+    padding: 5px;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border-color);
+    grid-column: 1 / -1;
+}
+
+.tab-item, .nav-tab {
+    flex: 1;
+    text-align: center;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    border: none;
+    background: transparent;
+    white-space: nowrap;
+}
+
+.tab-item.active, .nav-tab.active {
+    background: var(--primary-color);
+    color: var(--text-white);
+    box-shadow: var(--shadow-sm);
+}
+
+.tab-item:hover:not(.active) {
+    background: rgba(0, 51, 102, 0.05);
+    color: var(--primary-color);
+}
+
+/* ==========================================================================
+   6. FORM GRID
+   ========================================================================== */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ==========================================================================
+   7. FORM CONTROLS
+   ========================================================================== */
+label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-family: inherit;
+    font-size: 1rem;
+    color: var(--text-main);
+    background: var(--bg-input);
+    transition: var(--transition);
     outline: none;
 }
 
-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.1);
 }
 
-/* Button */
+input::placeholder {
+    color: var(--text-light);
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+}
+
+/* ==========================================================================
+   8. RESULT BOX / INFO BLOCKS
+   ========================================================================== */
+.result-box, .info-section {
+    background: #f1f5f9;
+    border-radius: var(--radius-md);
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border-left: 5px solid var(--primary-color);
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   9. ACTION BUTTONS
+   ========================================================================== */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    grid-column: 1 / -1;
+}
+
 .btn {
-    width: 100%;
-    padding: 14px;
-    background: #0f172a;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
     font-weight: 600;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-top: 10px;
+    transition: var(--transition);
+    border: none;
+    gap: 0.5rem;
+    min-width: 140px;
 }
 
-.btn:hover {
-    background: #1e2937;
-    transform: translateY(-1px);
+.btn-primary {
+    background: var(--primary-color);
+    color: var(--text-white);
 }
 
-/* Link đăng ký */
+.btn-primary:hover {
+    background: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: var(--secondary-color);
+    color: var(--text-white);
+}
+
+.btn-secondary:hover {
+    background: var(--secondary-light);
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1.5px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background: var(--primary-color);
+    color: var(--text-white);
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* ==========================================================================
+   10. ALERTS & MESSAGES
+   ========================================================================== */
+.error, .alert-danger {
+    background-color: #fef2f2;
+    border: 1px solid #fee2e2;
+    color: var(--error);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.success, .alert-success {
+    background-color: #ecfdf5;
+    border: 1px solid #d1fae5;
+    color: var(--success);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    margin-bottom: 1.5rem;
+}
+
 .register-link {
     text-align: center;
-    margin-top: 28px;
-    font-size: 14.5px;
-    color: #64748b;
+    margin-top: 1.5rem;
+    color: var(--text-muted);
 }
 
 .register-link a {
-    color: #3b82f6;
-    font-weight: 500;
-    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 700;
 }
 
-.register-link a:hover {
-    text-decoration: underline;
+/* ==========================================================================
+   11. ANIMATIONS
+   ========================================================================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive */
-@media (max-width: 480px) {
-    .card {
-        padding: 32px 24px;
+.card, .logo, .form-group {
+    animation: fadeIn 0.4s ease-out forwards;
+}
+
+/* ==========================================================================
+   12. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .container {
+        max-width: 900px;
+    }
+}
+
+@media (max-width: 768px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .btn-group {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .tab-item {
+        flex: none;
     }
 
     .logo h1 {
-        font-size: 24px;
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .card {
+        padding: 1.25rem;
+    }
+
+    .container {
+        padding: 10px;
     }
 }

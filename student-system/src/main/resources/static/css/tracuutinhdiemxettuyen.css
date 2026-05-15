@@ -1,0 +1,421 @@
+/* =========================================
+   1. CÀI ĐẶT NỀN TẢNG & BIẾN CHỦ ĐẠO
+   ========================================= */
+   /* =========================================
+      CẤU TRÚC CHÍNH 3 TẦNG (MAIN LAYOUT)
+      ========================================= */
+
+   .profile-container {
+       max-width: 1100px;
+       margin: 0 auto;
+       background: var(--white);
+       border-radius: 16px;
+       box-shadow: var(--shadow-md);
+       padding: 35px;
+
+       /* Chia Grid cho container chính */
+       display: grid;
+       grid-template-columns: 1fr; /* Luôn là 1 cột chính */
+       gap: 20px;
+   }
+
+   /* HÀNG 1: Header (1 cột toàn chiều ngang) */
+   .page-header {
+       grid-row: 1;
+       text-align: center;
+       border-bottom: 2px solid var(--accent-bg);
+       padding-bottom: 20px;
+       margin-bottom: 10px;
+   }
+
+   /* HÀNG 2: Thanh điều hướng (Chia 3 cột cho 3 lựa chọn) */
+   .tabs-header {
+       grid-row: 2;
+       display: grid;
+       grid-template-columns: repeat(3, 1fr); /* Chia đúng 3 cột bằng nhau */
+       gap: 12px;
+       background: #f1f5f9;
+       padding: 8px;
+       border-radius: 12px;
+       width: 100%;
+   }
+
+   .tab-btn {
+       width: 100%; /* Chiếm hết ô cột đã chia */
+       padding: 16px 10px;
+       border: none;
+       background: transparent;
+       font-weight: 700;
+       color: var(--text-muted);
+       cursor: pointer;
+       border-radius: 8px;
+       transition: all 0.3s ease;
+       text-align: center;
+   }
+
+   /* HÀNG 3: Nội dung Tab đang chọn (1 cột toàn chiều ngang) */
+   .tc-container {
+       grid-row: 3;
+       width: 100%;
+   }
+
+   /* =========================================
+      CHI TIẾT FORM BÊN TRONG TAB
+      ========================================= */
+
+   .tab-content {
+       display: none;
+       width: 100%;
+       animation: fadeIn 0.4s ease-out;
+   }
+
+   .tab-content.active {
+       display: block;
+   }
+
+   /* Nội dung bên trong vẫn chia 2 cột để nhập liệu cho đẹp */
+   .form-grid {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 25px 35px;
+       align-items: end;
+   }
+
+   /* Các thành phần bổ trợ luôn full hàng ngang trong form */
+   .method-title, .tc-box, .tc-result, .alert-info, .tc-actions, .tc-actions_vsat, .tc-actions_thpt {
+       grid-column: 1 / -1;
+   }
+
+   /* =========================================
+      NÚT BẤM & KẾT QUẢ (CỐ ĐỊNH Ở GIỮA HÀNG 3)
+      ========================================= */
+
+   .tc-actions, .tc-actions_vsat, .tc-actions_thpt {
+       display: flex;
+       justify-content: center;
+       gap: 20px;
+       margin: 30px 0;
+   }
+
+   .tc-result {
+       background: #f0f7ff;
+       border: 2px dashed var(--primary-color);
+       padding: 25px;
+       border-radius: 12px;
+       text-align: center;
+   }
+
+   /* =========================================
+      MÀU SẮC & BIẾN (GIỮ NGUYÊN)
+      ========================================= */
+   :root {
+       --primary-color: #003366;
+       --secondary-color: #a50000;
+       --accent-bg: #f8fafc;
+       --text-main: #1e293b;
+       --text-muted: #64748b;
+       --border-color: #cbd5e1;
+       --white: #ffffff;
+       --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+   }
+
+   .tab-btn.active {
+       background: var(--white);
+       color: var(--primary-color);
+       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+   }
+
+   @keyframes fadeIn {
+       from { opacity: 0; transform: translateY(10px); }
+       to { opacity: 1; transform: translateY(0); }
+   }
+
+   /* Responsive cho Mobile */
+   @media (max-width: 768px) {
+       .tabs-header {
+           grid-template-columns: 1fr; /* Mobile chuyển về 1 cột dọc cho dễ bấm */
+       }
+       .form-grid {
+           grid-template-columns: 1fr;
+       }
+   }
+:root {
+    --primary-color: #003366;    /* Xanh Navy đại học */
+    --secondary-color: #a50000;  /* Đỏ đô nhấn mạnh */
+    --accent-bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #cbd5e1;
+    --white: #ffffff;
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+* {
+    box-sizing: border-box; /* Ngăn chặn padding làm "nở" layout gây lệch */
+    margin: 0;
+    padding: 0;
+}
+
+.profile-wrap {
+    background-color: #f1f5f9;
+    padding: 40px 15px;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-main);
+}
+
+.profile-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 35px;
+}
+
+/* =========================================
+   2. HEADER & TABS ĐIỀU HƯỚNG (FULL WIDTH)
+   ========================================= */
+.page-header {
+    text-align: center;
+    margin-bottom: 35px;
+    border-bottom: 2px solid var(--accent-bg);
+    padding-bottom: 20px;
+}
+
+.page-header h2 {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tabs-header {
+    display: flex;
+    width: 100%; /* Đảm bảo dàn hàng ngang full trang */
+    background: #f1f5f9;
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    gap: 8px;
+}
+
+.tab-btn {
+    flex: 1; /* Chia đều chiều rộng tuyệt đối cho các tab (Khắc phục image_8f4ac5.png) */
+    padding: 14px 20px;
+    border: none;
+    background: transparent;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 0.95rem;
+    white-space: nowrap;
+}
+
+.tab-btn.active {
+    background: var(--white);
+    color: var(--primary-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* =========================================
+   3. NỘI DUNG TAB (CHỐNG TRÀN & BỊ LỆCH)
+   ========================================= */
+.tab-content {
+    display: none; /* Ẩn mặc định để tránh lỗi chồng tab trong image_8f4ac5.png */
+    width: 100%;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.tab-content.active {
+    display: block; /* Chỉ hiện tab đang chọn */
+}
+
+.method-title {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    padding-left: 12px;
+    border-left: 5px solid var(--secondary-color);
+    grid-column: 1 / -1; /* Luôn chiếm full chiều ngang */
+}
+
+/* Grid System - Khắc phục tình trạng so le trong image_8f4e64.png */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Chia đúng 2 cột 50/50 */
+    gap: 25px 35px;
+    width: 100%;
+    align-items: end; /* Căn lề các ô nhập liệu nằm ngang hàng nhau */
+}
+
+.tc-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+}
+
+.tc-form-group label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--primary-color);
+}
+
+.tc-form-group input,
+.tc-form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+    background-color: var(--white);
+}
+
+/* Xử lý riêng cho V-SAT (image_8f4bbc.png) - Các ô Điểm/Cộng nhỏ */
+.tc-form-group div[style*="display:flex"] {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.tc-form-group div[style*="display:flex"] input {
+    flex: 1; /* Chia đều không gian trong group */
+}
+
+/* =========================================
+   4. CÁC THÀNH PHẦN CHIẾM FULL CHIỀU NGANG
+   ========================================= */
+.tc-box, .tc-result, .alert-info, .tc-actions, .tc-actions_vsat, .tc-actions_thpt,
+#resultToHopThpt, #selectNganhThpt {
+    grid-column: 1 / -1; /* Ép chiếm toàn bộ chiều rộng Grid */
+}
+
+.tc-result {
+    background: #fff9f9;
+    border: 1px dashed var(--secondary-color);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.tc-result strong {
+    font-size: 1.5rem;
+    color: var(--secondary-color);
+}
+
+.tc-box {
+    background: var(--accent-bg);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    margin-top: 20px;
+}
+
+.alert-info {
+    background-color: #ebf8ff;
+    color: #2b6cb0;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border-left: 4px solid #3182ce;
+}
+
+/* =========================================
+   5. NÚT BẤM (CÂN ĐỐI & CHUYÊN NGHIỆP)
+   ========================================= */
+.tc-actions, .tc-actions_vsat, .tc-actions_thpt {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+button[type="submit"] {
+    min-width: 200px;
+    padding: 14px 30px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+
+button[value="TINH"] {
+    background: var(--primary-color);
+    color: white;
+    border: none;
+}
+
+button[value="QUYDOI"] {
+    background: white;
+    color: var(--primary-color);
+    border: 2.5px solid var(--primary-color);
+}
+
+button[type="submit"]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* =========================================
+   6. HIỆU ỨNG & RESPONSIVE
+   ========================================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 850px) {
+    .form-grid {
+        grid-template-columns: 1fr; /* Xuống 1 cột trên điện thoại */
+    }
+
+    .tabs-header {
+        flex-direction: column;
+    }
+
+    .tc-actions {
+        flex-direction: column;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+    }
+}
+/* Đảm bảo ô chọn ngành luôn chiếm trọn 2 cột trong Grid */
+#selectNganhThpt {
+    grid-column: 1 / -1; /* Ép chiếm full chiều rộng nếu nằm trong .form-grid */
+
+    /* Các thuộc tính kế thừa từ .tc-form-group input/select bạn đã có */
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23003366%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px top 50%;
+    background-size: 12px auto;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 30px; /* Tránh chữ đè lên mũi tên */
+}
+
+/* Hiệu ứng khi hover/focus cho đồng bộ */
+#selectNganhThpt:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 51, 102, 0.1);
+}
+
+/* Tùy chỉnh màu các option bên trong */
+#selectNganhThpt option {
+    padding: 10px;
+    color: var(--text-main);
+}

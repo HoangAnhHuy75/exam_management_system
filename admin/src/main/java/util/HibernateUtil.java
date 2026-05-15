@@ -15,13 +15,19 @@ public class HibernateUtil {
                 StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
                         .configure("hibernate.cfg.xml") // đường dẫn file config
                         .build();
-
+                System.out.println(
+    registry.getService(
+        org.hibernate.engine.config.spi.ConfigurationService.class
+    ).getSettings()
+);
                 // 2. Tạo Metadata và SessionFactory
                 sessionFactory = new MetadataSources(registry)
                         .addAnnotatedClass(DTO.NganhDTO.class)
                         .addAnnotatedClass(DTO.ToHopDTO.class)           // ✅ THÊM DÒNG NÀY
                         .addAnnotatedClass(DTO.ToHopNganhDTO.class)   // thêm entity
                         .addAnnotatedClass(DTO.UserDTO.class)
+                        .addAnnotatedClass(DTO.RoleDTO.class)
+                        .addAnnotatedClass(DTO.PermissionDTO.class)
                         .buildMetadata()
                         .buildSessionFactory();
 

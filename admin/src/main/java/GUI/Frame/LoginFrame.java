@@ -9,6 +9,7 @@ package GUI.Frame;
  * @author Hao Nguyen
  */
 import BUS.UserBUS;
+import DTO.UserDTO;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -260,48 +261,34 @@ public class LoginFrame extends JFrame {
  
     // ── Login handler ─────────────────────────────────────────────────────
     private void handleLogin() {
-        String user = txtUser.getText().trim();
-        String pass = new String(txtPass.getPassword()).trim();
-        if (user.isEmpty() || user.equals("Tên đăng nhập") || pass.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                "Vui lòng nhập đầy đủ tên đăng nhập và mật khẩu!",
-                "Cảnh báo", JOptionPane.WARNING_MESSAGE);
-            return;
-        }
-        
-    String result = userBUS.login(user, pass);
 
-    switch (result) {
-        case "ADMIN":
-             new Main("ADMIN").setVisible(true);
-    this.dispose();
-            // mở form admin
-            break;
+    String username = txtUser.getText().trim();
+    String password = new String(txtPass.getPassword()).trim();
 
-        case "USER":
-            new Main("USER").setVisible(true);
-    this.dispose();
-            // mở form user
-            break;
+    try {
 
-        case "WRONG_PASSWORD":
-            JOptionPane.showMessageDialog(this, "Sai mật khẩu");
-            break;
+        UserDTO user =
+                userBUS.login(username, password);
 
-        case "NOT_FOUND":
-            JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại");
-            break;
+        JOptionPane.showMessageDialog(
+                this,
+                "Đăng nhập thành công!"
+        );
 
-        case "BANNED":
-            JOptionPane.showMessageDialog(this, "Tài khoản đã bị khóa");
-            break;
+        new Main(user).setVisible(true);
 
-        case "EMPTY":
-        default:
-            JOptionPane.showMessageDialog(this, "Dữ liệu không hợp lệ");
-            break;
+        this.dispose();
+
+    } catch (Exception e) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                e.getMessage(),
+                "Thông báo",
+                JOptionPane.WARNING_MESSAGE
+        );
     }
-    }
+}
  
     public static void main(String[] args) {
         try { UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); }

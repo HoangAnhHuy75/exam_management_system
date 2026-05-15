@@ -105,22 +105,17 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <Component id="cbb_maNganh" min="-2" pref="180" max="-2" attributes="0"/>
+                      <Component id="jLabel5" min="-2" pref="78" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="72" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
-                      <Component id="cbb_maToHop" min="-2" pref="173" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" pref="73" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="134" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" attributes="0">
-                          <Component id="cbb_PhuongThuc" min="-2" pref="180" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                          <Component id="cbb_maToHop" min="-2" pref="173" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="200" max="-2" attributes="0"/>
                           <Component id="btn_loc" min="-2" pref="160" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jLabel9" min="-2" max="-2" attributes="0"/>
+                      <Component id="jLabel8" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
               </Group>
@@ -133,13 +128,11 @@
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel8" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jLabel9" alignment="3" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" max="-2" attributes="0">
                       <Component id="cbb_maToHop" alignment="3" min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="btn_loc" alignment="3" min="-2" pref="38" max="-2" attributes="0"/>
-                      <Component id="cbb_PhuongThuc" min="-2" pref="39" max="-2" attributes="0"/>
                       <Component id="cbb_maNganh" min="-2" pref="39" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="16" max="32767" attributes="0"/>
@@ -151,12 +144,7 @@
         <Component class="javax.swing.JComboBox" name="cbb_maNganh">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
+              <StringArray count="0"/>
             </Property>
           </Properties>
           <AuxValues>
@@ -168,18 +156,13 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="12" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="tenNganh"/>
+            <Property name="text" type="java.lang.String" value="T&#xea;n ng&#xe0;nh"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="cbb_maToHop">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
+              <StringArray count="0"/>
             </Property>
           </Properties>
           <AuxValues>
@@ -191,31 +174,8 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="12" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="maTohop"/>
+            <Property name="text" type="java.lang.String" value="T&#x1ed5; h&#x1ee3;p m&#xf4;n"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel9">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI" size="12" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="Ph&#x1b0;&#x1a1;ng th&#x1ee9;c"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JComboBox" name="cbb_PhuongThuc">
-          <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="4">
-                <StringItem index="0" value="Item 1"/>
-                <StringItem index="1" value="Item 2"/>
-                <StringItem index="2" value="Item 3"/>
-                <StringItem index="3" value="Item 4"/>
-              </StringArray>
-            </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
-          </AuxValues>
         </Component>
         <Component class="javax.swing.JButton" name="btn_loc">
           <Properties>

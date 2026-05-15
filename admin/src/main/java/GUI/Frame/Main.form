@@ -79,6 +79,7 @@
                           <Component id="btn_nvxt" pref="195" max="32767" attributes="0"/>
                           <Component id="btn_user" alignment="0" pref="195" max="32767" attributes="0"/>
                           <Component id="btn_logout" alignment="0" pref="195" max="32767" attributes="0"/>
+                          <Component id="btn_permission" alignment="0" pref="195" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace pref="25" max="32767" attributes="0"/>
                   </Group>
@@ -106,8 +107,10 @@
                       <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btn_user" min="-2" pref="31" max="-2" attributes="0"/>
                       <EmptySpace type="separate" max="-2" attributes="0"/>
+                      <Component id="btn_permission" min="-2" pref="31" max="-2" attributes="0"/>
+                      <EmptySpace type="separate" max="-2" attributes="0"/>
                       <Component id="btn_logout" min="-2" pref="31" max="-2" attributes="0"/>
-                      <EmptySpace pref="266" max="32767" attributes="0"/>
+                      <EmptySpace pref="217" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -191,6 +194,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_logoutActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="btn_permission">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Ph&#xe2;n quy&#x1ec1;n"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btn_permissionActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>

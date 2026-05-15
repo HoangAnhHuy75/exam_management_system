@@ -96,30 +96,23 @@ public class DiemCongBUS {
     }
     
     // filter tổng hợp
-    public ArrayList<DiemCongDTO> filterAll(String tenNganh, String maToHop, String pt) {
+    public ArrayList<DiemCongDTO> filterAll(String tenNganh, String maToHop) {
         ArrayList<DiemCongDTO> list = new ArrayList<>();
         HashMap<String,String> map = ngB.nganhMap();
 
         String maNganh = map.get(tenNganh);
-        String ptText = convertPhuongThuc(pt);
 
         for (DiemCongDTO dc : diemCongDao.getAllDiemCong()) {
 
             // lọc ngành
-            if (tenNganh != null && !tenNganh.equals("Chọn tên ngành")) {
+            if (tenNganh != null && !tenNganh.equals("Tất cả")) {
                 if (maNganh == null || !dc.getManganh().equalsIgnoreCase(maNganh)) continue;
             }
 
             // lọc tổ hợp
-            if (maToHop != null && !maToHop.equals("Chọn Mã Tổ Hợp")) {
-                if (dc.getMatohop() == null || !dc.getMatohop().equalsIgnoreCase(maToHop)) continue;
+            if (maToHop != null && !maToHop.equals("Tất cả")) {
+                if (dc.getMatohop() == null || !dc.getMatohop().contains(maToHop)) continue;
             }
-
-            // lọc phương thức
-            if (pt != null && !pt.equals("Bộ lọc ptxt")) {
-                if (dc.getPhuongthuc() == null || !dc.getPhuongthuc().equalsIgnoreCase(ptText)) continue;
-            }
-
             list.add(dc);
         }
 

@@ -5,10 +5,14 @@
 package GUI.Frame;
 
 import BUS.DiemThiBUS;
+import DTO.PermissionDTO;
+import DTO.RoleDTO;
+import DTO.UserDTO;
 import GUI.Panel.DiemCongPanel;
 import GUI.Panel.DiemThiPanel;
 import GUI.Panel.NganhPanel;
 import GUI.Panel.NguyenVongPanel;
+import GUI.Panel.PermissionPanel;
 import GUI.Panel.ThiSinhPanel;
 import GUI.Panel.ToHopNganhPanel;
 import GUI.Panel.TohopPanel;
@@ -19,6 +23,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
@@ -47,35 +53,63 @@ public class Main extends javax.swing.JFrame {
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
     DiemThiBUS dtBus = new DiemThiBUS();
+    PermissionPanel permissionPanel = new PermissionPanel();
 
-    public Main(String role) {
+    
+    public Main(UserDTO user) {
         initComponents();
         this.setTitle("Quản lý xét tuyển thí sinh");
-        this.setLocationRelativeTo(null);
-        this.role = role;
+        init(user);
+    }
+    // ===== Permission state =====
+    private UserDTO currentUser;
+    private Set<String> permissions = new HashSet<>();
+    private void init(UserDTO user) {
+        this.currentUser = user;
+        buildPermissionSet(user);
+        addPanels();
         khoiTao();
-        main.add(trangChuPanel, "TrangChu");
-        main.add(nganhPanel, "Nganh");
-        main.add(toHopPanel, "ToHop");
-        main.add(tohop_nganh_panel, "ToHop_Nganh");
-        main.add(diemCongPanel, "DiemCong");
-        main.add(diemThiPanel, "DiemThi");
-        main.add(thisinhPanel, "ThiSinh");
-        main.add(userPanel, "User");
-        main.add(nguyenvongPanel, "NguyenVong");
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
         applyRole();
     }
-
+    private void addPanels() {
+        main.add(trangChuPanel,     "TrangChu");
+        main.add(nganhPanel,        "Nganh");
+        main.add(toHopPanel,        "ToHop");
+        main.add(tohop_nganh_panel, "ToHop_Nganh");
+        main.add(diemCongPanel,     "DiemCong");
+        main.add(diemThiPanel,      "DiemThi");
+        main.add(thisinhPanel,      "ThiSinh");
+        main.add(userPanel,         "User");
+        main.add(nguyenvongPanel,   "NguyenVong");
+        main.add(permissionPanel,   "PhanQuyen"); 
+ 
+        hideAllPanels();
+        trangChuPanel.setVisible(true);
+    }
+    private void buildPermissionSet(UserDTO user) {
+        permissions.clear();
+ 
+        if (user.getRoles() == null) return;
+ 
+        for (RoleDTO role : user.getRoles()) {
+            // Lưu tên role dạng "ROLE_ADMIN", "ROLE_STAFF", ...
+            if (role.getRoleName() != null) {
+                permissions.add("ROLE_" + role.getRoleName().toUpperCase());
+            }
+ 
+            // Lưu từng permission name
+            if (role.getPermissions() != null) {
+                for (PermissionDTO p : role.getPermissions()) {
+                    if (p.getPermissionName() != null) {
+                        permissions.add(p.getPermissionName());
+                    }
+                }
+            }
+        }
+    }
     private void applyRole() {
 
-        if (!"ADMIN".equalsIgnoreCase(role)) {
+        if ("ADMIN".equalsIgnoreCase(role)) {
 
             // Ẩn nút user
             btn_user.setVisible(false);
@@ -105,7 +139,11 @@ public class Main extends javax.swing.JFrame {
         btns[8] = btn_user;
         btns[9] = btn_nvxt;
     }
-
+    private void hideAllPanels() {
+        for (Component c : main.getComponents()) {
+            c.setVisible(false);
+        }
+    }
     public void setIcon() {
         btn_home.setIcon(new FlatSVGIcon("./resources/icon/home.svg", 0.35f));
         btn_major.setIcon(new FlatSVGIcon("./resources/icon/major.svg", 0.4f));
@@ -222,6 +260,7 @@ public class Main extends javax.swing.JFrame {
         btn_nvxt = new javax.swing.JButton();
         btn_user = new javax.swing.JButton();
         btn_logout = new javax.swing.JButton();
+        btn_permission = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         logo_school = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -305,6 +344,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        btn_permission.setText("Phân quyền");
+        btn_permission.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_permissionActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_bottom_menuLayout = new javax.swing.GroupLayout(panel_bottom_menu);
         panel_bottom_menu.setLayout(panel_bottom_menuLayout);
         panel_bottom_menuLayout.setHorizontalGroup(
@@ -321,7 +367,8 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(btn_diemcong, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btn_nvxt, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                     .addComponent(btn_user, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                    .addComponent(btn_logout, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                    .addComponent(btn_logout, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(btn_permission, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         panel_bottom_menuLayout.setVerticalGroup(
@@ -346,8 +393,10 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btn_user, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(btn_permission, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btn_logout, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(266, Short.MAX_VALUE))
+                .addContainerGap(217, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -413,88 +462,39 @@ public class Main extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_majorActionPerformed
+        hideAllPanels();
         nganhPanel.setVisible(true);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
+        hideAllPanels();
         trangChuPanel.setVisible(true);
-        nguyenvongPanel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_homeActionPerformed
 
     private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combinationActionPerformed
-        nganhPanel.setVisible(false);
+        hideAllPanels();
         toHopPanel.setVisible(true);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
-        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_combinationActionPerformed
 
     private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combination_majorActionPerformed
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
+         hideAllPanels();
         tohop_nganh_panel.setVisible(true);
-        thisinhPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
-        userPanel.setVisible(false);
     }//GEN-LAST:event_btn_combination_majorActionPerformed
 
     private void btn_diemthiActionPerformed(java.awt.event.ActionEvent evt) {
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
+        hideAllPanels();
         diemThiPanel.setVisible(true);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
         diemThiPanel.dataTable(dtBus.getList());
     }
 
     private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_diemcongActionPerformed
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
+        hideAllPanels();
         diemCongPanel.setVisible(true);
-        diemThiPanel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
     }//GEN-LAST:event_btn_diemcongActionPerformed
 
     private void btn_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_userActionPerformed
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
-        thisinhPanel.setVisible(false);
+        hideAllPanels();
         userPanel.setVisible(true);
-        nguyenvongPanel.setVisible(false);
     }//GEN-LAST:event_btn_userActionPerformed
 
     private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
@@ -524,6 +524,12 @@ public class Main extends javax.swing.JFrame {
         userPanel.setVisible(false);
         nguyenvongPanel.setVisible(true);
     }//GEN-LAST:event_btn_nvxtActionPerformed
+
+    private void btn_permissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_permissionActionPerformed
+        hideAllPanels();
+        permissionPanel.setVisible(true);
+        permissionPanel.loadData();
+    }//GEN-LAST:event_btn_permissionActionPerformed
     private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) {
         nganhPanel.setVisible(false);
         toHopPanel.setVisible(false);
@@ -566,7 +572,10 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main("ADMIN").setVisible(true);
+                UserDTO testUser = new UserDTO();
+                RoleDTO adminRole = new RoleDTO("ADMIN");
+                testUser.getRoles().add(adminRole);
+                new Main(testUser).setVisible(true);
             }
         });
     }
@@ -580,6 +589,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btn_logout;
     private javax.swing.JButton btn_major;
     private javax.swing.JButton btn_nvxt;
+    private javax.swing.JButton btn_permission;
     private javax.swing.JButton btn_thisinh;
     private javax.swing.JButton btn_user;
     private javax.swing.JLabel jLabel1;

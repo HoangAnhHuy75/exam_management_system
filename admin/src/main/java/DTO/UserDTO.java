@@ -12,6 +12,8 @@ package DTO;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -30,22 +32,27 @@ public class UserDTO {
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
-    @Column(name = "role", nullable = false, length = 10)
-    private String role = "USER";
-
     @Column(name = "enabled")
     private Boolean enabled = true;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
-    // ===== Constructor =====
-    public UserDTO() {}
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "xt_user_role",
+        joinColumns = @JoinColumn(name = "iduser"),
+        inverseJoinColumns = @JoinColumn(name = "idrole")
+    )
+    private Set<RoleDTO> roles = new HashSet<>();
 
-    public UserDTO(String username, String password, String role, Boolean enabled) {
+    // ===== Constructor =====
+    public UserDTO() {
+    }
+
+    public UserDTO(String username, String password, Boolean enabled) {
         this.username = username;
         this.password = password;
-        this.role = role;
         this.enabled = enabled;
     }
 
@@ -74,14 +81,6 @@ public class UserDTO {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
     public Boolean getEnabled() {
         return enabled;
     }
@@ -96,5 +95,13 @@ public class UserDTO {
 
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public Set<RoleDTO> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleDTO> roles) {
+        this.roles = roles;
     }
 }

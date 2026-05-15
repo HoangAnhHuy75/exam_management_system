@@ -1,4 +1,4 @@
-create database exam_management_system;
+use exam_management_system;
 -- MySQL dump 10.13  Distrib 8.0.44, for macos15 (arm64)
 --
 -- Host: localhost    Database: xettuyen2026
@@ -67,16 +67,16 @@ UNLOCK TABLES;
 -- Table structure for table `xt_diemcongxetuyen`
 --
 
-DROP TABLE IF EXISTS `xt_diemcongxetuyen`;
+DROP TABLE IF EXISTS `xt_diemcongxettuyen`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */
 ;
 /*!50503 SET character_set_client = utf8mb4 */
 ;
-CREATE TABLE `xt_diemcongxetuyen` (
+CREATE TABLE `xt_diemcongxettuyen` (
     `iddiemcong` int unsigned NOT NULL AUTO_INCREMENT,
     `ts_cccd` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
     `manganh` varchar(20) DEFAULT '0.00',
-    `matohop` varchar(10) DEFAULT '0.00',
+    `matohop` varchar(45) DEFAULT '0.00',
     `phuongthuc` varchar(45) DEFAULT NULL,
     `diemCC` decimal(6, 2) DEFAULT NULL,
     `diemUtxt` decimal(6, 2) DEFAULT NULL,
@@ -90,13 +90,13 @@ CREATE TABLE `xt_diemcongxetuyen` (
 ;
 
 --
--- Dumping data for table `xt_diemcongxetuyen`
+-- Dumping data for table `xt_diemcongxettuyen`
 --
 
-LOCK TABLES `xt_diemcongxetuyen` WRITE;
-/*!40000 ALTER TABLE `xt_diemcongxetuyen` DISABLE KEYS */
+LOCK TABLES `xt_diemcongxettuyen` WRITE;
+/*!40000 ALTER TABLE `xt_diemcongxettuyen` DISABLE KEYS */
 ;
-/*!40000 ALTER TABLE `xt_diemcongxetuyen` ENABLE KEYS */
+/*!40000 ALTER TABLE `xt_diemcongxettuyen` ENABLE KEYS */
 ;
 UNLOCK TABLES;
 
@@ -192,12 +192,12 @@ UNLOCK TABLES;
 -- Table structure for table `xt_nganh_tohop`
 --
 
-DROP TABLE IF EXISTS `xt_nganh_tohop`;
+DROP TABLE IF EXISTS `xt_tohop_nganh`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */
 ;
 /*!50503 SET character_set_client = utf8mb4 */
 ;
-CREATE TABLE `xt_nganh_tohop` (
+CREATE TABLE `xt_tohop_nganh` (
     `id` int NOT NULL AUTO_INCREMENT,
     `manganh` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
     `matohop` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
@@ -230,10 +230,10 @@ CREATE TABLE `xt_nganh_tohop` (
 -- Dumping data for table `xt_nganh_tohop`
 --
 
-LOCK TABLES `xt_nganh_tohop` WRITE;
-/*!40000 ALTER TABLE `xt_nganh_tohop` DISABLE KEYS */
+LOCK TABLES `xt_tohop_nganh` WRITE;
+/*!40000 ALTER TABLE `xt_tohop_nganh` DISABLE KEYS */
 ;
-/*!40000 ALTER TABLE `xt_nganh_tohop` ENABLE KEYS */
+/*!40000 ALTER TABLE `xt_tohop_nganh` ENABLE KEYS */
 ;
 UNLOCK TABLES;
 
@@ -296,7 +296,7 @@ CREATE TABLE `xt_thisinhxettuyen25` (
     `password` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
     `gioi_tinh` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
     `email` varchar(100) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-    `noi_sinh` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
+    `noi_sinh` varchar(65) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
     `updated_at` date DEFAULT NULL,
     `doi_tuong` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
     `khu_vuc` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci DEFAULT NULL,
@@ -321,12 +321,12 @@ UNLOCK TABLES;
 -- Table structure for table `xt_tohop_monthi`
 --
 
-DROP TABLE IF EXISTS `xt_tohop_monthi`;
+DROP TABLE IF EXISTS `xt_tohop`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */
 ;
 /*!50503 SET character_set_client = utf8mb4 */
 ;
-CREATE TABLE `xt_tohop_monthi` (
+CREATE TABLE `xt_tohop` (
     `idtohop` int NOT NULL AUTO_INCREMENT,
     `matohop` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
     `mon1` varchar(10) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
@@ -488,10 +488,10 @@ WHERE
 -- Dumping data for table `xt_tohop_monthi`
 --
 
-LOCK TABLES `xt_tohop_monthi` WRITE;
-/*!40000 ALTER TABLE `xt_tohop_monthi` DISABLE KEYS */
+LOCK TABLES `xt_tohop` WRITE;
+/*!40000 ALTER TABLE `xt_tohop` DISABLE KEYS */
 ;
-/*!40000 ALTER TABLE `xt_tohop_monthi` ENABLE KEYS */
+/*!40000 ALTER TABLE `xt_tohop` ENABLE KEYS */
 ;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */
@@ -511,5 +511,52 @@ UNLOCK TABLES;
 ;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */
 ;
+ALTER DATABASE exam_management_system
+CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_bangquydoi
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_diemcongxettuyen
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_diemthixettuyen
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_nganh
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_tohop_nganh
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_nguyenvongxettuyen
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_thisinhxettuyen25
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_tohop
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_user
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_role
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
+
+ALTER TABLE xt_permission
+CONVERT TO CHARACTER SET utf8mb4
+COLLATE utf8mb4_unicode_ci;
 
 -- Dump completed on 2026-03-11 16:08:42

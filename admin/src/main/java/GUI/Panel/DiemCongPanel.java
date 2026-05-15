@@ -52,13 +52,11 @@ public class DiemCongPanel extends javax.swing.JPanel {
         designCBB();
         setIcon();
         loadTenNganhToComboBox();
-        loadTenPhuongThucToComboBox();
         loadMaToHopToComboBox();
     }
     public void designCBB(){
         cbb_design.setUpComBoBox(cbb_maNganh);
         cbb_design.setUpComBoBox(cbb_maToHop);
-        cbb_design.setUpComBoBox(cbb_PhuongThuc);
     }
     public void designJTF(){
         jtf_design.setUpJTF(field_cccd);
@@ -73,17 +71,10 @@ public class DiemCongPanel extends javax.swing.JPanel {
         btn_sua.setIcon(new FlatSVGIcon("./resources/icon/edit.svg", 0.2f));
         btn_xoa.setIcon(new FlatSVGIcon("./resources/icon/delete.svg", 0.2f));
     }
-    public void loadTenPhuongThucToComboBox() {
-        cbb_PhuongThuc.removeAllItems(); // xóa dữ liệu cũ
-        cbb_PhuongThuc.addItem("Bộ lọc ptxt");
-        String[] ptxt = {"Tuyển thẳng", "ĐGNL", "THPT", "VSAT"};
-        for(String pt : ptxt){
-            cbb_PhuongThuc.addItem(pt);
-        }
-    }
+
     public void loadTenNganhToComboBox() {
         cbb_maNganh.removeAllItems();
-        cbb_maNganh.addItem("Chọn tên ngành");
+        cbb_maNganh.addItem("Tất cả");
         List<String> list = diemCongB.loadMaNganh();
         HashMap<String,String> map = ngBus.getMapTenNganh();
         for(String mn : list) {
@@ -93,7 +84,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
     }
     public void loadMaToHopToComboBox() {
         cbb_maToHop.removeAllItems();
-        cbb_maToHop.addItem("Chọn Mã Tổ Hợp");
+        cbb_maToHop.addItem("Tất cả");
         List<String> list = diemCongB.loadMaToHop();
         for(String mth : list) {
             cbb_maToHop.addItem(mth);
@@ -160,8 +151,6 @@ public class DiemCongPanel extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         cbb_maToHop = new javax.swing.JComboBox<>();
         jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        cbb_PhuongThuc = new javax.swing.JComboBox<>();
         btn_loc = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
         btn_sua = new javax.swing.JButton();
@@ -190,20 +179,11 @@ public class DiemCongPanel extends javax.swing.JPanel {
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
-        cbb_maNganh.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel5.setText("tenNganh");
-
-        cbb_maToHop.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel5.setText("Tên ngành");
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel8.setText("maTohop");
-
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel9.setText("Phương thức");
-
-        cbb_PhuongThuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jLabel8.setText("Tổ hợp môn");
 
         btn_loc.setBackground(new java.awt.Color(0, 0, 255));
         btn_loc.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -218,19 +198,15 @@ public class DiemCongPanel extends javax.swing.JPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5)
-                    .addComponent(cbb_maNganh, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(72, 72, 72)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(cbb_maToHop, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(73, 73, 73)
+                    .addComponent(cbb_maNganh, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(134, 134, 134)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(cbb_PhuongThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(65, 65, 65)
+                        .addComponent(cbb_maToHop, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(200, 200, 200)
                         .addComponent(btn_loc, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel9))
+                    .addComponent(jLabel8))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -239,13 +215,11 @@ public class DiemCongPanel extends javax.swing.JPanel {
                 .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel8))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
                     .addComponent(cbb_maToHop, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btn_loc, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cbb_PhuongThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbb_maNganh, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
@@ -424,7 +398,6 @@ public class DiemCongPanel extends javax.swing.JPanel {
         String cccd = field_cccd.getText();
         String mn = cbb_maNganh.getSelectedItem().toString();
         String mth = cbb_maToHop.getSelectedItem().toString();
-        String ptxt = cbb_PhuongThuc.getSelectedItem().toString();
         
         // lọc tìm kiếm cccd
         if(!cccd.isEmpty()){
@@ -433,7 +406,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
         }
         
         // filter tổng
-        dataTable(diemCongB.filterAll(mn, mth, ptxt));
+        dataTable(diemCongB.filterAll(mn, mth));
         
     }//GEN-LAST:event_btn_locActionPerformed
 
@@ -441,7 +414,6 @@ public class DiemCongPanel extends javax.swing.JPanel {
         field_cccd.setText("");
         cbb_maNganh.setSelectedIndex(0);
         cbb_maToHop.setSelectedIndex(0);
-        cbb_PhuongThuc.setSelectedIndex(0);
         dataTable(diemCongB.getList());
     }//GEN-LAST:event_btn_lammoiActionPerformed
 
@@ -497,14 +469,12 @@ public class DiemCongPanel extends javax.swing.JPanel {
     private javax.swing.JButton btn_sua;
     private javax.swing.JButton btn_them;
     private javax.swing.JButton btn_xoa;
-    private javax.swing.JComboBox<String> cbb_PhuongThuc;
     private javax.swing.JComboBox<String> cbb_maNganh;
     private javax.swing.JComboBox<String> cbb_maToHop;
     private javax.swing.JTextField field_cccd;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;

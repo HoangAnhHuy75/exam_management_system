@@ -346,28 +346,38 @@ public class NguyenVongBUS {
         return quyDoiMonVSAT(mon, raw, listQD);
     }
 
-    private BigDecimal tinhDiemVSAT(Object[] row,DiemThiDTO dt, List<BangQuyDoiDTO> listQD) {
+    private BigDecimal tinhDiemVSAT(Object[] row,DiemThiDTO dt,List<BangQuyDoiDTO> listQD1,List<BangQuyDoiDTO> listQD2,List<BangQuyDoiDTO> listQD3) {
         String mon1 = (String) row[1];
         String mon2 = (String) row[2];
         String mon3 = (String) row[3];
         int hs1 = (Integer) row[4];
         int hs2 = (Integer) row[5];
         int hs3 = (Integer) row[6];
-        BigDecimal d1 = layDiemVSAT(dt, mon1, listQD);
-        BigDecimal d2 = layDiemVSAT(dt, mon2, listQD);
-        BigDecimal d3 = layDiemVSAT(dt, mon3, listQD);
+
+        BigDecimal d1 = layDiemVSAT(dt, mon1, listQD1);
+        BigDecimal d2 = layDiemVSAT(dt, mon2, listQD2);
+        BigDecimal d3 = layDiemVSAT(dt, mon3, listQD3);
+
+        System.out.println("===== VSAT =====");
+        System.out.println("Môn 1: " + mon1 + " -> " + d1);
+        System.out.println("Môn 2: " + mon2 + " -> " + d2);
+        System.out.println("Môn 3: " + mon3 + " -> " + d3);
+
         if (d1 == null || d2 == null || d3 == null) {
             return null;
         }
+
         int w = hs1 + hs2 + hs3;
+
         if (w == 0) {
             return null;
         }
+
         return d1.multiply(BigDecimal.valueOf(hs1))
                 .add(d2.multiply(BigDecimal.valueOf(hs2)))
                 .add(d3.multiply(BigDecimal.valueOf(hs3)))
                 .divide(BigDecimal.valueOf(w), 4, RoundingMode.HALF_UP)
-                .multiply(BigDecimal.valueOf(3)); // giống THXT
+                .multiply(BigDecimal.valueOf(3));
     }
     
     public void xetTuyen() {
@@ -385,7 +395,6 @@ public class NguyenVongBUS {
             DiemThiDTO dtTHPT = diemThiMap.get(cccd + "_THPT");
             DiemThiDTO dtDGNL = diemThiMap.get(cccd + "_ĐGNL");
             DiemThiDTO dtVSAT = diemThiMap.get(cccd + "_VSAT");
-
             if (dtTHPT == null && dtDGNL == null && dtVSAT == null) {
                 continue;
             }
@@ -405,21 +414,12 @@ public class NguyenVongBUS {
                 boolean hasTA = hasTiengAnh(row);
                 // ================= THPT =================
                 if (dtTHPT != null) {
-
                     BigDecimal diemTHXT = tinhTHXT(row, dtTHPT, hasTA, diemCCQuyDoi);
-
                     if (diemTHXT != null) {
-
                         BigDecimal diemTHGXT = diemTHXT.subtract(doLech);
-
-                        BigDecimal diemTruocUT = hasTA
-                                ? diemTHGXT.add(diemUTXT)
-                                : diemTHGXT.add(diemCC).add(diemUTXT);
-
+                        BigDecimal diemTruocUT = hasTA ? diemTHGXT.add(diemUTXT) : diemTHGXT.add(diemCC).add(diemUTXT);
                         BigDecimal diemUT = tinhDiemKhuVucDoiTuong(diemTruocUT, ts, doLech);
-
                         BigDecimal diemXetTuyen = diemTruocUT.add(diemUT);
-
                         if (diemXetTuyen.compareTo(max) > 0) {
                             max = diemXetTuyen;
                             diem_cong = hasTA ? diemUTXT : diemUTXT.add(diemCC);
@@ -432,7 +432,7 @@ public class NguyenVongBUS {
 
 // ================= ĐGNL =================
                 if (dtDGNL != null) {
-                    String keyDGNL = "ĐGNL_" + matohop;
+                    String keyDGNL = "DGNL_" + matohop.substring(0, 3);
                     List<BangQuyDoiDTO> bqdList = bqdĐGNLMap.get(keyDGNL);
                     if (bqdList != null && !bqdList.isEmpty()) {
                         BigDecimal diemTHXT = tinhDiemDGNL(dtDGNL, bqdList);
@@ -453,23 +453,19 @@ public class NguyenVongBUS {
 
 // ================= VSAT =================
                 if (dtVSAT != null) {
+                    String mon1 = (String) row[1];
+                    String mon2 = (String) row[2];
+                    String mon3 = (String) row[3];
 
-                    String keyVSAT = "VSAT_" + matohop;
-
-                    List<BangQuyDoiDTO> listQD = bqdVSATMap.get(keyVSAT);
-
-                    if (listQD != null && !listQD.isEmpty()) {
-
-                        BigDecimal diemTHXT = tinhDiemVSAT(row, dtVSAT, listQD);
-
+                    List<BangQuyDoiDTO> listQD1 = bqdVSATMap.get("VSAT_" + mon1);
+                    List<BangQuyDoiDTO> listQD2 = bqdVSATMap.get("VSAT_" + mon2);
+                    List<BangQuyDoiDTO> listQD3 = bqdVSATMap.get("VSAT_" + mon3);
+                    if (listQD1 != null && !listQD1.isEmpty() && listQD2 != null && !listQD2.isEmpty() && listQD3 != null && !listQD3.isEmpty()) {
+                        BigDecimal diemTHXT = tinhDiemVSAT(row, dtVSAT, listQD1, listQD2, listQD3);
                         if (diemTHXT != null) {
-
                             BigDecimal diemTruocUT = diemTHXT.add(diemUTXT);
-
                             BigDecimal diemUT = tinhDiemKhuVucDoiTuong(diemTruocUT, ts, doLech);
-
                             BigDecimal diemXetTuyen = diemTruocUT.add(diemUT);
-
                             if (diemXetTuyen.compareTo(max) > 0) {
                                 max = diemXetTuyen;
                                 diem_cong = diemUTXT;

@@ -53,6 +53,7 @@ public class UserPanel extends javax.swing.JPanel {
     // ===== Setup UI =====
     public void setUpJtf() {
         jtf_design.setUpJTF(jtf_timkiem);
+        btn_design.setUpBtn(btn_timkiem, Color.WHITE, Color.WHITE);
         PromptSupport.setPrompt("Tìm kiếm username hoặc role", jtf_timkiem);
         PromptSupport.setForeground(Color.GRAY, jtf_timkiem);
     }

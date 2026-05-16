@@ -24,5 +24,6 @@
         <mapping class="DTO.UserDTO"/>
         <mapping class="DTO.BangQuyDoiDTO"/>
         <mapping class="DTO.NguyenVongDTO"/>
+        <mapping class="DTO.XetTuyenDTO"/>
     </session-factory> 
 </hibernate-configuration>

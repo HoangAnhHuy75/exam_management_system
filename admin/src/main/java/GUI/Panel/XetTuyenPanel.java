@@ -1,0 +1,444 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
+ */
+package GUI.Panel;
+
+import BUS.NganhBUS;
+import BUS.XetTuyenBUS;
+import DTO.NganhDTO;
+import DTO.XetTuyenDTO;
+import com.formdev.flatlaf.extras.FlatSVGIcon;
+import java.awt.BorderLayout;
+import java.awt.Font;
+import javax.swing.BorderFactory;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.SwingWorker;
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import org.jdesktop.swingx.prompt.PromptSupport;
+import util.Combobox_design;
+import util.JButton_design;
+import util.JTextF_design;
+import util.Table_design;
+
+/**
+ *
+ * @author kiman
+ */
+public class XetTuyenPanel extends javax.swing.JPanel {
+
+    JTextF_design jtf_design = new JTextF_design();
+    Combobox_design cbb_design = new Combobox_design();
+    JButton_design btn_design = new JButton_design();
+    Table_design table_design = new Table_design();
+    XetTuyenBUS xtBus = new XetTuyenBUS();
+    NganhBUS nganhBus = new NganhBUS();
+
+    /**
+     * Creates new form XetTuyennPanel
+     */
+    public XetTuyenPanel() {
+        initComponents();
+        khoiTao();
+    }
+
+    public void khoiTao() {
+        designJTF();
+        designCBB();
+        setIcon();
+        designButton();
+        loadCombobox();
+        dataTableXetTuyen(xtBus.getList());
+    }
+
+    public void dataTableXetTuyen(List<XetTuyenDTO> list) {
+        DefaultTableModel model = new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "STT",
+                    "CCCD",
+                    "Tên ngành",
+                    "Điểm xét tuyển",
+                    "Phương thức",
+                    "Kết quả"
+                }
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        int stt = 1;
+        HashMap<String, String> mapTenNganh = nganhBus.getMapTenNganh();
+        for (XetTuyenDTO xt : list) {
+            model.addRow(new Object[]{
+                stt++,
+                xt.getCccd(),
+                mapTenNganh.get(xt.getMaNganh()),
+                xt.getDiemXetTuyen(),
+                xt.getPhuongThuc(),
+                xt.getKetQua()
+            });
+        }
+
+        xettuyen_table.setModel(model);
+
+        table_design.centerTable(xettuyen_table);
+        table_design.setUpTable(xettuyen_table);
+
+        TableColumnModel columnModel = xettuyen_table.getColumnModel();
+
+        columnModel.getColumn(0).setPreferredWidth(50);   // STT
+        columnModel.getColumn(1).setPreferredWidth(140);  // CCCD
+        columnModel.getColumn(2).setPreferredWidth(120);  // Mã ngành
+        columnModel.getColumn(3).setPreferredWidth(120);  // Điểm XT
+        columnModel.getColumn(4).setPreferredWidth(140);  // Phương thức
+        columnModel.getColumn(5).setPreferredWidth(100);  // Kết quả
+    }
+
+    public void designCBB() {
+        cbb_design.setUpComBoBox(cbb_1);
+        cbb_design.setUpComBoBox(cbb_2);
+        cbb_design.setUpComBoBox(cbb_3);
+    }
+
+    public void setIcon() {
+        refresh_btn.setIcon(new FlatSVGIcon("./resources/icon/refresh.svg", 0.25f));
+        filter.setIcon(new FlatSVGIcon("./resources/icon/filter.svg", 0.2f));
+        xettuyen_btn.setIcon(new FlatSVGIcon("./resources/icon/agree.svg", 0.2f));
+    }
+
+    public void designButton() {
+        btn_design.setUpBtn(refresh_btn, Color.WHITE, Color.WHITE);
+    }
+
+    public void designJTF() {
+        jtf_design.setUpJTF(jtf_timkiem1);
+
+        PromptSupport.setPrompt(
+                "Tìm kiếm theo CCCD hoặc tên ngành",
+                jtf_timkiem1
+        );
+
+        PromptSupport.setForeground(Color.GRAY, jtf_timkiem1);
+
+        PromptSupport.setFocusBehavior(
+                PromptSupport.FocusBehavior.SHOW_PROMPT,
+                jtf_timkiem1
+        );
+    }
+    
+    public void loadCombobox() {
+        List<NganhDTO> listN = nganhBus.getListN();
+        cbb_1.addItem("Tất cả");
+        for (NganhDTO nganh : listN) {
+            cbb_1.addItem(nganh.getTenNganh());
+        }
+        cbb_2.addItem("Tất cả");
+        String[] arrPhuongThuc = {"ĐGNL", "VSAT", "THPT"};
+        for (String pt : arrPhuongThuc) {
+            cbb_2.addItem(pt);
+        }
+        cbb_3.addItem("Tất cả");
+        String[] arrKq = {"Đậu","Trượt"};
+        for (String kq : arrKq) {
+            cbb_3.addItem(kq);
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        major_header1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        xettuyen_table = new javax.swing.JTable();
+        jtf_timkiem1 = new javax.swing.JTextField();
+        refresh_btn = new javax.swing.JButton();
+        cbb_1 = new javax.swing.JComboBox<>();
+        jLabel20 = new javax.swing.JLabel();
+        cbb_2 = new javax.swing.JComboBox<>();
+        jLabel21 = new javax.swing.JLabel();
+        cbb_3 = new javax.swing.JComboBox<>();
+        jLabel22 = new javax.swing.JLabel();
+        filter = new javax.swing.JButton();
+        xettuyen_btn = new javax.swing.JButton();
+
+        major_header1.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 22)); // NOI18N
+        jLabel2.setText("Quản lý danh sách trúng tuyển");
+
+        jLabel23.setText("HỆ THỐNG /");
+
+        jLabel24.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jLabel24.setForeground(new java.awt.Color(51, 204, 0));
+        jLabel24.setText("XÉT TUYỂN");
+
+        javax.swing.GroupLayout major_header1Layout = new javax.swing.GroupLayout(major_header1);
+        major_header1.setLayout(major_header1Layout);
+        major_header1Layout.setHorizontalGroup(
+            major_header1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(major_header1Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(major_header1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(major_header1Layout.createSequentialGroup()
+                        .addComponent(jLabel23)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel24))
+                    .addComponent(jLabel2))
+                .addContainerGap(719, Short.MAX_VALUE))
+        );
+        major_header1Layout.setVerticalGroup(
+            major_header1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(major_header1Layout.createSequentialGroup()
+                .addContainerGap(14, Short.MAX_VALUE)
+                .addGroup(major_header1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel24, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel23, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12))
+        );
+
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(0, 0));
+
+        xettuyen_table.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        xettuyen_table.setMinimumSize(new java.awt.Dimension(0, 0));
+        jScrollPane2.setViewportView(xettuyen_table);
+
+        refresh_btn.setText("Làm mới");
+        refresh_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refresh_btnActionPerformed(evt);
+            }
+        });
+
+        jLabel20.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel20.setText("Tên ngành");
+
+        jLabel21.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel21.setText("Phương thức");
+
+        jLabel22.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel22.setText("Kết quả");
+
+        filter.setBackground(new java.awt.Color(96, 125, 139));
+        filter.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        filter.setForeground(new java.awt.Color(255, 255, 255));
+        filter.setText("Áp dụng bộ lọc");
+        filter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterActionPerformed(evt);
+            }
+        });
+
+        xettuyen_btn.setBackground(new java.awt.Color(0, 0, 255));
+        xettuyen_btn.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        xettuyen_btn.setForeground(new java.awt.Color(255, 255, 255));
+        xettuyen_btn.setText("Tiến hành xét tuyển");
+        xettuyen_btn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                xettuyen_btnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(xettuyen_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jtf_timkiem1, javax.swing.GroupLayout.PREFERRED_SIZE, 288, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel20)
+                                .addGap(120, 120, 120))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cbb_1, 0, 187, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cbb_2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel21))
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel22)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(cbb_3, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(filter, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(refresh_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(31, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(major_header1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(43, 43, 43)
+                .addComponent(xettuyen_btn, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel20)
+                    .addComponent(jLabel21)
+                    .addComponent(jLabel22))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jtf_timkiem1, javax.swing.GroupLayout.DEFAULT_SIZE, 37, Short.MAX_VALUE)
+                    .addComponent(cbb_2)
+                    .addComponent(cbb_1)
+                    .addComponent(refresh_btn, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(cbb_3)
+                    .addComponent(filter, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(490, Short.MAX_VALUE))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addComponent(major_header1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(91, 91, 91)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterActionPerformed
+        String text = jtf_timkiem1.getText();
+        String tenNganh = (String) cbb_1.getSelectedItem();
+        String phuongthuc = (String) cbb_2.getSelectedItem();
+        String kq = (String) cbb_3.getSelectedItem();
+        dataTableXetTuyen(xtBus.filter(text,tenNganh, phuongthuc, kq));
+    }//GEN-LAST:event_filterActionPerformed
+
+    private void xettuyen_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_xettuyen_btnActionPerformed
+        int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn tiến hành xét tuyển?",
+                "Xác nhận xét tuyển",
+                JOptionPane.YES_NO_OPTION
+        );
+        
+        if (confirm != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        // loading dialog
+        JDialog loadingDialog = new JDialog();
+        loadingDialog.setTitle("Đang xử lý...");
+        loadingDialog.setSize(320, 120);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setLayout(new BorderLayout());
+        
+        JLabel text = new JLabel(
+                "Đang tiến hành xét tuyển, vui lòng chờ...",
+                JLabel.CENTER
+        );
+        
+        text.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        
+        loadingDialog.add(text, BorderLayout.CENTER);
+        
+        loadingDialog.pack();
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+        
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            
+            String message = "";
+            
+            @Override
+            protected Void doInBackground() {
+                
+                try {
+                    
+                    xtBus.tienHanhXetTuyen();
+                    
+                    message = "Xét tuyển thành công!";
+                    
+                } catch (Exception e) {
+                    
+                    e.printStackTrace();
+                    
+                    message = "Lỗi khi xét tuyển!";
+                }
+                
+                return null;
+            }
+            
+            @Override
+            protected void done() {
+                
+                loadingDialog.dispose();
+                
+                JOptionPane.showMessageDialog(
+                        null,
+                        message
+                );
+
+                // reload table
+                dataTableXetTuyen(xtBus.getList());
+            }
+        };
+        
+        worker.execute();
+        
+        loadingDialog.setVisible(true);
+    }//GEN-LAST:event_xettuyen_btnActionPerformed
+
+    private void refresh_btnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refresh_btnActionPerformed
+        jtf_timkiem1.setText("");
+        cbb_1.setSelectedItem("Tất cả");
+        cbb_2.setSelectedItem("Tất cả");
+        cbb_3.setSelectedItem("Tất cả");
+        dataTableXetTuyen(xtBus.getList());
+    }//GEN-LAST:event_refresh_btnActionPerformed
+
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> cbb_1;
+    private javax.swing.JComboBox<String> cbb_2;
+    private javax.swing.JComboBox<String> cbb_3;
+    private javax.swing.JButton filter;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jtf_timkiem1;
+    private javax.swing.JPanel major_header1;
+    private javax.swing.JButton refresh_btn;
+    private javax.swing.JButton xettuyen_btn;
+    private javax.swing.JTable xettuyen_table;
+    // End of variables declaration//GEN-END:variables
+}

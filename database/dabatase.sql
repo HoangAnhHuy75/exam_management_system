@@ -248,7 +248,7 @@ DROP TABLE IF EXISTS `xt_nguyenvongxettuyen`;
 ;
 CREATE TABLE `xt_nguyenvongxettuyen` (
     `idnv` int NOT NULL AUTO_INCREMENT,
-    `nn_cccd` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
+    `nv_cccd` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
     `nv_manganh` varchar(45) CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci NOT NULL,
     `nv_tt` int NOT NULL,
     `diem_thxt` decimal(10, 5) DEFAULT NULL COMMENT 'đã cộng điểm môn chính',

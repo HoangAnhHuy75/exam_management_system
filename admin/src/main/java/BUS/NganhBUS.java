@@ -237,7 +237,8 @@ public class NganhBUS {
     }
     
     // Tìm kiếm nâng cao
-    public ArrayList<NganhDTO> timKiem(String ptxt, String thg) {
+    public ArrayList<NganhDTO> timKiem(String text, String ptxt, String thg) {
+        String t = text.toLowerCase().trim();
         ArrayList<NganhDTO> result = new ArrayList<>();
         for (NganhDTO n : nganhDao.getAllNganh()) {
             boolean matchPT = ptxt.equals("Tất cả")
@@ -247,7 +248,8 @@ public class NganhBUS {
                     || (ptxt.equals("VSAT") && "Y".equalsIgnoreCase(n.getNVSAT()));
 
             boolean matchTHG = thg.equals("Tất cả") || thg.equals(n.getNToHopGoc());
-            if (matchPT && matchTHG) {
+            boolean matchText = t.equals("") || n.getMaNganh().toLowerCase().contains(t) || n.getTenNganh().toLowerCase().contains(t);
+            if (matchPT && matchTHG && matchText) {
                 result.add(n);
             }
         }
@@ -272,6 +274,11 @@ public class NganhBUS {
                 result.add(ng);
             }
         }
+        return result;
+    }
+    
+    public int countThiSinhByMaNganh(String maNganh){
+        int result = nganhDao.countThiSinhByMaNganh(maNganh);
         return result;
     }
 }

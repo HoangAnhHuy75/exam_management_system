@@ -231,17 +231,54 @@ public class ThiSinhBUS {
         return thiSinhDAO.findByCCCD(cccd.trim()) != null;
     }
     
-    public ArrayList<ThiSinhDTO> filter(String gt, String kv, String ns) {
+    public ArrayList<ThiSinhDTO> filterNoNganh(String text,String gt, String kv, String ns) {
+        String t = text.toLowerCase().trim();
         ArrayList<ThiSinhDTO> result = new ArrayList<>();
         for (ThiSinhDTO ts : thiSinhDAO.getAll()) {
             boolean matchGT = gt.equals("Tất cả") || ts.getGioiTinh().equals(gt);
             boolean matchKV = kv.equals("Tất cả") || ts.getKhuVuc().equals(kv);
             boolean matchNS = ns.equals("Tất cả") || ts.getNoiSinh().toLowerCase().contains(ns.toLowerCase());
-            if (matchGT && matchKV && matchNS) {
+            boolean matchText = t.equals("") || ts.getCccd().toLowerCase().contains(t) || ts.getTen().toLowerCase().contains(t);
+            if (matchGT && matchKV && matchNS && matchText) {
                 result.add(ts);
             }
         }
         return result;
+    }
+    
+    public ArrayList<ThiSinhDTO> filterHasNganh(String text,String gt, String kv,String maNganh, String ns) {
+        String t = text.toLowerCase().trim();
+
+    ArrayList<ThiSinhDTO> result = new ArrayList<>();
+
+    // lấy danh sách thí sinh thuộc ngành trước
+    List<ThiSinhDTO> listTSByNganh = thiSinhDAO.getThiSinhByMaNganh(maNganh);
+
+    for (ThiSinhDTO ts : listTSByNganh) {
+
+        boolean matchGT =
+                gt.equals("Tất cả")
+                || ts.getGioiTinh().equals(gt);
+
+        boolean matchKV =
+                kv.equals("Tất cả")
+                || ts.getKhuVuc().equals(kv);
+
+        boolean matchNS =
+                ns.equals("Tất cả")
+                || ts.getNoiSinh().toLowerCase().contains(ns.toLowerCase());
+
+        boolean matchText =
+                t.equals("")
+                || ts.getCccd().toLowerCase().contains(t)
+                || ts.getTen().toLowerCase().contains(t);
+
+        if (matchGT && matchKV && matchNS && matchText) {
+            result.add(ts);
+        }
+    }
+
+    return result;
     }
 
     public ArrayList<ThiSinhDTO> searchText(String text) {

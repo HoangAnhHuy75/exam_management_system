@@ -4,7 +4,6 @@ import BUS.NganhBUS;
 import BUS.ToHopBUS;
 import DTO.NganhDTO;
 import GUI.Panel.NganhPanel;
-import java.awt.event.ItemEvent;
 
 public class DetailNganhDialog extends javax.swing.JDialog {
     NganhDTO nganhDto;
@@ -53,7 +52,7 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jtf_dgnl.setText(nganhDto.getSlDGNL() == null ? "" : nganhDto.getSlDGNL().toString());
         jtf_thpt.setText(nganhDto.getSlTHPT() == null ? "" : nganhDto.getSlTHPT().toString());
         jtf_vsat.setText(nganhDto.getSlVSAT() == null ? "" : nganhDto.getSlVSAT().toString());
-
+        jtf_dtt.setText(nganhDto.getNDiemTrungTuyen() == null ? "" : nganhDto.getNDiemTrungTuyen().toString());
         toggleInputs();
     }
 
@@ -111,6 +110,8 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jtf_diemsan = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jtf_tohop = new javax.swing.JTextField();
+        jtf_dtt = new javax.swing.JTextField();
+        jLabel11 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -123,17 +124,17 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(25, 25, 25)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addContainerGap(370, Short.MAX_VALUE))
+                .addGap(190, 190, 190))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(21, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -199,9 +200,9 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jtf_manganh);
         jtf_manganh.setBounds(120, 30, 150, 31);
 
-        jLabel7.setText("SL VSAT");
+        jLabel7.setText("Điểm trúng tuyển");
         jPanel2.add(jLabel7);
-        jLabel7.setBounds(350, 220, 100, 16);
+        jLabel7.setBounds(350, 280, 100, 16);
 
         jLabel8.setText("SL  ĐGNL");
         jPanel2.add(jLabel8);
@@ -239,19 +240,27 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jtf_tohop);
         jtf_tohop.setBounds(120, 150, 150, 30);
 
+        jtf_dtt.setEditable(false);
+        jPanel2.add(jtf_dtt);
+        jtf_dtt.setBounds(460, 270, 150, 31);
+
+        jLabel11.setText("SL VSAT");
+        jPanel2.add(jLabel11);
+        jLabel11.setBounds(350, 220, 100, 16);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
+                .addGap(2, 2, 2)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -294,6 +303,7 @@ public class DetailNganhDialog extends javax.swing.JDialog {
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -311,6 +321,7 @@ public class DetailNganhDialog extends javax.swing.JDialog {
     private javax.swing.JTextField jtf_chitieu;
     private javax.swing.JTextField jtf_dgnl;
     private javax.swing.JTextField jtf_diemsan;
+    private javax.swing.JTextField jtf_dtt;
     private javax.swing.JTextField jtf_manganh;
     private javax.swing.JTextField jtf_sltt;
     private javax.swing.JTextField jtf_tennganh;

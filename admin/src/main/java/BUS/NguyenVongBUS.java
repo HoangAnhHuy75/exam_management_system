@@ -25,10 +25,10 @@ public class NguyenVongBUS {
     private DiemThiBUS dtBus = new DiemThiBUS();
     private ThiSinhBUS tsBus = new ThiSinhBUS();
     private DiemCongBUS dcBus = new DiemCongBUS();
+    private NganhBUS nganhBus = new NganhBUS();
     private BangQuyDoiBUS bqdBus = new BangQuyDoiBUS();
     private NguyenVongDAO nvDAO = new NguyenVongDAO();
     private List<NguyenVongDTO> nvList = new ArrayList<>();
-
     // ================= INSERT =================
     public int insert(NguyenVongDTO nv) {
 
@@ -85,6 +85,15 @@ public class NguyenVongBUS {
         for (NguyenVongDTO nv : nvDAO.getAll()) {
             map.putIfAbsent(nv.getNvCccd(), new ArrayList<>());
             map.get(nv.getNvCccd()).add(nv);
+        }
+        return map;
+    }
+    
+    public HashMap<String, List<NguyenVongDTO>> mapByMaNganh() {
+        HashMap<String, List<NguyenVongDTO>> map = new HashMap<>();
+        for (NguyenVongDTO nv : nvDAO.getAll()) {
+            map.putIfAbsent(nv.getNvManganh(), new ArrayList<>());
+            map.get(nv.getNvManganh()).add(nv);
         }
         return map;
     }
@@ -341,8 +350,6 @@ public class NguyenVongBUS {
         if (raw == null) {
             return null;
         }
-//        String key = "VSAT_" + mon.toUpperCase();
-//        List<BangQuyDoiDTO> list = vsatMap.get(key);
         return quyDoiMonVSAT(mon, raw, listQD);
     }
 
@@ -487,21 +494,19 @@ public class NguyenVongBUS {
     }
 
     // ================= SEARCH =================
-    public ArrayList<NguyenVongDTO> timKiem(String cccd, String manganh, String ketqua) {
-        ArrayList<NguyenVongDTO> result = new ArrayList<>();
-
+    public List<NguyenVongDTO> filter(String text,String tenNganh, String phuongThuc) {
+        String t = text.toLowerCase().trim();
+        List<NguyenVongDTO> result = new ArrayList<>();
+        HashMap<String,String> mapTenNganh = nganhBus.getMapTenNganh();
         for (NguyenVongDTO nv : nvDAO.getAll()) {
 
-            boolean matchCccd = (cccd == null || cccd.isEmpty())
-                    || nv.getNvCccd().contains(cccd);
+            boolean matchTenNganh = (tenNganh == null || tenNganh.equals("Tất cả"))
+                    || mapTenNganh.get(nv.getNvManganh()).contains(tenNganh);
 
-            boolean matchNganh = (manganh == null || manganh.equals("Tất cả"))
-                    || nv.getNvManganh().equals(manganh);
-
-            boolean matchKQ = (ketqua == null || ketqua.equals("Tất cả"))
-                    || (nv.getNvKetqua() != null && nv.getNvKetqua().equals(ketqua));
-
-            if (matchCccd && matchNganh && matchKQ) {
+            boolean matchPT = (phuongThuc == null || phuongThuc.equals("Tất cả"))
+                    || nv.getTtPhuongthuc().equals(phuongThuc);
+            boolean matchText = t.equals("") || nv.getNvCccd().toLowerCase().contains(t) || mapTenNganh.get(nv.getNvManganh()).toLowerCase().contains(t);
+            if (matchTenNganh && matchPT && matchText ) {
                 result.add(nv);
             }
         }
@@ -513,10 +518,11 @@ public class NguyenVongBUS {
     public List<NguyenVongDTO> timKiemText(String text) {
         String t = text.toLowerCase();
         ArrayList<NguyenVongDTO> result = new ArrayList<>();
+        HashMap<String,String> mapTenNganh = nganhBus.getMapTenNganh();
 
         for (NguyenVongDTO nv : nvDAO.getAll()) {
             if ((nv.getNvCccd() != null && nv.getNvCccd().toLowerCase().contains(t))
-                    || (nv.getNvManganh() != null && nv.getNvManganh().toLowerCase().contains(t))) {
+                    || (nv.getNvManganh() != null && mapTenNganh.get(nv.getNvManganh()).toLowerCase().contains(t))) {
                 result.add(nv);
             }
         }

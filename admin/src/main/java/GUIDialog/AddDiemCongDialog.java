@@ -65,7 +65,7 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
         cbb_manganh.removeAllItems();
         cbb_manganh.addItem("Chọn tên ngành");
         List<String> list = diemCongB.loadMaNganh();
-        HashMap<String, String> mapNganh = ngB.getMapTenNganh();
+        HashMap<String, String> mapNganh = ngB.getTenNganhByMaNganhMap();
         for(String mn : list) {    
             String tenNganh = mapNganh.get(mn);
             cbb_manganh.addItem(tenNganh);
@@ -416,7 +416,7 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
     private void btn_luuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_luuActionPerformed
         String Cccd = cbb_cccd.getSelectedItem().toString();
         String tenNganh = cbb_manganh.getSelectedItem().toString();
-        HashMap<String,String> mapNganh = ngB.nganhMap();
+        HashMap<String,String> mapNganh = ngB.getMaNganhByTenNganhMap();
         String maNganh = mapNganh.get(tenNganh);
         String maToHop = cbb_matohop.getSelectedItem().toString();
         String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
@@ -487,7 +487,7 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
     private void btn_tinhdiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_tinhdiemActionPerformed
         String cccd = cbb_cccd.getSelectedItem().toString();
         String tenNganh = cbb_manganh.getSelectedItem().toString();
-        HashMap<String,String> mapNganh = ngB.nganhMap();
+        HashMap<String,String> mapNganh = ngB.getMaNganhByTenNganhMap();
         String maNganh = mapNganh.get(tenNganh);
         String maToHop = cbb_matohop.getSelectedItem().toString();
         BigDecimal cc = getBigDecimal(field_cc);

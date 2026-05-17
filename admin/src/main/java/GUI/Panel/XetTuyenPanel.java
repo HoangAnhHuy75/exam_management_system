@@ -76,7 +76,7 @@ public class XetTuyenPanel extends javax.swing.JPanel {
         };
 
         int stt = 1;
-        HashMap<String, String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String, String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
         for (XetTuyenDTO xt : list) {
             model.addRow(new Object[]{
                 stt++,

@@ -98,7 +98,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                 return false;
             }
         };
-        HashMap<String,String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String,String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
         int i = 1;
         for (NguyenVongDTO nv : listNV) {
             model.addRow(new Object[]{

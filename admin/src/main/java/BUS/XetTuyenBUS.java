@@ -122,24 +122,51 @@ public class XetTuyenBUS {
 
         return -1;
     }
-    
+
     public void tienHanhXetTuyen() {
         xtDao.deleteAll();
-        List<NguyenVongDTO> listNV = nvBus.getList();
-
-        // nhóm theo mã ngành
-        HashMap<String, List<NguyenVongDTO>> mapByNVMaNganh = nvBus.mapByMaNganh();
         List<XetTuyenDTO> insertList = new ArrayList<>();
+        // nhóm theo ngành + phương thức
+        HashMap<String, List<NguyenVongDTO>> map = new HashMap<>();
+        for (NguyenVongDTO nv : nvBus.getList()) {
 
-        // duyệt từng ngành
-        for (String maNganh : mapByNVMaNganh.keySet()) {
+            // chỉ xét trên sàn
+            if (!"Trên sàn".equals(nv.getNvKetqua())) {
+                XetTuyenDTO xt = new XetTuyenDTO();
+                xt.setCccdTS(nv.getNvCccd());
+                xt.setMaNganh(nv.getNvManganh());
+                xt.setDiemXetTuyen(nv.getDiemXettuyen());
+                xt.setPhuongThuc(nv.getTtPhuongthuc());
+                xt.setKetQua("Trượt");
+                insertList.add(xt);
+                continue;
+            }
 
-            List<NguyenVongDTO> ds = mapByNVMaNganh.get(maNganh);
+            String key = nv.getNvManganh()
+                    + "_"
+                    + nv.getTtPhuongthuc();
+
+            map.putIfAbsent(key, new ArrayList<>());
+            map.get(key).add(nv);
+        }
+
+        // duyệt từng nhóm
+        for (String key : map.keySet()) {
+
+            List<NguyenVongDTO> ds = map.get(key);
+
+            if (ds.isEmpty()) {
+                continue;
+            }
+
+            String maNganh = ds.get(0).getNvManganh();
+            String phuongThuc = ds.get(0).getTtPhuongthuc();
 
             // lấy ngành
             NganhDTO nganh = null;
 
             for (NganhDTO n : nganhBus.getListN()) {
+
                 if (n.getMaNganh().equals(maNganh)) {
                     nganh = n;
                     break;
@@ -150,9 +177,25 @@ public class XetTuyenBUS {
                 continue;
             }
 
-            int chiTieu = nganh.getNChiTieu();
+            // chỉ tiêu theo phương thức
+            int chiTieu = 0;
 
-            // sort giảm dần theo điểm
+            switch (phuongThuc) {
+
+                case "THPT":
+                    chiTieu = nganh.getSlTHPT();
+                    break;
+
+                case "ĐGNL":
+                    chiTieu = nganh.getSlDGNL();
+                    break;
+
+                case "VSAT":
+                    chiTieu = nganh.getSlVSAT();
+                    break;
+            }
+
+            // sort giảm dần điểm
             ds.sort((a, b) -> {
 
                 int cmp = b.getDiemXettuyen()
@@ -165,24 +208,7 @@ public class XetTuyenBUS {
                 return Integer.compare(a.getNvTt(), b.getNvTt());
             });
 
-            BigDecimal diemTrungTuyen = BigDecimal.ZERO;
-
-            if (ds.size() >= chiTieu && chiTieu > 0) {
-
-                diemTrungTuyen
-                        = ds.get(chiTieu - 1).getDiemXettuyen();
-
-            } else if (!ds.isEmpty()) {
-
-                diemTrungTuyen
-                        = ds.get(ds.size() - 1).getDiemXettuyen();
-            }
-
-            // cập nhật điểm trúng tuyển cho ngành
-            nganh.setNDiemTrungTuyen(diemTrungTuyen);
-            nganhBus.update(nganh);
-
-            // xét từng người
+            // xét kết quả
             for (int i = 0; i < ds.size(); i++) {
 
                 NguyenVongDTO nv = ds.get(i);
@@ -202,19 +228,45 @@ public class XetTuyenBUS {
 
                 insertList.add(xt);
             }
+            BigDecimal diemChuan = null;
+
+            if (chiTieu > 0 && !ds.isEmpty()) {
+
+                int index = Math.min(chiTieu, ds.size()) - 1;
+
+                if (index >= 0) {
+                    diemChuan = ds.get(index).getDiemXettuyen();
+                }
+            }
+
+            switch (phuongThuc) {
+
+                case "THPT":
+                    nganh.setNDiemTrungTuyen(diemChuan);
+                    break;
+
+                case "ĐGNL":
+                    nganh.setNDiemTrungTuyenDGNL(diemChuan);
+                    break;
+
+                case "VSAT":
+                    nganh.setNDiemTrungTuyenVSAT(diemChuan);
+                    break;
+            }
+
+            nganhBus.update(nganh);
         }
         xtDao.insertList(insertList);
-
     }
     
     public ArrayList<XetTuyenDTO> filter(String text, String tenNganh, String phuongThuc, String kq) {
         String t = text.toLowerCase().trim();
         ArrayList<XetTuyenDTO> result = new ArrayList<>();
-        HashMap<String, String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String, String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
 
             boolean matchTenNganh = (tenNganh == null || tenNganh.equals("Tất cả"))
-                    || mapTenNganh.get(xt.getMaNganh()).contains(tenNganh);
+                    || mapTenNganh.get(xt.getMaNganh()).equals(tenNganh);
 
             boolean matchPT = (phuongThuc == null || phuongThuc.equals("Tất cả"))
                     || xt.getPhuongThuc().equals(phuongThuc);
@@ -232,7 +284,7 @@ public class XetTuyenBUS {
     public List<XetTuyenDTO> timKiem(String text) {
         String t = text.toLowerCase();
         List<XetTuyenDTO> result = new ArrayList<>();
-        HashMap<String, String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String, String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
 
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
             if ((xt.getCccd() != null && xt.getCccd().toLowerCase().contains(t))

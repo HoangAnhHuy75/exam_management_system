@@ -24,8 +24,6 @@ public class UpdateToHopNganhDialog extends javax.swing.JDialog {
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
     ToHopNganhBUS th_ng_bus = new ToHopNganhBUS();
-    HashMap<String, String> nganhMap = nganhBus.nganhMap();
-    HashMap<String, String> tohopMap = tohopBus.tohopMap();
     ToHopNganhDTO toHopNganhDTO;
 
     /**
@@ -50,7 +48,6 @@ public class UpdateToHopNganhDialog extends javax.swing.JDialog {
     }
 
     public void setData() {
-
         String tenNganh = nganhBus.getTenNganhByMaNganh(toHopNganhDTO.getManganh());
         major_cbb.setSelectedItem(tenNganh);
         String tenTH = tohopBus.getTenTHByMaTH(toHopNganhDTO.getMatohop());
@@ -65,11 +62,12 @@ public class UpdateToHopNganhDialog extends javax.swing.JDialog {
     }
 
     public void loadCombobox() {
-
-        for (String tenNganh : nganhMap.keySet()) {
+        HashMap<String, String> maNganhByTenNganhMap = nganhBus.getMaNganhByTenNganhMap();
+        HashMap<String, String> maToHopByTenToHopMap = tohopBus.tohopMap();
+        for (String tenNganh : maNganhByTenNganhMap.keySet()) {
             major_cbb.addItem(tenNganh);
         }
-        for (String tenTH : tohopMap.keySet()) {
+        for (String tenTH : maToHopByTenToHopMap.keySet()) {
             combination_cbb.addItem(tenTH);
         }
         jComboBox1.addItem("Chọn môn 1");
@@ -723,13 +721,15 @@ public class UpdateToHopNganhDialog extends javax.swing.JDialog {
                 jtf_hs_mon3.selectAll();
                 return;
             }
+            HashMap<String, String> maNganhByTenNganhMap = nganhBus.getMaNganhByTenNganhMap();
+            HashMap<String, String> maToHopByTenToHopMap = tohopBus.tohopMap();
 
             // ===== 2. KIỂM TRA TRÙNG LẶP =====
             String tennganh = (String) major_cbb.getSelectedItem();
-            String manganh = nganhMap.get(tennganh);
+            String manganh = maNganhByTenNganhMap.get(tennganh);
 
             String tenTH = (String) combination_cbb.getSelectedItem();
-            String maTH = tohopMap.get(tenTH);
+            String maTH = maToHopByTenToHopMap.get(tenTH);
 
             // ===== 3. TẠO DTO =====
             toHopNganhDTO.setManganh(manganh);

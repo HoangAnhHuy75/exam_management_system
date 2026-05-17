@@ -4,6 +4,7 @@ import DAO.NguyenVongDAO;
 import DTO.BangQuyDoiDTO;
 import DTO.DiemCongDTO;
 import DTO.DiemThiDTO;
+import DTO.NganhDTO;
 import DTO.NguyenVongDTO;
 import DTO.ThiSinhDTO;
 import java.io.File;
@@ -360,26 +361,16 @@ public class NguyenVongBUS {
         int hs1 = (Integer) row[4];
         int hs2 = (Integer) row[5];
         int hs3 = (Integer) row[6];
-
         BigDecimal d1 = layDiemVSAT(dt, mon1, listQD1);
         BigDecimal d2 = layDiemVSAT(dt, mon2, listQD2);
         BigDecimal d3 = layDiemVSAT(dt, mon3, listQD3);
-
-        System.out.println("===== VSAT =====");
-        System.out.println("Môn 1: " + mon1 + " -> " + d1);
-        System.out.println("Môn 2: " + mon2 + " -> " + d2);
-        System.out.println("Môn 3: " + mon3 + " -> " + d3);
-
         if (d1 == null || d2 == null || d3 == null) {
             return null;
         }
-
         int w = hs1 + hs2 + hs3;
-
         if (w == 0) {
             return null;
         }
-
         return d1.multiply(BigDecimal.valueOf(hs1))
                 .add(d2.multiply(BigDecimal.valueOf(hs2)))
                 .add(d3.multiply(BigDecimal.valueOf(hs3)))
@@ -390,21 +381,29 @@ public class NguyenVongBUS {
     public void xetTuyen() {
         List<NguyenVongDTO> listNV = nvDAO.getAll();
         HashMap<String, DiemThiDTO> diemThiMap = dtBus.diemthiMap();
+        HashMap<String, HashMap<String, DiemThiDTO>> vsatMap = dtBus.vsatMap();
         HashMap<String, ThiSinhDTO> thisinhMap = tsBus.thisinhMap();
         HashMap<String, DiemCongDTO> diemCongMap = dcBus.diemcongMap();
         HashMap<String, List<BangQuyDoiDTO>> bqdĐGNLMap = bqdBus.bqdDGNLMap();
         HashMap<String, List<BangQuyDoiDTO>> bqdVSATMap = bqdBus.bqdVSATMap();
+        HashMap<String, NganhDTO> nganhMap = nganhBus.nganhMap();
         HashMap<String, List<Object[]>> cache = new HashMap<>();
         for (NguyenVongDTO nv : listNV) {
             String maNganh = nv.getNvManganh();
+            NganhDTO nganh = nganhMap.get(maNganh);
             String cccd = nv.getNvCccd();
             ThiSinhDTO ts = thisinhMap.get(cccd);
             DiemThiDTO dtTHPT = diemThiMap.get(cccd + "_THPT");
             DiemThiDTO dtDGNL = diemThiMap.get(cccd + "_ĐGNL");
-            DiemThiDTO dtVSAT = diemThiMap.get(cccd + "_VSAT");
-            if (dtTHPT == null && dtDGNL == null && dtVSAT == null) {
-                continue;
-            }
+//            DiemThiDTO dtVSAT = diemThiMap.get(cccd + "_VSAT");
+            HashMap<String, DiemThiDTO> vsatByDot = vsatMap.get(cccd);
+//            if (dtTHPT == null && dtDGNL == null && dtVSAT == null) {
+//                continue;
+//            }
+if (dtTHPT == null && dtDGNL == null
+        && (vsatByDot == null || vsatByDot.isEmpty())) {
+    continue;
+}
             List<Object[]> list = getDanhSachToHop(maNganh, cache);
             BigDecimal max = BigDecimal.ZERO;
             BigDecimal diem_cong = BigDecimal.ZERO;
@@ -439,7 +438,7 @@ public class NguyenVongBUS {
 
 // ================= ĐGNL =================
                 if (dtDGNL != null) {
-                    String keyDGNL = "DGNL_" + matohop.substring(0, 3);
+                    String keyDGNL = "DGNL_" + matohop;
                     List<BangQuyDoiDTO> bqdList = bqdĐGNLMap.get(keyDGNL);
                     if (bqdList != null && !bqdList.isEmpty()) {
                         BigDecimal diemTHXT = tinhDiemDGNL(dtDGNL, bqdList);
@@ -459,7 +458,8 @@ public class NguyenVongBUS {
                 }
 
 // ================= VSAT =================
-                if (dtVSAT != null) {
+                if (vsatByDot != null && !vsatByDot.isEmpty()) {
+
                     String mon1 = (String) row[1];
                     String mon2 = (String) row[2];
                     String mon3 = (String) row[3];
@@ -467,11 +467,26 @@ public class NguyenVongBUS {
                     List<BangQuyDoiDTO> listQD1 = bqdVSATMap.get("VSAT_" + mon1);
                     List<BangQuyDoiDTO> listQD2 = bqdVSATMap.get("VSAT_" + mon2);
                     List<BangQuyDoiDTO> listQD3 = bqdVSATMap.get("VSAT_" + mon3);
-                    if (listQD1 != null && !listQD1.isEmpty() && listQD2 != null && !listQD2.isEmpty() && listQD3 != null && !listQD3.isEmpty()) {
-                        BigDecimal diemTHXT = tinhDiemVSAT(row, dtVSAT, listQD1, listQD2, listQD3);
-                        if (diemTHXT != null) {
+
+                    if (listQD1 != null && !listQD1.isEmpty()
+                            && listQD2 != null && !listQD2.isEmpty()
+                            && listQD3 != null && !listQD3.isEmpty()) {
+
+                        for (DiemThiDTO dtVSAT : vsatByDot.values()) {
+
+                            BigDecimal diemTHXT = tinhDiemVSAT(
+                                    row,
+                                    dtVSAT,
+                                    listQD1,
+                                    listQD2,
+                                    listQD3
+                            );
+
+                            if (diemTHXT == null) {
+                                continue;
+                            }
                             BigDecimal diemTruocUT = diemTHXT.add(diemUTXT);
-                            BigDecimal diemUT = tinhDiemKhuVucDoiTuong(diemTruocUT, ts, doLech);
+                            BigDecimal diemUT = tinhDiemKhuVucDoiTuong(diemTruocUT,ts,doLech);
                             BigDecimal diemXetTuyen = diemTruocUT.add(diemUT);
                             if (diemXetTuyen.compareTo(max) > 0) {
                                 max = diemXetTuyen;
@@ -489,6 +504,14 @@ public class NguyenVongBUS {
             nv.setDiemCong(diem_cong);
             nv.setDiemUtqd(diem_utqd);
             nv.setTtPhuongthuc(bestPhuongThuc);
+            if (nganh != null && nganh.getNDiemSan() != null) {
+                if (max.compareTo(nganh.getNDiemSan()) >= 0) {
+                    nv.setNvKetqua("Trên sàn");
+                } else {
+                    nv.setNvKetqua("Dưới sàn");
+                }
+
+            }
         }
         nvDAO.updateBatch(listNV);
     }
@@ -497,11 +520,11 @@ public class NguyenVongBUS {
     public List<NguyenVongDTO> filter(String text,String tenNganh, String phuongThuc) {
         String t = text.toLowerCase().trim();
         List<NguyenVongDTO> result = new ArrayList<>();
-        HashMap<String,String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String,String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
         for (NguyenVongDTO nv : nvDAO.getAll()) {
 
             boolean matchTenNganh = (tenNganh == null || tenNganh.equals("Tất cả"))
-                    || mapTenNganh.get(nv.getNvManganh()).contains(tenNganh);
+                    || mapTenNganh.get(nv.getNvManganh()).equals(tenNganh);
 
             boolean matchPT = (phuongThuc == null || phuongThuc.equals("Tất cả"))
                     || nv.getTtPhuongthuc().equals(phuongThuc);
@@ -518,7 +541,7 @@ public class NguyenVongBUS {
     public List<NguyenVongDTO> timKiemText(String text) {
         String t = text.toLowerCase();
         ArrayList<NguyenVongDTO> result = new ArrayList<>();
-        HashMap<String,String> mapTenNganh = nganhBus.getMapTenNganh();
+        HashMap<String,String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
 
         for (NguyenVongDTO nv : nvDAO.getAll()) {
             if ((nv.getNvCccd() != null && nv.getNvCccd().toLowerCase().contains(t))

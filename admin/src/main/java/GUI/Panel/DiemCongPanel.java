@@ -76,7 +76,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
         cbb_maNganh.removeAllItems();
         cbb_maNganh.addItem("Tất cả");
         List<String> list = diemCongB.loadMaNganh();
-        HashMap<String,String> map = ngBus.getMapTenNganh();
+        HashMap<String,String> map = ngBus.getTenNganhByMaNganhMap();
         for(String mn : list) {
             String tenNganh = map.get(mn);
             cbb_maNganh.addItem(tenNganh);
@@ -105,7 +105,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
         }
     }
     public void dataTable(ArrayList<DiemCongDTO> listDiem) {
-        HashMap<String, String> mapNganh = ngBus.getMapTenNganh();
+        HashMap<String, String> mapNganh = ngBus.getTenNganhByMaNganhMap();
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
                 new String[]{"Ts_cccd","Mã ngành","Mã tổ hợp","Phương thức","ĐiểmCC","ĐiểmƯtxt","Điểm tổng","Ghi chú","dc_keys"}

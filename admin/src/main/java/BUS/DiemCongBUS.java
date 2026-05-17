@@ -98,7 +98,7 @@ public class DiemCongBUS {
     // filter tổng hợp
     public ArrayList<DiemCongDTO> filterAll(String tenNganh, String maToHop) {
         ArrayList<DiemCongDTO> list = new ArrayList<>();
-        HashMap<String,String> map = ngB.nganhMap();
+        HashMap<String,String> map = ngB.getMaNganhByTenNganhMap();
 
         String maNganh = map.get(tenNganh);
 

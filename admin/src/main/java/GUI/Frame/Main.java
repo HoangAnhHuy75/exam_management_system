@@ -5,6 +5,7 @@
 package GUI.Frame;
 
 import BUS.DiemThiBUS;
+import BUS.NganhBUS;
 import DTO.PermissionDTO;
 import DTO.RoleDTO;
 import DTO.UserDTO;
@@ -58,6 +59,7 @@ public class Main extends javax.swing.JFrame {
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
     DiemThiBUS dtBus = new DiemThiBUS();
+    NganhBUS ngBus = new NganhBUS();
     PermissionPanel permissionPanel = new PermissionPanel();
 
     public Main(UserDTO user) {
@@ -556,6 +558,7 @@ public class Main extends javax.swing.JFrame {
     private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_majorActionPerformed
         hideAllPanels();
         nganhPanel.setVisible(true);
+        nganhPanel.dataTable(ngBus.getListN());
     }// GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_homeActionPerformed

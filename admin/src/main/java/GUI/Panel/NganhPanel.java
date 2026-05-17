@@ -84,7 +84,7 @@ public class NganhPanel extends javax.swing.JPanel {
     public void dataTable(ArrayList<NganhDTO> listNganh) {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"Mã ngành", "Tên ngành", "TH gốc", "Chỉ tiêu", "Điểm sàn", "Điểm trúng tuyển","SL đăng ký", "XTT", "ĐGNL", "THPT", "VSAT", "SL_XTT", "SL_ĐGNL", "SL_THPT", "SL_VSAT"}
+                new String[]{"Mã ngành", "Tên ngành", "TH gốc", "Chỉ tiêu", "Điểm sàn", "ĐTT THPT","ĐTT ĐGNL","ĐTT VSAT","SL đăng ký", "XTT", "ĐGNL", "THPT", "VSAT", "SL_XTT", "SL_ĐGNL", "SL_THPT", "SL_VSAT"}
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -93,7 +93,7 @@ public class NganhPanel extends javax.swing.JPanel {
         };
         for (NganhDTO ng : listNganh) {
             model.addRow(new Object[]{
-                ng.getMaNganh(), ng.getTenNganh(), ng.getNToHopGoc(), ng.getNChiTieu(), ng.getNDiemSan(), ng.getNDiemTrungTuyen(),nganhB.countThiSinhByMaNganh(ng.getMaNganh()) ,ng.getNTuyenThang(), ng.getNDGNL(), ng.getNTHPT(), ng.getNVSAT(), ng.getSlXTT(), ng.getSlDGNL(), ng.getSlTHPT(), ng.getSlVSAT()
+                ng.getMaNganh(), ng.getTenNganh(), ng.getNToHopGoc(), ng.getNChiTieu(), ng.getNDiemSan(), ng.getNDiemTrungTuyen(),ng.getNDiemTrungTuyenDGNL(),ng.getNDiemTrungTuyenVSAT(),nganhB.countThiSinhByMaNganh(ng.getMaNganh()) ,ng.getNTuyenThang(), ng.getNDGNL(), ng.getNTHPT(), ng.getNVSAT(), ng.getSlXTT(), ng.getSlDGNL(), ng.getSlTHPT(), ng.getSlVSAT()
             });
         }
         major_table.setModel(model);
@@ -101,15 +101,17 @@ public class NganhPanel extends javax.swing.JPanel {
         table_design.setUpTable(major_table);
         TableColumnModel columnModel = major_table.getColumnModel();
         columnModel.getColumn(0).setPreferredWidth(100);
-        columnModel.getColumn(1).setPreferredWidth(200);
-        columnModel.getColumn(2).setPreferredWidth(80);
-        columnModel.getColumn(3).setPreferredWidth(80);
+        columnModel.getColumn(1).setPreferredWidth(180);
+        columnModel.getColumn(2).setPreferredWidth(60);
+        columnModel.getColumn(3).setPreferredWidth(60);
         columnModel.getColumn(4).setPreferredWidth(100);
         columnModel.getColumn(5).setPreferredWidth(100);
-        columnModel.getColumn(6).setPreferredWidth(120);
+        columnModel.getColumn(6).setPreferredWidth(100);
+        columnModel.getColumn(7).setPreferredWidth(100);
+        columnModel.getColumn(8).setPreferredWidth(100);
         // Giấu từ cột index 5 đến hết index 13
         TableColumnModel column = major_table.getColumnModel();
-        for (int i = 7; i < columnModel.getColumnCount(); i++) {
+        for (int i = 9; i < columnModel.getColumnCount(); i++) {
             columnModel.getColumn(i).setMinWidth(0);
             columnModel.getColumn(i).setMaxWidth(0);
             columnModel.getColumn(i).setPreferredWidth(0);
@@ -468,15 +470,15 @@ public class NganhPanel extends javax.swing.JPanel {
         if (value != null && !value.toString().trim().isEmpty()) {
             diemTrungTuyen = new java.math.BigDecimal(value.toString());
         }
-        String xtt = major_table.getValueAt(vitriRow, 7).toString();
-        String dgnl = major_table.getValueAt(vitriRow, 8).toString();
-        String thpt = major_table.getValueAt(vitriRow, 9).toString();
-        String vsat = major_table.getValueAt(vitriRow, 10).toString();
+        String xtt = major_table.getValueAt(vitriRow, 9).toString();
+        String dgnl = major_table.getValueAt(vitriRow, 10).toString();
+        String thpt = major_table.getValueAt(vitriRow, 11).toString();
+        String vsat = major_table.getValueAt(vitriRow, 12).toString();
 
-        Integer slXTT = (Integer) major_table.getValueAt(vitriRow, 11);
-        Integer slDGNL = (Integer) major_table.getValueAt(vitriRow, 12);
-        Integer slTHPT = (Integer) major_table.getValueAt(vitriRow, 13);
-        Integer slVSAT = (Integer) major_table.getValueAt(vitriRow, 14);
+        Integer slXTT = (Integer) major_table.getValueAt(vitriRow, 13);
+        Integer slDGNL = (Integer) major_table.getValueAt(vitriRow, 14);
+        Integer slTHPT = (Integer) major_table.getValueAt(vitriRow, 15);
+        Integer slVSAT = (Integer) major_table.getValueAt(vitriRow, 16);
 
         // Tạo DTO
         NganhDTO nganh = new NganhDTO();
@@ -553,15 +555,15 @@ public class NganhPanel extends javax.swing.JPanel {
         if (value != null && !value.toString().trim().isEmpty()) {
             diemTrungTuyen = new java.math.BigDecimal(value.toString());
         }
-        String xtt = major_table.getValueAt(vitriRow, 7).toString();
-        String dgnl = major_table.getValueAt(vitriRow,8).toString();
-        String thpt = major_table.getValueAt(vitriRow, 9).toString();
-        String vsat = major_table.getValueAt(vitriRow, 10).toString();
+        String xtt = major_table.getValueAt(vitriRow, 9).toString();
+        String dgnl = major_table.getValueAt(vitriRow,10).toString();
+        String thpt = major_table.getValueAt(vitriRow, 11).toString();
+        String vsat = major_table.getValueAt(vitriRow, 12).toString();
 
-        Integer slXTT = (Integer) major_table.getValueAt(vitriRow, 11);
-        Integer slDGNL = (Integer) major_table.getValueAt(vitriRow, 12);
-        Integer slTHPT = (Integer) major_table.getValueAt(vitriRow, 13);
-        Integer slVSAT = (Integer) major_table.getValueAt(vitriRow, 14);
+        Integer slXTT = (Integer) major_table.getValueAt(vitriRow, 13);
+        Integer slDGNL = (Integer) major_table.getValueAt(vitriRow, 14);
+        Integer slTHPT = (Integer) major_table.getValueAt(vitriRow, 15);
+        Integer slVSAT = (Integer) major_table.getValueAt(vitriRow, 16);
 
         // Tạo DTO
         NganhDTO nganh = new NganhDTO();

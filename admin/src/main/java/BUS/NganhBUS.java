@@ -65,7 +65,7 @@ public class NganhBUS {
     }
 
     // Map manganh -> tennganh
-    public HashMap<String, String> nganhMap() {
+    public HashMap<String, String> getMaNganhByTenNganhMap() {
         HashMap<String, String> nganhMap = new HashMap<>();
         for (NganhDTO ng : nganhDao.getAllNganh()) {
             nganhMap.put(ng.getTenNganh(), ng.getMaNganh());
@@ -74,7 +74,7 @@ public class NganhBUS {
     }
     
     // Map tennganh -> manganh(thành)
-    public HashMap<String,String> getMapTenNganh() {
+    public HashMap<String,String> getTenNganhByMaNganhMap() {
         HashMap<String,String> getMapTenNganh = new HashMap<>();
         for(NganhDTO ng : nganhDao.getAllNganh()) {
             getMapTenNganh.put(ng.getMaNganh(), ng.getTenNganh());
@@ -82,13 +82,12 @@ public class NganhBUS {
         return getMapTenNganh;
     }
     
-    // Tìm mã ngành theo tên ngành
-    public String getMaNganhByTenNganh(String tenNganh) {
-        return nganhDao.getAllNganh().stream()
-                .filter(n -> n.getTenNganh().equals(tenNganh))
-                .map(NganhDTO::getMaNganh)
-                .findFirst()
-                .orElse(null);
+    public HashMap<String, NganhDTO> nganhMap() {
+        HashMap<String, NganhDTO> nganhMap = new HashMap<>();
+        for (NganhDTO nganh : nganhDao.getAllNganh()) {
+            nganhMap.put(nganh.getMaNganh(), nganh);
+        }
+        return nganhMap;
     }
 
     // Tìm tên ngành theo mã ngành
@@ -131,7 +130,7 @@ public class NganhBUS {
                 }
 
                 NganhDTO n = new NganhDTO();
-                 n.setMaNganh(getMaNganhFromCell(row.getCell(1)));
+                n.setMaNganh(getMaNganhFromCell(row.getCell(1)));
                 n.setTenNganh(row.getCell(2) != null ? row.getCell(2).toString() : null);
                 n.setNToHopGoc(row.getCell(3) != null ? row.getCell(3).toString() : null);
                 n.setNChiTieu(row.getCell(4) != null ? (int) row.getCell(4).getNumericCellValue() : 0);

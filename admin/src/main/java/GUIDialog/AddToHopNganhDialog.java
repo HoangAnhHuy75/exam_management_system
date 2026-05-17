@@ -24,7 +24,7 @@ public class AddToHopNganhDialog extends javax.swing.JDialog {
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
     ToHopNganhBUS th_ng_bus = new ToHopNganhBUS();
-    HashMap<String, String> nganhMap = nganhBus.nganhMap();
+    HashMap<String, String> nganhMap = nganhBus.getMaNganhByTenNganhMap();
     HashMap<String, String> tohopMap = tohopBus.tohopMap();
     HashMap<String, String> tohopGocMap = nganhBus.getMapToHopGoc();
   

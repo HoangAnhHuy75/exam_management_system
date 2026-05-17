@@ -509,7 +509,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         String tenNganh = (String) jComboBox4.getSelectedItem();
         String maNganh = null;
         if (!tenNganh.equals("Tất cả")) {
-            HashMap<String, String> nganhMap = nganhBus.nganhMap();
+            HashMap<String, String> nganhMap = nganhBus.getMaNganhByTenNganhMap();
             maNganh = nganhMap.get(tenNganh);
         }
         if (maNganh != null) {

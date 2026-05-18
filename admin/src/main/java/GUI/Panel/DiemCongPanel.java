@@ -90,20 +90,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
             cbb_maToHop.addItem(mth);
         }
     }
-    public String convertPhuongThucToText(String ptCode) {
-    switch (ptCode) {
-        case "PT1":
-            return "Tuyển thẳng";
-        case "PT2":
-            return "ĐGNL";
-        case "PT3":
-            return "VSAT";
-        case "PT4":
-            return "THPT";
-        default:
-            return ptCode;
-        }
-    }
+    
     public void dataTable(ArrayList<DiemCongDTO> listDiem) {
         HashMap<String, String> mapNganh = ngBus.getMapTenNganh();
         DefaultTableModel model = new DefaultTableModel(
@@ -121,7 +108,7 @@ public class DiemCongPanel extends javax.swing.JPanel {
             tenNganh = dc.getManganh();
             }
             model.addRow(new Object[]{
-                dc.getTs_cccd(),tenNganh,dc.getMatohop(),convertPhuongThucToText(dc.getPhuongthuc())
+                dc.getTs_cccd(),tenNganh,dc.getMatohop(),dc.getPhuongthuc()
                 ,dc.getDiemCC(),dc.getDiemUtxt(),dc.getDiemTong(),dc.getGhichu(),dc.getDc_keys()
             });
         }

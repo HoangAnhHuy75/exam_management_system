@@ -93,20 +93,6 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
         return null;
         }
     }
-    public String convertPhuongThuc(String pt) {
-    switch (pt) {
-        case "Tuyển thẳng":
-            return "PT1";
-        case "ĐGNL":
-            return "PT2";
-        case "VSAT":
-            return "PT3";
-        case "THPT":
-            return "PT4";
-        default:
-            return "";
-        }
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -420,7 +406,7 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
         String maNganh = mapNganh.get(tenNganh);
         String maToHop = cbb_matohop.getSelectedItem().toString();
         String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
-        String phuongthuc = convertPhuongThuc(phuongthucText);
+        String phuongthuc = phuongthucText;
         String ghiChu = textArea_ghichu.getText();
         String dcKeys = field_dckeys.getText();
         BigDecimal cc = getBigDecimal(field_cc);

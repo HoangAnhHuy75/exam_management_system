@@ -22,6 +22,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import util.Combobox_design;
@@ -82,24 +83,10 @@ public class DiemThiPanel extends javax.swing.JPanel {
     public void loadMonToComboBox() {
         cbb_mon.removeAllItems(); // xóa dữ liệu cũ
         cbb_mon.addItem("Bộ lọc môn");
-        String[] ptxt = {"Toán", "Lí", "Hóa", "Sinh", "Sử", "Địa", "Văn", "CNCN", "CNNN", "Tin", "KTPL",
-        "NK1", "NK2", "NL1", "N1_THI", "N1_CC"};
+        String[] ptxt = {"Toán", "Lí", "Hóa", "Sinh", "Sử", "Địa", "Văn", "GDCD", "CNCN", "CNNN", "Tin", "KTPL",
+        "CNCN", "CNNN","NK1", "NK2", "NK3", "NK4", "NK5", "NK6", "NL1", "N1_THI", "N1_CC"};
         for(String pt : ptxt){
             cbb_mon.addItem(pt);
-        }
-    }
-    public String convertPhuongThucToText(String ptCode) {
-    switch (ptCode) {
-        case "PT1":
-            return "Tuyển thẳng";
-        case "PT2":
-            return "ĐGNL";
-        case "PT3":
-            return "VSAT";
-        case "PT4":
-            return "THPT";
-        default:
-            return ptCode;
         }
     }
     public void loadLoaiDiemToComboBox() {
@@ -113,7 +100,8 @@ public class DiemThiPanel extends javax.swing.JPanel {
     public void dataTable(ArrayList<DiemThiDTO> listDiem) {
         DefaultTableModel model = new DefaultTableModel(
                 new Object[][]{},
-                new String[]{"cccd","SBD","Phương thức","TO","LI","HO","SI","SU","DI","VA","TI","N1_THI","NL1","N1_CC"}
+                new String[]{"cccd","SBD","Phương thức","TO","LI","HO","SI","SU","DI","VA","GDCD","TI","N1_THI","NL1","N1_CC","KTPL"
+                        ,"CNCN","CNNN","NK1","NK2","NK3","NK4","NK5","NK6","IdĐThi","Đợt thi"}
         ) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -122,18 +110,19 @@ public class DiemThiPanel extends javax.swing.JPanel {
         };
         for (DiemThiDTO dt : listDiem) {
             model.addRow(new Object[]{
-                dt.getCccd(),dt.getSobaodanh(), convertPhuongThucToText(dt.getD_phuongthuc()),
+                dt.getCccd(),dt.getSobaodanh(), dt.getD_phuongthuc(),
                 dt.getTO(), dt.getLI(), dt.getHO(), dt.getSI(),
-                dt.getSU(), dt.getDI(), dt.getVA(), dt.getTI(),dt.getN1_THI(),
-                dt.getNL1(),dt.getN1_CC()
+                dt.getSU(), dt.getDI(), dt.getVA(),dt.getGDCD(), dt.getTI(),dt.getN1_THI(),
+                dt.getNL1(),dt.getN1_CC(),dt.getKTPL(),dt.getCNCN(),dt.getCNNN(),dt.getNK1(),dt.getNK2(),dt.getNK3(),
+                dt.getNK4(),dt.getNK5(),dt.getNK6(),dt.getIddiemthi(),dt.getDotthi()
             });
         }
         table_diem.setModel(model);
         table_design.centerTable(table_diem);
         table_design.setUpTable(table_diem);
         TableColumnModel columnModel = table_diem.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(100);
-        columnModel.getColumn(1).setPreferredWidth(130);
+        columnModel.getColumn(0).setPreferredWidth(160);
+        columnModel.getColumn(1).setPreferredWidth(150);
         columnModel.getColumn(2).setPreferredWidth(80);
         columnModel.getColumn(3).setPreferredWidth(80);
         columnModel.getColumn(4).setPreferredWidth(80);
@@ -144,8 +133,23 @@ public class DiemThiPanel extends javax.swing.JPanel {
         columnModel.getColumn(9).setPreferredWidth(80);
         columnModel.getColumn(10).setPreferredWidth(80);
         columnModel.getColumn(11).setPreferredWidth(80);
-        columnModel.getColumn(12).setPreferredWidth(85);
+        columnModel.getColumn(12).setPreferredWidth(105);
         columnModel.getColumn(13).setPreferredWidth(85);
+        columnModel.getColumn(14).setPreferredWidth(105);
+        columnModel.getColumn(15).setPreferredWidth(85);
+        columnModel.getColumn(16).setPreferredWidth(85);
+        columnModel.getColumn(17).setPreferredWidth(85);
+        columnModel.getColumn(18).setPreferredWidth(85);
+        columnModel.getColumn(19).setPreferredWidth(85);
+        columnModel.getColumn(20).setPreferredWidth(85);
+        columnModel.getColumn(21).setPreferredWidth(85);
+        columnModel.getColumn(22).setPreferredWidth(85);
+        columnModel.getColumn(23).setPreferredWidth(85);
+        columnModel.getColumn(25).setPreferredWidth(85);
+        TableColumn column = columnModel.getColumn(24);
+        column.setMinWidth(0);
+        column.setMaxWidth(0);
+        column.setWidth(0);
     }
     public void dataThongKe(HashMap<String, Integer> map) {
 
@@ -499,9 +503,11 @@ public class DiemThiPanel extends javax.swing.JPanel {
             return;
         }
 
-        String cccd = table_diem.getValueAt(row, 0).toString();
+        int id = Integer.parseInt(
+            table_diem.getValueAt(row, 24).toString()
+        );
 
-        DiemThiDTO dtDTO = diemThiB.findOneByCCCD(cccd);
+        DiemThiDTO dtDTO = diemThiB.findById(id);
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
         new EditDiemThiDialog((Frame) parentWindow, true, this, dtDTO).setVisible(true);
     }//GEN-LAST:event_btn_suaActionPerformed
@@ -531,9 +537,11 @@ public class DiemThiPanel extends javax.swing.JPanel {
             return;
         }
         
-        String cccd = table_diem.getValueAt(row, 0).toString();
+        int id = Integer.parseInt(
+            table_diem.getValueAt(row, 24).toString()
+        );
 
-        DiemThiDTO dt = diemThiB.findOneByCCCD(cccd);
+        DiemThiDTO dt = diemThiB.findById(id);
 
         if(dt == null) {
             JOptionPane.showMessageDialog(this, 

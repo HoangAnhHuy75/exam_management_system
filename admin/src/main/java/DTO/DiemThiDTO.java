@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(
         name = "xt_diemthixettuyen",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc"})
+            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc", "dotthi"})
         }
 )
 public class DiemThiDTO implements Serializable {

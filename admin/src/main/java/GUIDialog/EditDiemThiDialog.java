@@ -33,17 +33,16 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     public void khoiTao(){
         setUpCombobox();
         loadPhuongThucToComboBox();
+        loadCccdToComboBox();
+        loadSbdToCombobox("");
         loadData();
     }
     public String getText(BigDecimal value) {
         return value == null ? "" : value.toString();
     }
     public void loadData() {
-        field_cccd.setText(dtDTO.getCccd());
-        field_sbd.setText(dtDTO.getSobaodanh());
-        String ptText = convertPhuongThucToText(dtDTO.getD_phuongthuc());
-        cbb_phuongthuc.setSelectedItem(ptText);
-
+        cbb_phuongthuc.setSelectedItem(dtDTO.getD_phuongthuc());
+        cbb_sbd.setSelectedItem(dtDTO.getSobaodanh());
         field_to.setText(getText(dtDTO.getTO()));
         field_li.setText(getText(dtDTO.getLI()));
         field_ho.setText(getText(dtDTO.getHO()));
@@ -51,18 +50,26 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_su.setText(getText(dtDTO.getSU()));
         field_dia.setText(getText(dtDTO.getDI()));
         field_va.setText(getText(dtDTO.getVA()));
+        field_gdcd.setText(getText(dtDTO.getGDCD()));
         field_cncn.setText(getText(dtDTO.getCNCN()));
         field_cnnn.setText(getText(dtDTO.getCNNN()));
         field_ti.setText(getText(dtDTO.getTI()));
         field_ktpl.setText(getText(dtDTO.getKTPL()));
         field_nk1.setText(getText(dtDTO.getNK1()));
         field_nk2.setText(getText(dtDTO.getNK2()));
+        field_nk3.setText(getText(dtDTO.getNK3()));
+        field_nk4.setText(getText(dtDTO.getNK4()));
+        field_nk5.setText(getText(dtDTO.getNK5()));
+        field_nk6.setText(getText(dtDTO.getNK6()));
         field_nl1.setText(getText(dtDTO.getNL1()));
         field_n1cc.setText(getText(dtDTO.getN1_CC()));
         field_n1thi.setText(getText(dtDTO.getN1_THI()));
+        field_dotthi.setText(dtDTO.getDotthi());
     }
     public void setUpCombobox(){
         cbb_design.setUpComBoBox(cbb_phuongthuc);
+        cbb_design.setUpComBoBox(cbb_cccd);
+        cbb_design.setUpComBoBox(cbb_sbd);
     }
     public void loadPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
@@ -71,6 +78,15 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         for(String pt : ptxt){
             cbb_phuongthuc.addItem(pt);
         }
+    }
+    public void loadCccdToComboBox() {
+        cbb_cccd.removeAllItems();
+
+        List<String> list = diemThiBus.loadCbbCccd();
+        for(String cccd : list) {
+            cbb_cccd.addItem(cccd);
+        }
+        cbb_cccd.setSelectedItem(dtDTO.getCccd());
     }
     public BigDecimal getBigDecimal(JTextField field) {
     String text = field.getText().trim();
@@ -86,32 +102,73 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         return null;
         }
     }
-    public String convertPhuongThuc(String pt) {
-    switch (pt) {
-        case "Tuyển thẳng":
-            return "PT1";
-        case "ĐGNL":
-            return "PT2";
-        case "VSAT":
-            return "PT3";
-        case "THPT":
-            return "PT4";
-        default:
-            return "";
-        }
+    public void setEnableFields(
+        boolean to, boolean li, boolean ho,
+        boolean si, boolean su, boolean dia,
+        boolean va, boolean gdcd,
+        boolean cncn, boolean cnnn,
+        boolean ti, boolean ktpl,
+        boolean nk1, boolean nk2,
+        boolean nk3, boolean nk4,
+        boolean nk5, boolean nk6,
+        boolean nl1,
+        boolean n1_thi,
+        boolean dotthi
+    ) {
+        field_to.setEnabled(to);
+        field_li.setEnabled(li);
+        field_ho.setEnabled(ho);
+        field_si.setEnabled(si);
+        field_su.setEnabled(su);
+        field_dia.setEnabled(dia);
+        field_va.setEnabled(va);
+        field_gdcd.setEnabled(gdcd);
+        field_cncn.setEnabled(cncn);
+        field_cnnn.setEnabled(cnnn);
+        field_ti.setEnabled(ti);
+        field_ktpl.setEnabled(ktpl);
+
+        field_nk1.setEnabled(nk1);
+        field_nk2.setEnabled(nk2);
+        field_nk3.setEnabled(nk3);
+        field_nk4.setEnabled(nk4);
+        field_nk5.setEnabled(nk5);
+        field_nk6.setEnabled(nk6);
+
+        field_nl1.setEnabled(nl1);
+
+        field_n1thi.setEnabled(n1_thi);
+        field_dotthi.setEnabled(dotthi);
     }
-    public String convertPhuongThucToText(String ptCode) {
-    switch (ptCode) {
-        case "PT1":
-            return "Tuyển thẳng";
-        case "PT2":
-            return "ĐGNL";
-        case "PT3":
-            return "VSAT";
-        case "PT4":
-            return "THPT";
-        default:
-            return ptCode;
+    public void clearFields() {
+        field_to.setText("");
+        field_li.setText("");
+        field_ho.setText("");
+        field_si.setText("");
+        field_su.setText("");
+        field_dia.setText("");
+        field_va.setText("");
+        field_gdcd.setText("");
+        field_cncn.setText("");
+        field_cnnn.setText("");
+        field_ti.setText("");
+        field_ktpl.setText("");
+        field_nk1.setText("");
+        field_nk2.setText("");
+        field_nk3.setText("");
+        field_nk4.setText("");
+        field_nk5.setText("");
+        field_nk6.setText("");
+        field_nl1.setText("");
+        field_n1thi.setText("");
+        field_dotthi.setText("");
+    }
+     public void loadSbdToCombobox(String cccd) {
+        cbb_sbd.removeAllItems();
+        cbb_sbd.addItem("");
+        List<String> list = diemThiBus.loadCbbSBD(cccd);
+        for(String sbd : list) {
+            cbb_sbd.addItem(sbd);
         }
     }
     @SuppressWarnings("unchecked")
@@ -136,6 +193,10 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_li = new javax.swing.JTextField();
         field_va = new javax.swing.JTextField();
         field_dia = new javax.swing.JTextField();
+        jLabel21 = new javax.swing.JLabel();
+        field_gdcd = new javax.swing.JTextField();
+        jLabel26 = new javax.swing.JLabel();
+        field_dotthi = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
@@ -155,13 +216,21 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_nl1 = new javax.swing.JTextField();
         field_n1thi = new javax.swing.JTextField();
         field_n1cc = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        jLabel23 = new javax.swing.JLabel();
+        jLabel24 = new javax.swing.JLabel();
+        field_nk3 = new javax.swing.JTextField();
+        field_nk4 = new javax.swing.JTextField();
+        jLabel25 = new javax.swing.JLabel();
+        field_nk6 = new javax.swing.JTextField();
+        field_nk5 = new javax.swing.JTextField();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        field_cccd = new javax.swing.JTextField();
-        field_sbd = new javax.swing.JTextField();
         jLabel20 = new javax.swing.JLabel();
         cbb_phuongthuc = new javax.swing.JComboBox<>();
+        cbb_cccd = new javax.swing.JComboBox<>();
+        cbb_sbd = new javax.swing.JComboBox<>();
         btn_reset = new javax.swing.JButton();
         btn_huy = new javax.swing.JButton();
         btn_sua = new javax.swing.JButton();
@@ -193,7 +262,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Điểm môn học chính", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12))); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Điểm môn học chính & VSAT", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 1, 12))); // NOI18N
 
         jLabel4.setText("TO");
 
@@ -209,42 +278,58 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
 
         jLabel10.setText("VA");
 
+        jLabel21.setText("GDCD");
+
+        jLabel26.setText("Đợt thi");
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(field_to, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(field_li))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(field_ho))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(field_si))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(field_su))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(field_va, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(field_dia))))
+                        .addGap(14, 14, 14))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel21)
+                        .addGap(9, 9, 9)
+                        .addComponent(field_gdcd)
+                        .addGap(15, 15, 15))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel26)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(field_to, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(field_li))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(field_ho))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(field_si))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(field_su))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(field_va, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(field_dia))))
-                .addGap(14, 14, 14))
+                        .addComponent(field_dotthi)
+                        .addGap(18, 18, 18))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,7 +364,15 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(field_va, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(27, 27, 27)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel21)
+                    .addComponent(field_gdcd, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel26)
+                    .addComponent(field_dotthi, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(16, 16, 16))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
@@ -295,7 +388,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
 
         jLabel15.setText("NK1");
 
-        jLabel16.setText("NK2");
+        jLabel16.setText("NK5");
 
         jLabel17.setText("NL1");
 
@@ -305,13 +398,21 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
 
         field_n1cc.setEditable(false);
 
+        jLabel22.setText("NK2");
+
+        jLabel23.setText("NK3");
+
+        jLabel24.setText("NK4");
+
+        jLabel25.setText("NK6");
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -321,21 +422,45 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                             .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel19))
+                            .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(field_n1cc, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(field_ti, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(field_cnnn, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(field_ktpl, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(field_nk1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(field_nk2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(field_nl1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(field_n1thi, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(field_nk1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nk2, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nk3, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nk4, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nk5, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nk6, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_n1thi, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(field_nl1, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel19)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(field_n1cc, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -363,8 +488,24 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                     .addComponent(jLabel15))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(field_nk2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel16))
+                    .addComponent(jLabel22)
+                    .addComponent(field_nk2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel23)
+                    .addComponent(field_nk3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel24)
+                    .addComponent(field_nk4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel16)
+                    .addComponent(field_nk5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel25)
+                    .addComponent(field_nk6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(field_nl1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -373,11 +514,11 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(field_n1thi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel18))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel19)
-                    .addComponent(field_n1cc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(72, 72, 72))
+                    .addComponent(field_n1cc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel19))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -390,6 +531,12 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         jLabel20.setText("Phương thức");
 
         cbb_phuongthuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_phuongthuc.addActionListener(this::cbb_phuongthucActionPerformed);
+
+        cbb_cccd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cbb_cccd.addActionListener(this::cbb_cccdActionPerformed);
+
+        cbb_sbd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -399,32 +546,31 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(18, 18, 18)
-                        .addComponent(field_cccd))
-                    .addGroup(jPanel5Layout.createSequentialGroup()
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel20))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(field_sbd)
-                            .addComponent(cbb_phuongthuc, 0, 139, Short.MAX_VALUE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(cbb_phuongthuc, 0, 139, Short.MAX_VALUE)
+                            .addComponent(cbb_sbd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap(30, Short.MAX_VALUE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbb_cccd, 0, 151, Short.MAX_VALUE)
+                        .addGap(18, 18, 18))))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel5Layout.createSequentialGroup()
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel2))
-                    .addComponent(field_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(field_sbd, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
+                    .addComponent(jLabel2)
+                    .addComponent(cbb_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(cbb_sbd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel20)
@@ -475,18 +621,17 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(41, 41, 41)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btn_reset, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(btn_huy, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+                            .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -517,17 +662,23 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_su.setText("");
         field_dia.setText("");
         field_va.setText("");
+        field_gdcd.setText("");
         field_cncn.setText("");
         field_cnnn.setText("");
         field_ti.setText("");
         field_ktpl.setText("");
         field_nk1.setText("");
         field_nk2.setText("");
+        field_nk3.setText("");
+        field_nk4.setText("");
+        field_nk5.setText("");
+        field_nk6.setText("");
         field_nl1.setText("");
         field_n1thi.setText("");
         field_n1cc.setText("");
-        field_sbd.setText("");
-        field_cccd.requestFocus();
+        field_dotthi.setText("");
+        cbb_sbd.setSelectedItem(dtDTO.getCccd());
+        cbb_cccd.setSelectedItem(dtDTO.getCccd());
     }//GEN-LAST:event_btn_resetActionPerformed
 
     private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_huyActionPerformed
@@ -535,10 +686,10 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_huyActionPerformed
 
     private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
-        String Cccd = field_cccd.getText().trim();
-        String Sbd = field_sbd.getText().trim();
+        String Cccd = cbb_cccd.getSelectedItem().toString();
+        String Sbd = cbb_sbd.getSelectedItem().toString();
         String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
-        String phuongthuc = convertPhuongThuc(phuongthucText);
+        String phuongthuc = phuongthucText;
         BigDecimal to = getBigDecimal(field_to);
         BigDecimal li = getBigDecimal(field_li);
         BigDecimal ho = getBigDecimal(field_ho);
@@ -546,30 +697,56 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         BigDecimal su = getBigDecimal(field_su);
         BigDecimal dia = getBigDecimal(field_dia);
         BigDecimal va = getBigDecimal(field_va);
+        BigDecimal gdcd = getBigDecimal(field_gdcd);
         BigDecimal cncn = getBigDecimal(field_cncn);
         BigDecimal cnnn = getBigDecimal(field_cnnn);
         BigDecimal ti = getBigDecimal(field_ti);
         BigDecimal ktpl = getBigDecimal(field_ktpl);
         BigDecimal nk1 = getBigDecimal(field_nk1);
         BigDecimal nk2 = getBigDecimal(field_nk2);
+        BigDecimal nk3 = getBigDecimal(field_nk3);
+        BigDecimal nk4 = getBigDecimal(field_nk4);
+        BigDecimal nk5 = getBigDecimal(field_nk5);
+        BigDecimal nk6 = getBigDecimal(field_nk6);
         BigDecimal nl1 = getBigDecimal(field_nl1);
         BigDecimal n1_thi = getBigDecimal(field_n1thi);
         BigDecimal n1_cc = getBigDecimal(field_n1cc);
+        Integer dotThi = null;
 
+        if(!field_dotthi.getText().trim().isEmpty()) {
+            dotThi = Integer.parseInt(field_dotthi.getText().trim());
+        }
+        if(!phuongthuc.equals("THPT")) {
+
+            if(dotThi <= 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Đợt thi phải lớn hơn 0");
+                return;
+            }
+        }
+        if(phuongthuc.equals("ĐGNL")) {
+
+            if(dotThi > 2) {
+                JOptionPane.showMessageDialog(this,
+                        "ĐGNL chỉ có đợt 1 hoặc đợt 2");
+                return;
+            }
+        }
         // check rỗng
-        if(Cccd.isEmpty() || Sbd.isEmpty() || phuongthuc == null) {
+        if(Cccd.isEmpty()||phuongthuc == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin thí sinh");
             return;
         }
+        if(!phuongthuc.equals("THPT") && field_dotthi.getText().trim().isEmpty()) {
 
-        if (!Cccd.matches("TS_\\d+$")) {
-            JOptionPane.showMessageDialog(this, "CCCD phải bắt đầu bằng TS_ chữ số");
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng nhập đợt thi");
             return;
         }
 
         List<BigDecimal> diemList = Arrays.asList(
-            to, li, ho, si, su, dia, va,
-            cncn, cnnn, ti, ktpl, nk1, nk2, n1_thi, n1_cc
+            to, li, ho, si, su, dia, va,gdcd,
+            cncn, cnnn, ti, ktpl, nk1, nk2, nk3, nk4, nk5, nk6, n1_thi, n1_cc
         );
 
         // check âm || không chữ
@@ -584,18 +761,41 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
 
         // check >10
         BigDecimal max = new BigDecimal("10");
+        BigDecimal max150 = new BigDecimal("150");
+        BigDecimal max1200 = new BigDecimal("1200");
+        
+        if(phuongthuc.equals("THPT")) {
 
-        for (BigDecimal diem : diemList) {
-            if (diem.compareTo(max) > 0) {
-                JOptionPane.showMessageDialog(this, "Điểm phải từ 0 đến 10");
-                return;
+            for(BigDecimal diem : diemList) {
+                if(diem.compareTo(max) > 0) {
+                    JOptionPane.showMessageDialog(this,
+                            "Điểm THPT phải từ 0 đến 10");
+                    return;
+                }
             }
         }
-        // check điểm đgnl
-        BigDecimal max_dgnl = new BigDecimal("1200");
-        if(nl1.compareTo(max_dgnl) > 0) {
-            JOptionPane.showMessageDialog(this, "Điểm đgnl phải từ 0 đến 1200");
-            return;
+        else if(phuongthuc.equals("VSAT")) {
+
+        List<BigDecimal> vsatList = Arrays.asList(
+                to, li, ho, si, su, dia, va, n1_thi
+        );
+
+        for(BigDecimal diem : vsatList) {
+            if(diem.compareTo(max150) > 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Điểm VSAT phải từ 0 đến 150");
+                return;
+            }
+            }
+        }
+
+        else if(phuongthuc.equals("ĐGNL")) {
+
+            if(nl1.compareTo(max1200) > 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Điểm ĐGNL phải từ 0 đến 1200");
+                return;
+            }
         }
         
         // sửa dữ liệu
@@ -611,35 +811,151 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         dt.setSU(su);
         dt.setDI(dia);
         dt.setVA(va);
+        dt.setGDCD(gdcd);
         dt.setCNCN(cncn);
         dt.setCNNN(cnnn);
         dt.setTI(ti);
         dt.setKTPL(ktpl);
         dt.setNK1(nk1);
         dt.setNK2(nk2);
+        dt.setNK3(nk3);
+        dt.setNK4(nk4);
+        dt.setNK5(nk5);
+        dt.setNK6(nk6);
         dt.setNL1(nl1);
         dt.setN1_THI(n1_thi);
         dt.setN1_CC(n1_cc);
-
+        // THPT không có đợt thi
+        if(phuongthuc.equals("THPT")) {
+            dt.setDotthi("0");
+        } else {
+            dt.setDotthi(String.valueOf(dotThi));
+        }
         if(diemThiBus.update(dt) == 1) {
             JOptionPane.showMessageDialog(this, "Sửa điểm thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
             diemThiPanel.dataTable(diemThiBus.getList());
             this.dispose();
         } else {
-            JOptionPane.showMessageDialog(this, "Căn cước công dân đã tồn tại","Thông báo",JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "đợt thi này đã tồn tại","Thông báo",JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btn_suaActionPerformed
+
+    private void cbb_phuongthucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_phuongthucActionPerformed
+        clearFields();
+        if(cbb_phuongthuc.getSelectedItem() == null) {
+            return;
+        }
+        String pt = cbb_phuongthuc.getSelectedItem().toString();
+
+        // mặc định tắt hết
+        setEnableFields(
+            false,false,false,
+            false,false,false,
+            false,false,
+            false,false,
+            false,false,
+            false,false,
+            false,false,
+            false,false,
+            false,
+            false,
+            false
+        );
+
+        switch(pt) {
+
+            case "THPT":
+
+                // mở tất cả trừ nl1
+                setEnableFields(
+                    true,true,true,
+                    true,true,true,
+                    true,true,
+                    true,true,
+                    true,true,
+                    true,true,
+                    true,true,
+                    true,true,
+                    false,
+                    true,
+                    false
+                );
+
+                break;
+
+            case "Tuyển thẳng":
+
+                // không cho nhập gì hết
+                break;
+
+            case "VSAT":
+
+                // chỉ mở các môn VSAT
+                setEnableFields(
+                    true,true,true,
+                    true,true,true,
+                    true,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,
+                    true,
+                    true
+                );
+
+                break;
+
+            case "ĐGNL":
+
+                // chỉ mở nl1
+                setEnableFields(
+                    false,false,false,
+                    false,false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    false,false,
+                    true,
+                    false,
+                    true
+                );
+
+                break;
+        }
+    }//GEN-LAST:event_cbb_phuongthucActionPerformed
+
+    private void cbb_cccdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_cccdActionPerformed
+        if(cbb_cccd.getSelectedItem() == null) return;
+
+        String cccd = cbb_cccd.getSelectedItem().toString();
+
+        if(cccd.equals("Chọn CCCD"))
+        {
+            cbb_sbd.removeAllItems();
+            cbb_sbd.addItem("Chọn SBD");
+            return;
+        }
+
+        loadSbdToCombobox(cccd);
+    }//GEN-LAST:event_cbb_cccdActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_huy;
     private javax.swing.JButton btn_reset;
     private javax.swing.JButton btn_sua;
+    private javax.swing.JComboBox<String> cbb_cccd;
     private javax.swing.JComboBox<String> cbb_phuongthuc;
-    private javax.swing.JTextField field_cccd;
+    private javax.swing.JComboBox<String> cbb_sbd;
     private javax.swing.JTextField field_cncn;
     private javax.swing.JTextField field_cnnn;
     private javax.swing.JTextField field_dia;
+    private javax.swing.JTextField field_dotthi;
+    private javax.swing.JTextField field_gdcd;
     private javax.swing.JTextField field_ho;
     private javax.swing.JTextField field_ktpl;
     private javax.swing.JTextField field_li;
@@ -647,8 +963,11 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JTextField field_n1thi;
     private javax.swing.JTextField field_nk1;
     private javax.swing.JTextField field_nk2;
+    private javax.swing.JTextField field_nk3;
+    private javax.swing.JTextField field_nk4;
+    private javax.swing.JTextField field_nk5;
+    private javax.swing.JTextField field_nk6;
     private javax.swing.JTextField field_nl1;
-    private javax.swing.JTextField field_sbd;
     private javax.swing.JTextField field_si;
     private javax.swing.JTextField field_su;
     private javax.swing.JTextField field_ti;
@@ -667,6 +986,12 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
+    private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
+    private javax.swing.JLabel jLabel23;
+    private javax.swing.JLabel jLabel24;
+    private javax.swing.JLabel jLabel25;
+    private javax.swing.JLabel jLabel26;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

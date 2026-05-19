@@ -14,13 +14,13 @@ import util.Combobox_design;
  *
  * @author HP
  */
-public class EditDiemThiDialog extends javax.swing.JDialog {
+public class Tempt2 extends javax.swing.JDialog {
     
     DiemThiPanel diemThiPanel;
     DiemThiBUS diemThiBus = new DiemThiBUS();
     Combobox_design cbb_design = new Combobox_design();
     private DiemThiDTO dtDTO;
-    public EditDiemThiDialog(java.awt.Frame parent, boolean modal, DiemThiPanel diemThiPanel,DiemThiDTO dtDTO) {
+    public Tempt2(java.awt.Frame parent, boolean modal, DiemThiPanel diemThiPanel,DiemThiDTO dtDTO) {
         super(parent, modal);
         initComponents();
         this.diemThiPanel = diemThiPanel;
@@ -175,7 +175,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         }
     }
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -687,9 +687,9 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         );
 
         pack();
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetActionPerformed
+    private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {                                          
         cbb_phuongthuc.setSelectedIndex(0);
 
         field_to.setText("");
@@ -716,13 +716,13 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         field_dotthi.setText("");
         cbb_sbd.setSelectedItem(dtDTO.getCccd());
         cbb_cccd.setSelectedItem(dtDTO.getCccd());
-    }//GEN-LAST:event_btn_resetActionPerformed
+    }                                         
 
-    private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_huyActionPerformed
+    private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) {                                        
         this.dispose();
-    }//GEN-LAST:event_btn_huyActionPerformed
+    }                                       
 
-    private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
+    private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {                                        
 
         String cccd = cbb_cccd.getSelectedItem() == null? "": cbb_cccd.getSelectedItem().toString();
 
@@ -935,9 +935,9 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
                     "Thông báo",
                     JOptionPane.WARNING_MESSAGE);
         }
-    }//GEN-LAST:event_btn_suaActionPerformed
+    }                                       
 
-    private void cbb_phuongthucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_phuongthucActionPerformed
+    private void cbb_phuongthucActionPerformed(java.awt.event.ActionEvent evt) {                                               
         clearFields();
         if (cbb_phuongthuc.getSelectedItem() == null) {
             return;
@@ -1026,9 +1026,9 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
             case "Tuyển thẳng":
                 break;
         }
-    }//GEN-LAST:event_cbb_phuongthucActionPerformed
+    }                                              
 
-    private void cbb_cccdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_cccdActionPerformed
+    private void cbb_cccdActionPerformed(java.awt.event.ActionEvent evt) {                                         
         if(cbb_cccd.getSelectedItem() == null) return;
 
         String cccd = cbb_cccd.getSelectedItem().toString();
@@ -1041,14 +1041,14 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         }
 
         loadSbdToCombobox(cccd);
-    }//GEN-LAST:event_cbb_cccdActionPerformed
+    }                                        
 
-    private void field_nk2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_field_nk2ActionPerformed
+    private void field_nk2ActionPerformed(java.awt.event.ActionEvent evt) {                                          
         // TODO add your handling code here:
-    }//GEN-LAST:event_field_nk2ActionPerformed
+    }                                         
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btn_huy;
     private javax.swing.JButton btn_reset;
     private javax.swing.JButton btn_sua;
@@ -1109,5 +1109,5 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

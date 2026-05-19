@@ -77,20 +77,17 @@ public class DiemThiBUS {
 
     //kiểm tra trùng cccd
     public boolean checkDup(DiemThiDTO dt) {
-
         if (keyCache == null) {
             keyCache = new HashSet<>();
-
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
                 keyCache.add(buildKey(item));
             }
         }
-
         return keyCache.contains(buildKey(dt));
     }
 
     private String buildKey(DiemThiDTO dt) {
-        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim();
+        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim() + "_" + dt.getDotthi();
     }
 
     public int importExcel(String filePath) {
@@ -169,25 +166,20 @@ public class DiemThiBUS {
     }
 
     // tìm 1 cccd
-    public DiemThiDTO findOneByCCCD(String cccd) {
-        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            if (dt.getCccd().equals(cccd)) {
-                return dt;
-            }
-        }
-        return null;
+    public DiemThiDTO findById(int idDiemThi) {
+        return diemThiDao.findById(idDiemThi);
     }
 
     //filter theo phương thức xét tuyển
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
-        String ptText = convertPhuongThuc(pt);
+//        String ptText = convertPhuongThuc(pt);
         ArrayList<DiemThiDTO> list = new ArrayList<>();
 
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             if (dt.getD_phuongthuc() == null) {
                 continue;
             }
-            if (dt.getD_phuongthuc().equalsIgnoreCase(ptText)) {
+            if (dt.getD_phuongthuc().equalsIgnoreCase(pt)) {
                 list.add(dt);
             }
         }
@@ -283,6 +275,8 @@ public class DiemThiBUS {
                 return dt.getDI();
             case "Văn":
                 return dt.getVA();
+            case "GDCD":
+                return dt.getGDCD();
             case "CNCN":
                 return dt.getCNCN();
             case "CNNN":
@@ -295,6 +289,14 @@ public class DiemThiBUS {
                 return dt.getNK1();
             case "NK2":
                 return dt.getNK2();
+            case "NK3":
+                return dt.getNK3();
+            case "NK4":
+                return dt.getNK4();
+            case "NK5":
+                return dt.getNK5();
+            case "NK6":
+                return dt.getNK6();
             case "NL1":
                 return dt.getNL1();
             case "N1_THI":
@@ -815,7 +817,6 @@ public class DiemThiBUS {
         }
         return newList.size();
     }
-
     public String convertPhuongThuc(String pt) {
         switch (pt) {
             case "Tuyển thẳng":

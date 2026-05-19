@@ -106,7 +106,7 @@ public class DiemCongBUS {
 
             // lọc ngành
             if (tenNganh != null && !tenNganh.equals("Tất cả")) {
-                if (maNganh == null || !dc.getManganh().equalsIgnoreCase(maNganh)) continue;
+                if (dc.getManganh() == null || maNganh == null || !dc.getManganh().equalsIgnoreCase(maNganh)) continue;
             }
 
             // lọc tổ hợp
@@ -119,20 +119,6 @@ public class DiemCongBUS {
         return list;
     }
     
-    public String convertPhuongThuc(String pt) {
-        switch (pt) {
-            case "Tuyển thẳng":
-                return "PT1";
-            case "ĐGNL":
-                return "PT2";
-            case "VSAT":
-                return "PT3";
-            case "THPT":
-                return "PT4";
-            default:
-                return "";
-        }
-    }
     
     public HashMap<String, DiemCongDTO> diemcongMap(){
         HashMap<String,DiemCongDTO> diemcongMap = new HashMap<>();

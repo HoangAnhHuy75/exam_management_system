@@ -93,20 +93,6 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
         return null;
         }
     }
-    public String convertPhuongThuc(String pt) {
-    switch (pt) {
-        case "Tuyển thẳng":
-            return "PT1";
-        case "ĐGNL":
-            return "PT2";
-        case "VSAT":
-            return "PT3";
-        case "THPT":
-            return "PT4";
-        default:
-            return "";
-        }
-    }
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -354,9 +340,9 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btn_lammoi, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(33, 33, 33)
                         .addComponent(btn_huy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btn_luu, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -420,7 +406,7 @@ public class AddDiemCongDialog extends javax.swing.JDialog {
         String maNganh = mapNganh.get(tenNganh);
         String maToHop = cbb_matohop.getSelectedItem().toString();
         String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
-        String phuongthuc = convertPhuongThuc(phuongthucText);
+        String phuongthuc = phuongthucText;
         String ghiChu = textArea_ghichu.getText();
         String dcKeys = field_dckeys.getText();
         BigDecimal cc = getBigDecimal(field_cc);

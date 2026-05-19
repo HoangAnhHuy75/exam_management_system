@@ -33,13 +33,13 @@ import util.Table_design;
  *
  * @author HP
  */
-public class DiemThiPanel extends javax.swing.JPanel {
+public class Tempt3 extends javax.swing.JPanel {
     private DiemThiBUS diemThiB = new DiemThiBUS();
     JTextF_design jtf_design = new JTextF_design();
     Table_design table_design = new Table_design();
     Combobox_design cbb_design = new Combobox_design();
     JButton_design btn_design = new JButton_design();
-    public DiemThiPanel() {
+    public Tempt3() {
         initComponents();
         khoiTao();
     }
@@ -224,7 +224,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
         table_design.setUpTable(table_diem);
     }
     @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
@@ -431,9 +431,9 @@ public class DiemThiPanel extends javax.swing.JPanel {
                 .addGap(5, 5, 5)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE))
         );
-    }// </editor-fold>//GEN-END:initComponents
+    }// </editor-fold>                        
 
-    private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
+    private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {                                           
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn file Excel");
 
@@ -500,14 +500,14 @@ public class DiemThiPanel extends javax.swing.JPanel {
 
         worker.execute();
         loadingDialog.setVisible(true);
-    }//GEN-LAST:event_btn_importActionPerformed
+    }                                          
 
-    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_addActionPerformed
+    private void btn_addActionPerformed(java.awt.event.ActionEvent evt) {                                        
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
-        new AddDiemThiDialog((Frame) parentWindow, true, this).setVisible(true);
-    }//GEN-LAST:event_btn_addActionPerformed
+//        new AddDiemThiDialog((Frame) parentWindow, true, this).setVisible(true);
+    }                                       
 
-    private void btn_locActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_locActionPerformed
+    private void btn_locActionPerformed(java.awt.event.ActionEvent evt) {                                        
         // TODO add your handling code here:
         String cccd = field_cccd.getText();
         String mon = cbb_mon.getSelectedItem().toString();
@@ -539,9 +539,9 @@ public class DiemThiPanel extends javax.swing.JPanel {
             dataThongKe(map);
             return;
         }
-    }//GEN-LAST:event_btn_locActionPerformed
+    }                                       
 
-    private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_suaActionPerformed
+    private void btn_suaActionPerformed(java.awt.event.ActionEvent evt) {                                        
         int row = table_diem.getSelectedRow();
         if(row == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần sửa");
@@ -554,10 +554,10 @@ public class DiemThiPanel extends javax.swing.JPanel {
 
         DiemThiDTO dtDTO = diemThiB.findById(id);
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
-        new EditDiemThiDialog((Frame) parentWindow, true, this, dtDTO).setVisible(true);
-    }//GEN-LAST:event_btn_suaActionPerformed
+//        new EditDiemThiDialog((Frame) parentWindow, true, this, dtDTO).setVisible(true);
+    }                                       
 
-    private void btn_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refreshActionPerformed
+    private void btn_refreshActionPerformed(java.awt.event.ActionEvent evt) {                                            
         field_cccd.setText("");
 
         // reset combobox
@@ -567,9 +567,9 @@ public class DiemThiPanel extends javax.swing.JPanel {
 
         // load lại bảng điểm ban đầu
         dataTable(diemThiB.getList());
-    }//GEN-LAST:event_btn_refreshActionPerformed
+    }                                           
 
-    private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
+    private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {                                        
         int row = table_diem.getSelectedRow();
         if(row == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
@@ -599,10 +599,10 @@ public class DiemThiPanel extends javax.swing.JPanel {
         } else {
             JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
         }
-    }//GEN-LAST:event_btn_xoaActionPerformed
+    }                                       
 
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // Variables declaration - do not modify                     
     private javax.swing.JButton btn_add;
     private javax.swing.JButton btn_import;
     private javax.swing.JButton btn_loc;
@@ -623,5 +623,5 @@ public class DiemThiPanel extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable table_diem;
-    // End of variables declaration//GEN-END:variables
+    // End of variables declaration                   
 }

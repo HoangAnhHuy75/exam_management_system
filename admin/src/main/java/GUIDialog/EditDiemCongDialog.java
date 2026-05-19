@@ -51,7 +51,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         String tenNganh = mapNganh.get(dcDTO.getManganh());
         cbb_manganh.setSelectedItem(tenNganh);
         cbb_matohop.setSelectedItem(dcDTO.getMatohop());
-        String ptText = convertPhuongThucToText(dcDTO.getPhuongthuc());
+        String ptText = dcDTO.getPhuongthuc();
         cbb_phuongthuc.setSelectedItem(ptText);
 
         field_cc.setText(getText(dcDTO.getDiemCC()));
@@ -68,7 +68,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
     }
     public void loadPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
-        cbb_phuongthuc.addItem("Chọn ptxt");
+        cbb_phuongthuc.addItem("");
         String[] ptxt = {"THPT","Tuyển thẳng", "ĐGNL", "VSAT"};
         for(String pt : ptxt){
             cbb_phuongthuc.addItem(pt);
@@ -84,7 +84,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
     }
     public void loadMaNganhComboBox() {
         cbb_manganh.removeAllItems();
-        cbb_manganh.addItem("Chọn tên ngành");
+        cbb_manganh.addItem("");
         List<String> list = diemCongBus.loadMaNganh();
         HashMap<String, String> mapNganh = ngB.getTenNganhByMaNganhMap();
         for(String mn : list) {    
@@ -94,11 +94,18 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
     }
     public void loadMaToHopComboBox() {
         cbb_matohop.removeAllItems();
-        cbb_matohop.addItem("Chọn Mã Tổ Hợp");
+
         List<String> list = diemCongBus.loadMaToHop();
         for(String mth : list) {
             cbb_matohop.addItem(mth);
         }
+        String matohop = dcDTO.getMatohop();
+
+        if(matohop != null && matohop.contains("(")) {
+            matohop = matohop.substring(0, matohop.indexOf("("));
+        }
+
+        cbb_matohop.setSelectedItem(matohop);
     }
     public BigDecimal getBigDecimal(JTextField field) {
     String text = field.getText().trim();
@@ -114,34 +121,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         return null;
         }
     }
-    public String convertPhuongThuc(String pt) {
-    switch (pt) {
-        case "Tuyển thẳng":
-            return "PT1";
-        case "ĐGNL":
-            return "PT2";
-        case "VSAT":
-            return "PT3";
-        case "THPT":
-            return "PT4";
-        default:
-            return "";
-        }
-    }
-    public String convertPhuongThucToText(String ptCode) {
-    switch (ptCode) {
-        case "PT1":
-            return "Tuyển thẳng";
-        case "PT2":
-            return "ĐGNL";
-        case "PT3":
-            return "VSAT";
-        case "PT4":
-            return "THPT";
-        default:
-            return ptCode;
-        }
-    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -190,7 +170,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
                 .addComponent(jLabel1)
-                .addContainerGap(530, Short.MAX_VALUE))
+                .addContainerGap(551, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -333,7 +313,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
                         .addComponent(jLabel9)
                         .addGap(18, 18, 18)
                         .addComponent(field_utxt, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(39, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btn_tinhdiem, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -386,14 +366,16 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btn_lammoi, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(32, 32, 32)
                         .addComponent(btn_huy, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(31, 31, 31)
-                        .addComponent(btn_luu, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btn_luu, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18))))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -474,7 +456,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         String maNganh = mapNganh.get(tenNganh);
         String maToHop = cbb_matohop.getSelectedItem().toString();
         String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
-        String phuongthuc = convertPhuongThuc(phuongthucText);
+        String phuongthuc = phuongthucText;
         String ghiChu = textArea_ghichu.getText();
         String dcKeys = field_dckeys.getText();
         BigDecimal cc = getBigDecimal(field_cc);
@@ -482,7 +464,7 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         BigDecimal tong = getBigDecimal(field_diemtong);
         String expectedKey = Cccd + "_" + maNganh + "_" + maToHop;
         // check rỗng
-        if(Cccd.equals("Chọn CCCD") || tenNganh.equals("Chọn tên ngành")  || maToHop.equals("Chọn Mã Tổ Hợp")|| phuongthuc == null) {
+        if(Cccd.equals("Chọn CCCD") || tenNganh.equals("")  || maToHop.equals("")|| phuongthuc == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin tổ hợp ngành");
             return;
         }

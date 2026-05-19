@@ -11,6 +11,12 @@ import javax.persistence.*;
 //            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc"})
 //        }
 //)
+@Table(
+        name = "xt_diemthixettuyen",
+        uniqueConstraints = {
+            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc", "dotthi"})
+        }
+)
 public class DiemThiDTO implements Serializable {
 
     @Id

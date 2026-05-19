@@ -94,14 +94,18 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
     }
     public void loadMaToHopComboBox() {
         cbb_matohop.removeAllItems();
-
+        cbb_matohop.addItem("");
         List<String> list = diemCongBus.loadMaToHop();
         for(String mth : list) {
             cbb_matohop.addItem(mth);
         }
         String matohop = dcDTO.getMatohop();
-
-        if(matohop != null && matohop.contains("(")) {
+        // null -> chọn item rỗng
+        if(matohop == null || matohop.trim().isEmpty()) {
+            cbb_matohop.setSelectedIndex(0);
+            return;
+        }
+        if(matohop.contains("(")) {
             matohop = matohop.substring(0, matohop.indexOf("("));
         }
 
@@ -121,7 +125,33 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         return null;
         }
     }
-    
+    private void checkInputMode() {
+
+        BigDecimal cc = getBigDecimal(field_cc);
+        BigDecimal utxt = getBigDecimal(field_utxt);
+
+        if(cc == null) cc = BigDecimal.ZERO;
+        if(utxt == null) utxt = BigDecimal.ZERO;
+
+        // CHỈ CÓ CC
+        if(cc.compareTo(BigDecimal.ZERO) > 0
+                && utxt.compareTo(BigDecimal.ZERO) == 0){
+
+            // reset combobox
+            cbb_manganh.setSelectedIndex(0);
+            cbb_matohop.setSelectedIndex(0);
+
+            // khóa
+            cbb_manganh.setEnabled(false);
+            cbb_matohop.setEnabled(false);
+
+        } else {
+
+            // mở lại
+            cbb_manganh.setEnabled(true);
+            cbb_matohop.setEnabled(true);
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -286,6 +316,18 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
 
         jLabel10.setText("Điểm tổng");
 
+        field_cc.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                field_ccKeyReleased(evt);
+            }
+        });
+
+        field_utxt.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                field_utxtKeyReleased(evt);
+            }
+        });
+
         field_diemtong.setEditable(false);
 
         btn_tinhdiem.setBackground(new java.awt.Color(153, 153, 255));
@@ -421,13 +463,44 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         BigDecimal cc = getBigDecimal(field_cc);
         BigDecimal utxt = getBigDecimal(field_utxt);
         // kiểm tra chọn
-        if(cccd.equals("Chọn CCCD") || tenNganh.equals("Chọn tên ngành") || maToHop.equals("Chọn Mã Tổ Hợp")){
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đủ thông tin trước khi tính điểm","thông báo",JOptionPane.INFORMATION_MESSAGE);
+        if(cc == null) cc = BigDecimal.ZERO;
+        if(utxt == null) utxt = BigDecimal.ZERO;
+        // phải chọn CCCD
+        if(cccd.equals("Chọn CCCD")){
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng chọn CCCD");
             return;
+        }
+
+        String dckeys = "";
+        // =========================
+        // TRƯỜNG HỢP CHỈ CÓ CC
+        // =========================
+        if(cc.compareTo(BigDecimal.ZERO) > 0
+                && utxt.compareTo(BigDecimal.ZERO) == 0){
+
+            dckeys = cccd + "_CC";
+
+            // khóa combobox
+
+        } else {
+
+            // =========================
+            // CÓ UTXT hoặc CC + UTXT
+            // =========================
+
+            if(tenNganh.equals("")
+                    || maToHop.equals("")){
+
+                JOptionPane.showMessageDialog(this,
+                        "Vui lòng chọn mã ngành và mã tổ hợp");
+                return;
+            }
+
+            dckeys = cccd + "_" + maNganh + "_" + maToHop;
         }
         BigDecimal tong = cc.add(utxt);
         field_diemtong.setText(tong.toString());
-        String dckeys = cccd + "_" + maNganh + "_" + maToHop;
         field_dckeys.setText(dckeys);
     }//GEN-LAST:event_btn_tinhdiemActionPerformed
 
@@ -443,6 +516,8 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         field_utxt.setText("");
         textArea_ghichu.setText("");
         cbb_cccd.requestFocus();
+        cbb_manganh.setEnabled(true);
+        cbb_matohop.setEnabled(true);
     }//GEN-LAST:event_btn_lammoiActionPerformed
 
     private void btn_huyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_huyActionPerformed
@@ -462,13 +537,37 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
         BigDecimal cc = getBigDecimal(field_cc);
         BigDecimal utxt = getBigDecimal(field_utxt);
         BigDecimal tong = getBigDecimal(field_diemtong);
-        String expectedKey = Cccd + "_" + maNganh + "_" + maToHop;
-        // check rỗng
-        if(Cccd.equals("Chọn CCCD") || tenNganh.equals("")  || maToHop.equals("")|| phuongthuc == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin tổ hợp ngành");
+        String expectedKey = "";
+
+        if(cc.compareTo(BigDecimal.ZERO) > 0
+                && utxt.compareTo(BigDecimal.ZERO) == 0){
+
+            expectedKey = Cccd + "_CC";
+
+        } else {
+
+            expectedKey = Cccd + "_" + maNganh + "_" + maToHop;
+        }
+        
+        // phải chọn CCCD
+        if(Cccd.equals("Chọn CCCD") || phuongthuc == null){
+            JOptionPane.showMessageDialog(this,
+                    "Vui lòng nhập đầy đủ thông tin");
             return;
         }
+        
+        // nếu có UTXT thì bắt buộc chọn ngành + tổ hợp
+        if(utxt.compareTo(BigDecimal.ZERO) > 0){
 
+            if(tenNganh.equals("")
+                    || maToHop.equals("")){
+
+                JOptionPane.showMessageDialog(this,
+                        "Vui lòng chọn ngành và tổ hợp");
+                return;
+            }
+        }
+        
         List<BigDecimal> diemList = Arrays.asList(cc,utxt);
         // check âm
         for (BigDecimal diem : diemList) {
@@ -478,14 +577,22 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
             }
         }
 
-        // check > 3
-        BigDecimal max = new BigDecimal("3");
+        // check > 2
+        BigDecimal max = new BigDecimal("2");
 
         for (BigDecimal diem : diemList) {
             if (diem.compareTo(max) > 0) {
-                JOptionPane.showMessageDialog(this, "Điểm phải từ 0 đến 3");
+                JOptionPane.showMessageDialog(this, "Điểm phải từ 0 đến 2");
                 return;
             }
+        }
+        // check tổng điểm
+        BigDecimal tongCheck = cc.add(utxt);
+
+        if(tong.compareTo(tongCheck) != 0){
+            JOptionPane.showMessageDialog(this,
+                    "Điểm tổng không khớp với CC + UTXT");
+            return;
         }
         
         // check phải trùng dc_keys
@@ -520,6 +627,14 @@ public class EditDiemCongDialog extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "dc_keys đã tồn tại","Thông báo",JOptionPane.WARNING_MESSAGE);
         }
     }//GEN-LAST:event_btn_luuActionPerformed
+
+    private void field_ccKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_field_ccKeyReleased
+        checkInputMode();
+    }//GEN-LAST:event_field_ccKeyReleased
+
+    private void field_utxtKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_field_utxtKeyReleased
+        checkInputMode();
+    }//GEN-LAST:event_field_utxtKeyReleased
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

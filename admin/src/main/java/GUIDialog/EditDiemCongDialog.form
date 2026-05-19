@@ -432,8 +432,14 @@
               </Properties>
             </Component>
             <Component class="javax.swing.JTextField" name="field_cc">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="field_ccKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="field_utxt">
+              <Events>
+                <EventHandler event="keyReleased" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="field_utxtKeyReleased"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JTextField" name="field_diemtong">
               <Properties>

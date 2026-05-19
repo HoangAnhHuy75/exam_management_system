@@ -181,6 +181,8 @@ public class DiemThiPanel extends javax.swing.JPanel {
         // Các cột cần ẩn
         int[] columnsToHide = {
             1,// SBD
+            10,
+            11,
             15,// KTPL
             16, // CNCN
             17, // CNNN

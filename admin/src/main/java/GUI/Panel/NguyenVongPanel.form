@@ -53,7 +53,7 @@
               <EmptySpace min="20" pref="20" max="-2" attributes="0"/>
               <Component id="major_search3" min="-2" pref="84" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jScrollPane1" pref="374" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" pref="367" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>

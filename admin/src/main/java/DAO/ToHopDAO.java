@@ -30,7 +30,7 @@ public class ToHopDAO {
             return 0;
         }
     }
-
+    
     // Lấy tất cả tổ hợp
     public ArrayList<ToHopDTO> getAllToHop() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -41,7 +41,7 @@ public class ToHopDAO {
             return new ArrayList<>();
         }
     }
-
+    
     public int update(ToHopDTO t) {
         Transaction transaction = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {

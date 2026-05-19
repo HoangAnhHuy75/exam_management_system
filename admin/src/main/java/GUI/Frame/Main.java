@@ -18,6 +18,7 @@ import GUI.Panel.ToHopNganhPanel;
 import GUI.Panel.TohopPanel;
 import GUI.Panel.TrangChuPanel;
 import GUI.Panel.UserPanel;
+import GUI.Panel.ThongKePanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
@@ -39,23 +40,24 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    TrangChuPanel trangChuPanel = new TrangChuPanel();
-    NganhPanel nganhPanel = new NganhPanel();
-    TohopPanel toHopPanel = new TohopPanel();
-    UserPanel userPanel = new UserPanel();
-    ToHopNganhPanel tohop_nganh_panel = new ToHopNganhPanel();
-    DiemCongPanel diemCongPanel = new DiemCongPanel();
-    DiemThiPanel diemThiPanel = new DiemThiPanel();
-    ThiSinhPanel thisinhPanel = new ThiSinhPanel();
-    NguyenVongPanel nguyenvongPanel = new NguyenVongPanel();
-    JButton[] btns = new JButton[10];
+    ThongKePanel thongKePanel;
+    NganhPanel nganhPanel;
+    TohopPanel toHopPanel;
+    UserPanel userPanel;
+    ToHopNganhPanel tohop_nganh_panel;
+    DiemCongPanel diemCongPanel;
+    DiemThiPanel diemThiPanel;
+    ThiSinhPanel thisinhPanel;
+    NguyenVongPanel nguyenvongPanel;
+    PermissionPanel permissionPanel;
+    
+    JButton[] btns ;
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
     DiemThiBUS dtBus = new DiemThiBUS();
-    PermissionPanel permissionPanel = new PermissionPanel();
-
     
+
     public Main(UserDTO user) {
         initComponents();
         this.setTitle("Quản lý xét tuyển thí sinh");
@@ -64,39 +66,63 @@ public class Main extends javax.swing.JFrame {
     // ===== Permission state =====
     private UserDTO currentUser;
     private Set<String> permissions = new HashSet<>();
+
     private void init(UserDTO user) {
         this.currentUser = user;
         buildPermissionSet(user);
+        initPanels();
         addPanels();
         khoiTao();
         applyRole();
     }
-    private void addPanels() {
-        main.add(trangChuPanel,     "TrangChu");
-        main.add(nganhPanel,        "Nganh");
-        main.add(toHopPanel,        "ToHop");
-        main.add(tohop_nganh_panel, "ToHop_Nganh");
-        main.add(diemCongPanel,     "DiemCong");
-        main.add(diemThiPanel,      "DiemThi");
-        main.add(thisinhPanel,      "ThiSinh");
-        main.add(userPanel,         "User");
-        main.add(nguyenvongPanel,   "NguyenVong");
-        main.add(permissionPanel,   "PhanQuyen"); 
- 
-        hideAllPanels();
-        trangChuPanel.setVisible(true);
+    public void khoiTao() {
+        khoiTaoBtns();
+        actionJButtonMenu();
+        styleAllButtonMenu();
+        setIcon();
+        setBorder();
     }
+    private void initPanels() {
+        thongKePanel    = new ThongKePanel();
+        nganhPanel       = new NganhPanel(permissions);
+        toHopPanel       = new TohopPanel(permissions);
+        userPanel        = new UserPanel(permissions);
+        tohop_nganh_panel= new ToHopNganhPanel(permissions);
+        diemCongPanel    = new DiemCongPanel(permissions);
+        diemThiPanel     = new DiemThiPanel(permissions);
+        thisinhPanel     = new ThiSinhPanel(permissions);
+        nguyenvongPanel  = new NguyenVongPanel(permissions);
+        permissionPanel  = new PermissionPanel(permissions);
+    }
+    private void addPanels() {
+        main.add(thongKePanel, "TrangChu");
+        main.add(nganhPanel, "Nganh");
+        main.add(toHopPanel, "ToHop");
+        main.add(tohop_nganh_panel, "ToHop_Nganh");
+        main.add(diemCongPanel, "DiemCong");
+        main.add(diemThiPanel, "DiemThi");
+        main.add(thisinhPanel, "ThiSinh");
+        main.add(userPanel, "User");
+        main.add(nguyenvongPanel, "NguyenVong");
+        main.add(permissionPanel, "PhanQuyen");
+
+        hideAllPanels();
+        thongKePanel.setVisible(true);
+    }
+
     private void buildPermissionSet(UserDTO user) {
         permissions.clear();
- 
-        if (user.getRoles() == null) return;
- 
+
+        if (user.getRoles() == null) {
+            return;
+        }
+
         for (RoleDTO role : user.getRoles()) {
             // Lưu tên role dạng "ROLE_ADMIN", "ROLE_STAFF", ...
             if (role.getRoleName() != null) {
                 permissions.add("ROLE_" + role.getRoleName().toUpperCase());
             }
- 
+
             // Lưu từng permission name
             if (role.getPermissions() != null) {
                 for (PermissionDTO p : role.getPermissions()) {
@@ -107,43 +133,61 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
+
     private void applyRole() {
+    // Luôn enable
+    setMenuBtnState(btn_home,             true);
+    setMenuBtnState(btn_logout,           true);
 
-        if ("ADMIN".equalsIgnoreCase(role)) {
+    // Theo permission
+    setMenuBtnState(btn_major,            permissions.contains("nganh.read"));
+    setMenuBtnState(btn_combination,      permissions.contains("tohop.read"));
+    setMenuBtnState(btn_combination_major,permissions.contains("nganh_tohop.read"));
+    setMenuBtnState(btn_thisinh,          permissions.contains("thisinh.read"));
+    setMenuBtnState(btn_diemthi,          permissions.contains("diemthi.read"));
+    setMenuBtnState(btn_diemcong,         permissions.contains("diemcong.read"));
+    setMenuBtnState(btn_nvxt,             permissions.contains("nguyenvong.read"));
+    setMenuBtnState(btn_user,             permissions.contains("user.read"));
+    setMenuBtnState(btn_permission,       permissions.contains("ROLE_ADMIN"));
+}
+    private void setMenuBtnState(JButton btn, boolean hasPermission) {
+    btn.setVisible(true); // luôn hiện
+    btn.setEnabled(hasPermission);
 
-            // Ẩn nút user
-            btn_user.setVisible(false);
-
-            // tránh lỗi nếu vẫn cố truy cập
-            userPanel.setVisible(false);
-        }
+    if (hasPermission) {
+        btn.setBackground(Color.WHITE);
+        btn.setForeground(Color.BLACK);
+        btn.setToolTipText(null);
+    } else {
+        // Giao diện xám — không bấm được
+        btn.setBackground(new Color(240, 240, 240));
+        btn.setForeground(new Color(180, 180, 180));
+        btn.setToolTipText("Bạn không có quyền truy cập");
     }
-
-    public void khoiTao() {
-        khoiTaoBtns();
-        actionJButtonMenu();
-        styleAllButtonMenu();
-        setIcon();
-        setBorder();
-    }
+}
+    
 
     public void khoiTaoBtns() {
-        btns[0] = btn_home;
-        btns[1] = btn_major;
-        btns[2] = btn_combination;
-        btns[3] = btn_combination_major;
-        btns[4] = btn_thisinh;
-        btns[5] = btn_diemthi;
-        btns[6] = btn_diemcong;
-        btns[7] = btn_nvxt;
-        btns[8] = btn_user;
-        btns[9] = btn_nvxt;
-    }
+    btns = new JButton[11];
+    btns[0]  = btn_home;
+    btns[1]  = btn_major;
+    btns[2]  = btn_combination;
+    btns[3]  = btn_combination_major;
+    btns[4]  = btn_thisinh;
+    btns[5]  = btn_diemthi;
+    btns[6]  = btn_diemcong;
+    btns[7]  = btn_nvxt;
+    btns[8]  = btn_user;
+    btns[9]  = btn_permission;
+    btns[10] = btn_logout;
+}
+
     private void hideAllPanels() {
         for (Component c : main.getComponents()) {
             c.setVisible(false);
         }
     }
+
     public void setIcon() {
         btn_home.setIcon(new FlatSVGIcon("./resources/icon/home.svg", 0.35f));
         btn_major.setIcon(new FlatSVGIcon("./resources/icon/major.svg", 0.4f));
@@ -163,14 +207,14 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void setBackgroundJButton(JButton btn) {
-        if (currentActiveBtn != null && currentActiveBtn != btn) {
-            currentActiveBtn.setBackground(null);
-            currentActiveBtn.setOpaque(false);
-        }
-        btn.setBackground(new Color(100, 149, 237));
-        btn.setOpaque(true);
-        currentActiveBtn = btn;
+    if (currentActiveBtn != null && currentActiveBtn != btn) {
+        currentActiveBtn.setBackground(Color.WHITE);
+        currentActiveBtn.repaint();
     }
+    btn.setBackground(new Color(100, 149, 237));
+    btn.repaint();
+    currentActiveBtn = btn;
+}
 
     public void actionJButtonMenu() {
         Component[] cpns = panel_bottom_menu.getComponents();
@@ -188,32 +232,31 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void styleButtonMenu(JButton btn) {
-        btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-        btn.setBackground(Color.WHITE);
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setIconTextGap(10);
-        btn.setContentAreaFilled(false);
+    // Bypass FlatLaf hoàn toàn
+    btn.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                if (btn == currentActiveBtn) {
-                    btn.setBackground(new Color(100, 149, 237));
-                    return;
-                }
-                btn.setOpaque(true);
-                btn.setBackground(new Color(173, 216, 230));
-            }
+    btn.setFocusPainted(false);
+    btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+    btn.setHorizontalAlignment(SwingConstants.LEFT);
+    btn.setIconTextGap(10);
+    btn.setOpaque(true);
+    btn.setContentAreaFilled(true);
+    btn.setBackground(Color.WHITE);
+    btn.setForeground(Color.BLACK);
 
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                if (btn == currentActiveBtn) {
-                    btn.setBackground(new Color(100, 149, 237));
-                    return;
-                }
-                btn.setOpaque(false);
-            }
-        });
-    }
+    btn.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseEntered(java.awt.event.MouseEvent e) {
+            if (btn == currentActiveBtn) return;
+            if (!btn.isEnabled()) return;
+            btn.setBackground(new Color(173, 216, 230));
+        }
+        public void mouseExited(java.awt.event.MouseEvent e) {
+            if (btn == currentActiveBtn) return;
+            if (!btn.isEnabled()) return;
+            btn.setBackground(Color.WHITE);
+        }
+    });
+}
 
     public void setBtnMenu() {
         for (JButton btn : btns) {
@@ -468,7 +511,7 @@ public class Main extends javax.swing.JFrame {
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
         hideAllPanels();
-        trangChuPanel.setVisible(true);
+        thongKePanel.setVisible(true);
     }//GEN-LAST:event_btn_homeActionPerformed
 
     private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combinationActionPerformed
@@ -477,7 +520,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_combinationActionPerformed
 
     private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combination_majorActionPerformed
-         hideAllPanels();
+        hideAllPanels();
         tohop_nganh_panel.setVisible(true);
     }//GEN-LAST:event_btn_combination_majorActionPerformed
 
@@ -514,14 +557,7 @@ public class Main extends javax.swing.JFrame {
     }//GEN-LAST:event_btn_logoutActionPerformed
 
     private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nvxtActionPerformed
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
-        thisinhPanel.setVisible(false);
-        userPanel.setVisible(false);
+        hideAllPanels();
         nguyenvongPanel.setVisible(true);
     }//GEN-LAST:event_btn_nvxtActionPerformed
 
@@ -531,15 +567,9 @@ public class Main extends javax.swing.JFrame {
         permissionPanel.loadData();
     }//GEN-LAST:event_btn_permissionActionPerformed
     private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) {
-        nganhPanel.setVisible(false);
-        toHopPanel.setVisible(false);
-        trangChuPanel.setVisible(false);
-        tohop_nganh_panel.setVisible(false);
-        diemCongPanel.setVisible(false);
-        diemThiPanel.setVisible(false);
+        hideAllPanels();
         thisinhPanel.setVisible(true);
-        userPanel.setVisible(false);
-        nguyenvongPanel.setVisible(false);
+
     }
 
     /**

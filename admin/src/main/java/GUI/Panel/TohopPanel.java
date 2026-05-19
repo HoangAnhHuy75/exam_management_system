@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -36,10 +37,52 @@ public class TohopPanel extends javax.swing.JPanel {
     /**
      * Creates new form TohopPanel
      */
+    Set<String> permissions ;
     public TohopPanel() {
         initComponents();
         khoiTao();
     }
+    public TohopPanel(Set<String> permissions) {
+        initComponents();
+        khoiTao();
+        this.permissions =permissions;
+        applyPermissions();
+    }
+    public void applyPermissions() {
+    boolean isAdmin = permissions.contains("ROLE_ADMIN");
+    boolean canCreate = isAdmin || permissions.contains("tohop.create");
+    boolean canUpdate = isAdmin || permissions.contains("tohop.update");
+    boolean canDelete = isAdmin || permissions.contains("tohop.delete");
+
+    if (!canCreate) {
+        replaceActionWithDeny(combination_add);
+        replaceActionWithDeny(combination_import);
+    }
+    if (!canUpdate) replaceActionWithDeny(btn_update);
+    if (!canDelete) replaceActionWithDeny(btn_delete);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    
+    // Đổi màu để báo hiệu không có quyền
+    btn.setBackground(new java.awt.Color(180, 180, 180)); // xám
+    btn.setForeground(new java.awt.Color(100, 100, 100)); // chữ xám
+    btn.setToolTipText("Bạn không có quyền thực hiện chức năng này!");
+
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
     public void khoiTao(){
         dataTable(tohopBus.getListTH());
         designJTF();

@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -38,11 +39,42 @@ public class NganhPanel extends javax.swing.JPanel {
     Table_design table_design = new Table_design();
     Combobox_design cbb_design = new Combobox_design();
     JButton_design btn_design = new JButton_design();
-    public NganhPanel() {
+    Set<String> permissions ;
+    public NganhPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
-    }
+        this.permissions =permissions;
+        applyPermissions();
 
+    }
+    public void applyPermissions() {
+    boolean canCreate = permissions.contains("nganh.create");
+    boolean canUpdate = permissions.contains("nganh.update");
+    boolean canDelete = permissions.contains("nganh.delete");
+
+    if (!canCreate) {
+        replaceActionWithDeny(major_add);
+        replaceActionWithDeny(major_import);
+    }
+    if (!canUpdate) replaceActionWithDeny(major_update);
+    if (!canDelete) replaceActionWithDeny(btn_delete);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
     public NganhBUS getNganhBUS() {
         return this.nganhB;
     }

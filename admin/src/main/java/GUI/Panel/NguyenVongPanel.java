@@ -16,6 +16,7 @@ import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import java.io.File;
 import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JOptionPane;
 import javax.swing.SwingWorker;
@@ -43,11 +44,36 @@ public class NguyenVongPanel extends javax.swing.JPanel {
     /**
      * Creates new form NguyenVongPanel
      */
-    public NguyenVongPanel() {
+    Set<String> permissions;
+    public NguyenVongPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
+         this.permissions =permissions;
+        applyPermissions();
     }
+      public void applyPermissions() {
+    boolean canCreate =  permissions.contains("nguyenvong.create");
 
+    if (!canCreate) {
+        replaceActionWithDeny(btn_import);
+    }
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
     public void khoiTao() {
         dataTableNV(nvBus.getList());
         designJTF();
@@ -349,7 +375,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                 .addGap(20, 20, 20)
                 .addComponent(major_search3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 374, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 

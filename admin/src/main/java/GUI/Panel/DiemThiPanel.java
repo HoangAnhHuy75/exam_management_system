@@ -15,6 +15,7 @@ import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import java.io.File;
+import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -37,9 +38,12 @@ public class DiemThiPanel extends javax.swing.JPanel {
     JTextF_design jtf_design = new JTextF_design();
     Table_design table_design = new Table_design();
     Combobox_design cbb_design = new Combobox_design();
-    public DiemThiPanel() {
+    Set<String> permissions;
+    public DiemThiPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
+        this.permissions =permissions;
+        applyPermissions();
     }
     public void khoiTao() {
         dataTable(diemThiB.getList());
@@ -50,6 +54,35 @@ public class DiemThiPanel extends javax.swing.JPanel {
         loadMonToComboBox();
         loadLoaiDiemToComboBox();
     }
+    public void applyPermissions() {
+    boolean canCreate =  permissions.contains("diemthi.create");
+    boolean canUpdate = permissions.contains("diemthi.update");
+    boolean canDelete = permissions.contains("diemthi.delete");
+
+    if (!canCreate) {
+        replaceActionWithDeny(btn_add);
+        replaceActionWithDeny(btn_import);
+    }
+    if (!canUpdate) replaceActionWithDeny(btn_sua);
+    if (!canDelete) replaceActionWithDeny(btn_xoa);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
+
     public void designCBB(){
         cbb_design.setUpComBoBox(cbb_phuongthuc);
         cbb_design.setUpComBoBox(cbb_mon);

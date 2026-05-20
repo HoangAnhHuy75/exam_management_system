@@ -15,6 +15,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
@@ -81,8 +82,7 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         dataTable(nganhB.getListN());
         designJTF();
         designCBB();
-        loadTenNganhToComboBox();
-        loadToHopGocCombobox();
+        loadSortChiTietCombobox();
         setIcon();
         designButton();
     }
@@ -123,9 +123,10 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
                 return false;
             }
         };
+        HashMap<String, Integer> slDangKyMap = nganhB.countAllThiSinhByMaNganh();
         for (NganhDTO ng : listNganh) {
             model.addRow(new Object[]{
-                ng.getMaNganh(), ng.getTenNganh(), ng.getNToHopGoc(), ng.getNChiTieu(), ng.getNDiemSan(), ng.getNDiemTrungTuyen(),ng.getNDiemTrungTuyenDGNL(),ng.getNDiemTrungTuyenVSAT(),nganhB.countThiSinhByMaNganh(ng.getMaNganh()) ,ng.getNTuyenThang(), ng.getNDGNL(), ng.getNTHPT(), ng.getNVSAT(), ng.getSlXTT(), ng.getSlDGNL(), ng.getSlTHPT(), ng.getSlVSAT()
+                ng.getMaNganh(), ng.getTenNganh(), ng.getNToHopGoc(), ng.getNChiTieu(), ng.getNDiemSan(), ng.getNDiemTrungTuyen(),ng.getNDiemTrungTuyenDGNL(),ng.getNDiemTrungTuyenVSAT(),slDangKyMap.getOrDefault(ng.getMaNganh(), 0) ,ng.getNTuyenThang(), ng.getNDGNL(), ng.getNTHPT(), ng.getNVSAT(), ng.getSlXTT(), ng.getSlDGNL(), ng.getSlTHPT(), ng.getSlVSAT()
             });
         }
         major_table.setModel(model);
@@ -156,9 +157,11 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         for(String pt : ptxt){
             jComboBox1.addItem(pt);
         }
+    }
+    public void loadSortChiTietCombobox() {
         jComboBox3.addItem("Tất cả");
         String[] sortsChitieu = {"Chỉ tiêu giảm dần", "Chỉ tiêu tăng dần"};
-        for(String sort : sortsChitieu){
+        for (String sort : sortsChitieu) {
             jComboBox3.addItem(sort);
         }
     }

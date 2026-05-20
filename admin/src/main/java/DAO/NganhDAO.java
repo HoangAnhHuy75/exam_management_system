@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import util.HibernateUtil;
 
@@ -105,6 +106,26 @@ public class NganhDAO {
         } catch (Exception e) {
             e.printStackTrace();
             return 0;
+        }
+    }
+    
+    public HashMap<String, Integer> countAllThiSinh() {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "SELECT nv.nvManganh, COUNT(DISTINCT nv.nvCccd) "
+                    + "FROM NguyenVongDTO nv "
+                    + "GROUP BY nv.nvManganh";
+            Query<Object[]> query = session.createQuery(hql, Object[].class);
+            List<Object[]> list = query.list();
+            HashMap<String, Integer> map = new HashMap<>();
+            for (Object[] row : list) {
+                String maNganh = (String) row[0];
+                Long count = (Long) row[1];
+                map.put(maNganh, count.intValue());
+            }
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new HashMap<>();
         }
     }
 }

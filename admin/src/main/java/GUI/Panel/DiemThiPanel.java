@@ -665,7 +665,7 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         // tạo key giống hệt Map trong BUS
         String key = cccd + "_" + phuongthuc + "_" + dotthi;
 
-        HashMap<String, DiemThiDTO> diemthiMap = diemThiB.diemthiMap2();
+        HashMap<String, DiemThiDTO> diemthiMap = diemThiB.diemthiMap();
 
         DiemThiDTO dt = diemthiMap.get(key);
         ThiSinhDTO ts = thisinhB.findByCCCD(cccd);

@@ -57,7 +57,6 @@ public class DiemCongPanel extends javax.swing.JPanel {
         designJTF();
         designCBB();
         setIcon();
-        loadTenNganhToComboBox();
         loadMaToHopToComboBox();
         designButton();
     }

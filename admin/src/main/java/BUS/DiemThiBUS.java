@@ -287,7 +287,7 @@ public class DiemThiBUS {
         return diemthiMap;
     }
 
-    public HashMap<String, DiemThiDTO> diemthiMap2() {
+    public HashMap<String, DiemThiDTO> diemthiMap() {
         HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             diemthiMap.put(buildKey(dt),dt);

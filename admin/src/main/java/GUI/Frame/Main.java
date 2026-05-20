@@ -17,7 +17,6 @@ import GUI.Panel.PermissionPanel;
 import GUI.Panel.ThiSinhPanel;
 import GUI.Panel.ToHopNganhPanel;
 import GUI.Panel.TohopPanel;
-import GUI.Panel.TrangChuPanel;
 import GUI.Panel.UserPanel;
 import GUI.Panel.ThongKePanel;
 import GUI.Panel.XetTuyenPanel;
@@ -59,7 +58,6 @@ public class Main extends javax.swing.JFrame {
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
-    DiemThiBUS dtBus = new DiemThiBUS();
 
     public Main(UserDTO user) {
         initComponents();
@@ -279,14 +277,14 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void setBackgroundJButton(JButton btn) {
-    if (currentActiveBtn != null && currentActiveBtn != btn) {
-        currentActiveBtn.setBackground(Color.WHITE);
-        currentActiveBtn.repaint();
+        if (currentActiveBtn != null && currentActiveBtn != btn) {
+            currentActiveBtn.setBackground(Color.WHITE);
+            currentActiveBtn.repaint();
+        }
+        btn.setBackground(new Color(100, 149, 237));
+        btn.repaint();
+        currentActiveBtn = btn;
     }
-    btn.setBackground(new Color(100, 149, 237));
-    btn.repaint();
-    currentActiveBtn = btn;
-}
 
     public void actionJButtonMenu() {
         Component[] cpns = panel_bottom_menu.getComponents();
@@ -586,11 +584,14 @@ public class Main extends javax.swing.JFrame {
     private void btn_xettuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xettuyenActionPerformed
         hideAllPanels();
         xettuyenPanel.setVisible(true);
+        xettuyenPanel.loadTenNganhCombobox();
     }//GEN-LAST:event_btn_xettuyenActionPerformed
 
     private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_majorActionPerformed
         hideAllPanels();
         nganhPanel.setVisible(true);
+        nganhPanel.loadTenNganhToComboBox();
+        nganhPanel.loadToHopGocCombobox();
     }// GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_homeActionPerformed
@@ -613,12 +614,12 @@ public class Main extends javax.swing.JFrame {
     private void btn_diemthiActionPerformed(java.awt.event.ActionEvent evt) {
         hideAllPanels();
         diemThiPanel.setVisible(true);
-        diemThiPanel.dataTable(dtBus.getList());
     }
 
     private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_diemcongActionPerformed
         hideAllPanels();
         diemCongPanel.setVisible(true);
+        diemCongPanel.loadTenNganhToComboBox();
     }// GEN-LAST:event_btn_diemcongActionPerformed
 
     private void btn_userActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_userActionPerformed
@@ -644,6 +645,7 @@ public class Main extends javax.swing.JFrame {
     private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {                                         
         hideAllPanels();
         nguyenvongPanel.setVisible(true);
+        nguyenvongPanel.loadTenNganhCombobox();
     }// GEN-LAST:event_btn_nvxtActionPerformed
     
     private void btn_permissionActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_permissionActionPerformed
@@ -655,6 +657,7 @@ public class Main extends javax.swing.JFrame {
     private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) {
         hideAllPanels();
         thisinhPanel.setVisible(true);
+        thisinhPanel.loadComboboxNganh();
     }
 
     /**

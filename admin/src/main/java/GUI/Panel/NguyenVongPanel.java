@@ -82,7 +82,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
         dataTableNV(nvBus.getList());
         designJTF();
         designCBB();
-        loadCombobox();
+        loadPTCombobox();
         setIcon();
         designButton();
     }
@@ -160,16 +160,19 @@ public class NguyenVongPanel extends javax.swing.JPanel {
         columnModel.getColumn(10).setPreferredWidth(120); // NV Key
     }
 
-    public void loadCombobox() {
-        List<NganhDTO> listN = nganhBus.getListN();
-        jComboBox10.addItem("Tất cả");
-        for (NganhDTO nganh : listN) {
-            jComboBox10.addItem(nganh.getTenNganh());
-        }
+    public void loadPTCombobox() {
         jComboBox11.addItem("Tất cả");
         String[] arrPhuongThuc = { "ĐGNL", "VSAT", "THPT" };
         for (String pt : arrPhuongThuc) {
             jComboBox11.addItem(pt);
+        }
+    }
+    public void loadTenNganhCombobox(){
+        List<NganhDTO> listN = nganhBus.getListN();
+        jComboBox10.removeAllItems();
+        jComboBox10.addItem("Tất cả");
+        for (NganhDTO nganh : listN) {
+            jComboBox10.addItem(nganh.getTenNganh());
         }
     }
 

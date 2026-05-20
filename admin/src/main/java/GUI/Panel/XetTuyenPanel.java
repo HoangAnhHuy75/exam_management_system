@@ -136,11 +136,6 @@ public class XetTuyenPanel extends javax.swing.JPanel {
     }
     
     public void loadCombobox() {
-        List<NganhDTO> listN = nganhBus.getListN();
-        cbb_1.addItem("Tất cả");
-        for (NganhDTO nganh : listN) {
-            cbb_1.addItem(nganh.getTenNganh());
-        }
         cbb_2.addItem("Tất cả");
         String[] arrPhuongThuc = {"ĐGNL", "VSAT", "THPT"};
         for (String pt : arrPhuongThuc) {
@@ -150,6 +145,14 @@ public class XetTuyenPanel extends javax.swing.JPanel {
         String[] arrKq = {"Đậu","Trượt"};
         for (String kq : arrKq) {
             cbb_3.addItem(kq);
+        }
+    }
+    public void loadTenNganhCombobox() {
+        List<NganhDTO> listN = nganhBus.getListN();
+        cbb_1.removeAllItems();
+        cbb_1.addItem("Tất cả");
+        for (NganhDTO nganh : listN) {
+            cbb_1.addItem(nganh.getTenNganh());
         }
     }
 

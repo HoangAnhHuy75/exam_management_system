@@ -51,7 +51,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
     Table_design table_design = new Table_design();
     JButton_design btn_design = new JButton_design();
     JTextF_design jtf_design = new JTextF_design();
-Set<String> permissions ;
+    Set<String> permissions;
     NganhBUS nganhBus = new NganhBUS();
 
     /**
@@ -60,7 +60,7 @@ Set<String> permissions ;
     public ThiSinhPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
-         this.permissions =permissions;
+        this.permissions =permissions;
         applyPermissions();
     }
     public ThiSinhPanel() {
@@ -72,59 +72,75 @@ Set<String> permissions ;
         setUpIcon();
         loadDataTable(thisinhBus.getAll());
         setUpPlaceholder();
+        loadComboboxGT();
+        loadComboboxKhuVuc();
+        loadComboboxTinhThanh();
     }
     public void applyPermissions() {
-    boolean canCreate =  permissions.contains("thisinh.create");
-    boolean canUpdate = permissions.contains("thisinh.update");
-    boolean canDelete = permissions.contains("thisinh.delete");
+        boolean canCreate = permissions.contains("thisinh.create");
+        boolean canUpdate = permissions.contains("thisinh.update");
+        boolean canDelete = permissions.contains("thisinh.delete");
 
-    if (!canCreate) {
-        replaceActionWithDeny(btn_add);
-        replaceActionWithDeny(btn_import);
+        if (!canCreate) {
+            replaceActionWithDeny(btn_add);
+            replaceActionWithDeny(btn_import);
+        }
+        if (!canUpdate) {
+            replaceActionWithDeny(btn_edit);
+        }
+        if (!canDelete) {
+            replaceActionWithDeny(btn_delete);
+        }
     }
-    if (!canUpdate) replaceActionWithDeny(btn_edit);
-    if (!canDelete) replaceActionWithDeny(btn_delete);
-}
 
-private void replaceActionWithDeny(javax.swing.JButton btn) {
-    // Xóa tất cả listener cũ
-    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
-        btn.removeActionListener(al);
+    private void replaceActionWithDeny(javax.swing.JButton btn) {
+        // Xóa tất cả listener cũ
+        for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+            btn.removeActionListener(al);
+        }
+        // Thêm listener thông báo
+        btn.addActionListener(e
+                -> JOptionPane.showMessageDialog(
+                        this,
+                        "Bạn không có quyền thực hiện chức năng này!",
+                        "Từ chối truy cập",
+                        JOptionPane.WARNING_MESSAGE
+                )
+        );
     }
-    // Thêm listener thông báo
-    btn.addActionListener(e ->
-        JOptionPane.showMessageDialog(
-            this,
-            "Bạn không có quyền thực hiện chức năng này!",
-            "Từ chối truy cập",
-            JOptionPane.WARNING_MESSAGE
-        )
-    );
-}
-    public void setUpCombobox() {
-        cbb_design.setUpComBoBox(jComboBox1);
-        cbb_design.setUpComBoBox(jComboBox2);
-        cbb_design.setUpComBoBox(jComboBox3);
-        cbb_design.setUpComBoBox(jComboBox4);
+    public void loadComboboxKhuVuc() {
         jComboBox1.addItem("Tất cả");
         String[] areas = {"1", "2", "2NT", "3"};
         for (String a : areas) {
             jComboBox1.addItem(a);
         }
+    }
+    public void loadComboboxGT() {
         jComboBox2.addItem("Tất cả");
         String[] gioitinhs = {"Nam", "Nữ"};
         for (String gt : gioitinhs) {
             jComboBox2.addItem(gt);
         }
+    }
+    public void loadComboboxTinhThanh(){
         jComboBox3.addItem("Tất cả");
         for (String tt : TinhThanhUtil.getAllTinhThanh()) {
             jComboBox3.addItem(tt);
         }
+    }
+    public void loadComboboxNganh() {
+        jComboBox4.removeAllItems();
         jComboBox4.addItem("Tất cả");
         List<NganhDTO> listNganh = nganhBus.getListN();
-        for(NganhDTO nganh : listNganh){
+        for (NganhDTO nganh : listNganh) {
             jComboBox4.addItem(nganh.getTenNganh());
         }
+    }
+    public void setUpCombobox(){
+        cbb_design.setUpComBoBox(jComboBox1);
+        cbb_design.setUpComBoBox(jComboBox2);
+        cbb_design.setUpComBoBox(jComboBox3);
+        cbb_design.setUpComBoBox(jComboBox4);
     }
 
     public void setUpIcon() {

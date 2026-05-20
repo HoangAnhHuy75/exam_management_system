@@ -280,4 +280,9 @@ public class NganhBUS {
         int result = nganhDao.countThiSinhByMaNganh(maNganh);
         return result;
     }
+    
+    public HashMap<String, Integer> countAllThiSinhByMaNganh(){
+        HashMap<String, Integer> result = nganhDao.countAllThiSinh();
+        return result;
+    }
 }

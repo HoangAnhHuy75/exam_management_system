@@ -32,12 +32,10 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         setUpCombobox();
         loadPhuongThucToComboBox();
         loadCccdToComboBox();
-        loadSbdToCombobox("");
     }
     public void setUpCombobox(){
         cbb_design.setUpComBoBox(cbb_phuongthuc);
         cbb_design.setUpComBoBox(cbb_cccd);
-        cbb_design.setUpComBoBox(cbb_sbd);
     }
     public void loadPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
@@ -53,14 +51,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         List<String> list = diemThiBus.loadCbbCccd();
         for(String cccd : list) {
             cbb_cccd.addItem(cccd);
-        }
-    }
-    public void loadSbdToCombobox(String cccd) {
-        cbb_sbd.removeAllItems();
-        cbb_sbd.addItem("");
-        List<String> list = diemThiBus.loadCbbSBD(cccd);
-        for(String sbd : list) {
-            cbb_sbd.addItem(sbd);
         }
     }
     public BigDecimal getBigDecimal(JTextField field) {
@@ -182,11 +172,9 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         jLabel26 = new javax.swing.JLabel();
         jPanel5 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         cbb_phuongthuc = new javax.swing.JComboBox<>();
         cbb_cccd = new javax.swing.JComboBox<>();
-        cbb_sbd = new javax.swing.JComboBox<>();
         btn_reset = new javax.swing.JButton();
         btn_huy = new javax.swing.JButton();
         btn_them = new javax.swing.JButton();
@@ -441,8 +429,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         jLabel2.setText("Căn cước công dân");
 
-        jLabel3.setText("Số báo danh");
-
         jLabel20.setText("Phương thức");
 
         cbb_phuongthuc.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -450,8 +436,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         cbb_cccd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cbb_cccd.addActionListener(this::cbb_cccdActionPerformed);
-
-        cbb_sbd.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
@@ -461,13 +445,9 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel20))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cbb_sbd, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(cbb_phuongthuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jLabel20)
+                        .addGap(51, 51, 51)
+                        .addComponent(cbb_phuongthuc, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -481,11 +461,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbb_cccd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cbb_sbd, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(28, 28, 28)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cbb_phuongthuc, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel20))
@@ -641,7 +617,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
     private void btn_resetActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_resetActionPerformed
         cbb_cccd.setSelectedIndex(0);
-        cbb_sbd.setSelectedIndex(0);
         cbb_phuongthuc.setSelectedIndex(0);
 
         field_to.setText("");
@@ -674,164 +649,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_huyActionPerformed
 
     private void btn_themActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_themActionPerformed
-//        String Cccd = cbb_cccd.getSelectedItem().toString();
-//        String Sbd = cbb_sbd.getSelectedItem().toString();
-//        String phuongthucText = cbb_phuongthuc.getSelectedItem().toString();
-//        String phuongthuc = phuongthucText;
-//        BigDecimal to = getBigDecimal(field_to);
-//        BigDecimal li = getBigDecimal(field_li);
-//        BigDecimal ho = getBigDecimal(field_ho);
-//        BigDecimal si = getBigDecimal(field_si);
-//        BigDecimal su = getBigDecimal(field_su);
-//        BigDecimal dia = getBigDecimal(field_dia);
-//        BigDecimal va  = getBigDecimal(field_va);
-//        BigDecimal gdcd = getBigDecimal(field_gdcd);
-//        BigDecimal cncn = getBigDecimal(field_cncn);
-//        BigDecimal cnnn = getBigDecimal(field_cnnn);
-//        BigDecimal ti = getBigDecimal(field_ti);
-//        BigDecimal ktpl = getBigDecimal(field_ktpl);
-//        BigDecimal nk1 = getBigDecimal(field_nk1);
-//        BigDecimal nk2 = getBigDecimal(field_nk2);
-//        BigDecimal nk3 = getBigDecimal(field_nk3);
-//        BigDecimal nk4 = getBigDecimal(field_nk4);
-//        BigDecimal nk5 = getBigDecimal(field_nk5);
-//        BigDecimal nk6 = getBigDecimal(field_nk6);
-//        BigDecimal nl1 = getBigDecimal(field_nl1);
-//        BigDecimal n1_thi = getBigDecimal(field_n1thi);
-//        BigDecimal n1_cc = getBigDecimal(field_n1cc);
-//        Integer dotThi = null;
-//
-//        if (!field_dotthi.getText().trim().isEmpty()) {
-//            dotThi = Integer.parseInt(field_dotthi.getText().trim());
-//        }
-//        // check rỗng
-//        if (Cccd.equals("Chọn CCCD") || phuongthuc == null) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng nhập đầy đủ thông tin thí sinh");
-//            return;
-//        }
-//        if (!phuongthuc.equals("THPT")) {
-//
-//            if (dotThi <= 0) {
-//                JOptionPane.showMessageDialog(this,
-//                        "Đợt thi phải lớn hơn 0");
-//                return;
-//            }
-//        }
-//        if (phuongthuc.equals("ĐGNL")) {
-//
-//            if (dotThi > 2) {
-//                JOptionPane.showMessageDialog(this,
-//                        "ĐGNL chỉ có đợt 1 hoặc đợt 2");
-//                return;
-//            }
-//        }
-//        if (!phuongthuc.equals("THPT") && field_dotthi.getText().trim().isEmpty()) {
-//
-//            JOptionPane.showMessageDialog(this,
-//                    "Vui lòng nhập đợt thi");
-//            return;
-//        }
-//
-        ////        if (!Cccd.matches("\\d{12}")) {
-////        JOptionPane.showMessageDialog(this, "CCCD phải gồm 12 chữ số");
-////        return;
-////        }
-//        List<BigDecimal> diemList = Arrays.asList(
-//                to, li, ho, si, su, dia, va,gdcd,
-//                 cncn, cnnn, ti, ktpl, nk1, nk2, nk3, nk4, nk5, nk6, n1_thi, n1_cc
-//        );
-//
-//        // check âm
-//        for (BigDecimal diem : diemList) {
-//            if (diem == null) {
-//                continue;
-//            }
-//            if (diem.compareTo(BigDecimal.ZERO) < 0) {
-//                JOptionPane.showMessageDialog(this, "Điểm không được âm");
-//                return;
-//            } else if (diem == null) {
-//                return;
-//            }
-//        }
-//
-//        // check >10
-//        BigDecimal max = new BigDecimal("10");
-//        BigDecimal max150 = new BigDecimal("150");
-//        BigDecimal max1200 = new BigDecimal("1200");
-//
-//        if (phuongthuc.equals("THPT")) {
-//
-//            for (BigDecimal diem : diemList) {
-//                if (diem.compareTo(max) > 0) {
-//                    JOptionPane.showMessageDialog(this,
-//                            "Điểm THPT phải từ 0 đến 10");
-//                    return;
-//                }
-//            }
-//        } else if (phuongthuc.equals("VSAT")) {
-//
-//            List<BigDecimal> vsatList = Arrays.asList(
-//                    to, li, ho, si, su, dia, va, n1_thi
-//            );
-//
-//            for (BigDecimal diem : vsatList) {
-//                if (diem.compareTo(max150) > 0) {
-//                    JOptionPane.showMessageDialog(this,
-//                            "Điểm VSAT phải từ 0 đến 150");
-//                    return;
-//                }
-//            }
-//        } else if (phuongthuc.equals("ĐGNL")) {
-//
-//            if (nl1.compareTo(max1200) > 0) {
-//                JOptionPane.showMessageDialog(this,
-//                        "Điểm ĐGNL phải từ 0 đến 1200");
-//                return;
-//            }
-//        }
-//
-//        // thêm dữ liệu
-//        DiemThiDTO dt = new DiemThiDTO();
-//        dt.setCccd(Cccd);
-//        dt.setSobaodanh(Sbd);
-//        dt.setD_phuongthuc(phuongthuc);
-//        dt.setTO(to);
-//        dt.setLI(li);
-//        dt.setHO(ho);
-//        dt.setSI(si);
-//        dt.setSU(su);
-//        dt.setDI(dia);
-//        dt.setVA(va);
-//        dt.setGDCD(gdcd);
-//        dt.setCNCN(cncn);
-//        dt.setCNNN(cnnn);
-//        dt.setTI(ti);
-//        dt.setKTPL(ktpl);
-//        dt.setNK1(nk1);
-//        dt.setNK2(nk2);
-//        dt.setNK3(nk3);
-//        dt.setNK4(nk4);
-//        dt.setNK5(nk5);
-//        dt.setNK6(nk6);
-//        dt.setNL1(nl1);
-//        dt.setN1_THI(n1_thi);
-//        // THPT không có đợt thi
-//        if (phuongthuc.equals("THPT")) {
-//            dt.setDotthi(null);
-//        } else if (phuongthuc.equals("ĐGNL")) {
-//            dt.setDotthi(null);
-//        } else {
-//            dt.setDotthi(String.valueOf(dotThi));
-//        }
-//        if (diemThiBus.insert(dt) == 1) {
-//            JOptionPane.showMessageDialog(this, "Thêm điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-//            diemThiPanel.dataTable(diemThiBus.getList());
-//            this.dispose();
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Thí sinh đã có điểm thi", "Lỗi", JOptionPane.WARNING_MESSAGE);
-//        }
         String Cccd = cbb_cccd.getSelectedItem().toString();
-        String Sbd = cbb_sbd.getSelectedItem().toString();
         String phuongthuc = cbb_phuongthuc.getSelectedItem().toString();
 
         BigDecimal to = getBigDecimal(field_to);
@@ -870,14 +688,11 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         // check thông tin cơ bản
         if (Cccd.equals("Chọn CCCD")) {
-            JOptionPane.showMessageDialog(this,
-                    "Vui lòng chọn CCCD");
+            JOptionPane.showMessageDialog(this,"Vui lòng chọn CCCD");
             return;
         }
 
-
-        List<BigDecimal> diemList = Arrays.asList(to, li, ho, si, su, dia, va, gdcd,cncn, cnnn, ti, ktpl,nk1, nk2, nk3, nk4, nk5, nk6,nl1, n1_thi, n1_cc);
-
+        List<BigDecimal> diemList = Arrays.asList(to, li, ho, si, su, dia, va, gdcd, cncn, cnnn, ti, ktpl, nk1, nk2, nk3, nk4, nk5, nk6, nl1, n1_thi, n1_cc);
         // check điểm âm
         for (BigDecimal diem : diemList) {
 
@@ -886,8 +701,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
             }
 
             if (diem.compareTo(BigDecimal.ZERO) < 0) {
-                JOptionPane.showMessageDialog(this,
-                        "Điểm không được âm");
+                JOptionPane.showMessageDialog(this,"Điểm không được âm");
                 return;
             }
         }
@@ -898,9 +712,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         // THPT
         if (phuongthuc.equals("THPT")) {
-
             for (BigDecimal diem : diemList) {
-
                 if (diem.compareTo(max10) > 0) {
                     JOptionPane.showMessageDialog(this,
                             "Điểm THPT phải từ 0 đến 10");
@@ -909,13 +721,8 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
             }
         } // VSAT
         else if (phuongthuc.equals("VSAT")) {
-
-            List<BigDecimal> vsatList = Arrays.asList(
-                    to, li, ho, si, su, dia, va, n1_thi
-            );
-
+            List<BigDecimal> vsatList = Arrays.asList(to, li, ho, si, su, dia, va, n1_thi);
             for (BigDecimal diem : vsatList) {
-
                 if (diem.compareTo(max150) > 0) {
                     JOptionPane.showMessageDialog(this,
                             "Điểm VSAT phải từ 0 đến 150");
@@ -936,7 +743,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         DiemThiDTO dt = new DiemThiDTO();
 
         dt.setCccd(Cccd);
-        dt.setSobaodanh(Sbd);
         dt.setD_phuongthuc(phuongthuc);
 
         dt.setTO(to);
@@ -1043,16 +849,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_btn_themActionPerformed
 
     private void cbb_cccdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_cccdActionPerformed
-        if (cbb_cccd.getSelectedItem() == null) {
-            return;
-        }
-        String cccd = cbb_cccd.getSelectedItem().toString();
-        if (cccd.equals("Chọn CCCD")) {
-            cbb_sbd.removeAllItems();
-            cbb_sbd.addItem("Chọn SBD");
-            return;
-        }
-        loadSbdToCombobox(cccd);
+
     }//GEN-LAST:event_cbb_cccdActionPerformed
 
     private void cbb_phuongthucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbb_phuongthucActionPerformed
@@ -1145,7 +942,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JButton btn_them;
     private javax.swing.JComboBox<String> cbb_cccd;
     private javax.swing.JComboBox<String> cbb_phuongthuc;
-    private javax.swing.JComboBox<String> cbb_sbd;
     private javax.swing.JTextField field_cncn;
     private javax.swing.JTextField field_cnnn;
     private javax.swing.JTextField field_dia;
@@ -1187,7 +983,6 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;

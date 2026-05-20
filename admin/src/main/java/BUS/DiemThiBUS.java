@@ -28,7 +28,6 @@ public class DiemThiBUS {
     private ThiSinhDAO thiSinhDao = new ThiSinhDAO();
     private HashSet<String> keyCache = null;
     private ArrayList<DiemThiDTO> diemThiList = new ArrayList<>();
-    private HashSet<String> keyCacheVSAT = new HashSet<>();
     private enum FileType {
         THPT,
         DGNL,
@@ -86,23 +85,24 @@ public class DiemThiBUS {
         return keyCache.contains(buildKey(dt));
     }
 
-    private String buildKey(DiemThiDTO dt) {
-        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim() + "_" + dt.getDotthi();
-    }
-
     public int importExcel(String filePath) {
         FileType type = detectFileType(filePath);
         switch (type) {
             case THPT:
-                return importFromExcel(filePath);
+                return importTHPT(filePath);
             case VSAT:
                 int vsat = importVSAT(filePath);
                 int dgnl = importDGNL(filePath);
-                return vsat + dgnl;
+                // nếu cả 2 đều trùng
+                if (vsat == -1 && dgnl == -1) {
+                    return -1;
+                }
+                // cộng nhưng bỏ qua số âm
+                return Math.max(vsat, 0) + Math.max(dgnl, 0);
             case DGNL:
                 return importDGNL(filePath);
             default:
-                return -1;
+                return 0;
         }
     }
 
@@ -148,7 +148,6 @@ public class DiemThiBUS {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return FileType.UNKNOWN;
     }
 
@@ -250,10 +249,43 @@ public class DiemThiBUS {
         }
     }
 
+    private String buildKeyVSAT(DiemThiDTO dt) {
+        return dt.getCccd().trim() + "_VSAT_" + (dt.getDotthi() == null ? "" : dt.getDotthi().trim());
+    }
+
+    public HashMap<String, HashMap<String, DiemThiDTO>> vsatMap() {
+        HashMap<String, HashMap<String, DiemThiDTO>> map = new HashMap<>();
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            if (!"VSAT".equals(dt.getD_phuongthuc())) {
+                continue;
+            }
+            String cccd = dt.getCccd();
+            String dotThi = dt.getDotthi();
+            if (cccd == null || dotThi == null) {
+                continue;
+            }
+            map.putIfAbsent(cccd, new HashMap<>());
+            map.get(cccd).put(dotThi, dt);
+        }
+        return map;
+    }
+
+    private String buildKey(DiemThiDTO dt) {
+        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim() + "_" + dt.getDotthi();
+    }
+
     public HashMap<String, DiemThiDTO> diemthiMap() {
         HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             diemthiMap.put(dt.getCccd() + "_" + dt.getD_phuongthuc(), dt);
+        }
+        return diemthiMap;
+    }
+
+    public HashMap<String, DiemThiDTO> diemthiMap2() {
+        HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            diemthiMap.put(buildKey(dt),dt);
         }
         return diemthiMap;
     }
@@ -380,7 +412,6 @@ public class DiemThiBUS {
             if (dt.getN1_THI() != null) {
                 total = total.add(dt.getN1_THI());
             }
-
             mapDot.put(dot, mapDot.getOrDefault(dot, BigDecimal.ZERO).add(total));
         }
         HashMap<String, String> result = new HashMap<>();
@@ -396,10 +427,6 @@ public class DiemThiBUS {
             result.put(cccd, bestDot);
         }
         return result;
-    }
-    
-    private String buildKeyVSAT(DiemThiDTO dt) {
-        return dt.getCccd().trim() + "_VSAT_" + (dt.getDotthi() == null ? "" : dt.getDotthi().trim());
     }
 
     private void setVSATScore(DiemThiDTO dto, String maMon, BigDecimal diem) {
@@ -485,116 +512,23 @@ public class DiemThiBUS {
         return new ArrayList<>(map.values());
     }
     
-    // import VSAT
-//    public int importVSAT(String filePath) {
-//
-//        List<DiemThiDTO> importList = readFileVSAT(filePath);
-//        if (importList == null || importList.isEmpty()) {
-//            return 0;
-//        }
-//        HashMap<String, HashMap<String, DiemThiDTO>> group = new HashMap<>();
-//
-//        for (DiemThiDTO dt : importList) {
-//            String cccd = dt.getCccd();
-//            String dot = dt.getDotthi(); // từ Excel
-//
-//            if (cccd == null) {
-//                continue;
-//            }
-//            group.putIfAbsent(cccd, new HashMap<>());
-//            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
-//            byDot.put(dot, dt);
-//        }
-//        List<DiemThiDTO> finalList = new ArrayList<>();
-//        for (String cccd : group.keySet()) {
-//            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
-//            BigDecimal max = BigDecimal.valueOf(-1);
-//            DiemThiDTO best = null;
-//            for (DiemThiDTO dt : byDot.values()) {
-//
-//                BigDecimal sum = BigDecimal.ZERO;
-//
-//                if (dt.getTO() != null) {
-//                    sum = sum.add(dt.getTO());
-//                }
-//                if (dt.getLI() != null) {
-//                    sum = sum.add(dt.getLI());
-//                }
-//                if (dt.getHO() != null) {
-//                    sum = sum.add(dt.getHO());
-//                }
-//                if (dt.getSI() != null) {
-//                    sum = sum.add(dt.getSI());
-//                }
-//                if (dt.getSU() != null) {
-//                    sum = sum.add(dt.getSU());
-//                }
-//                if (dt.getDI() != null) {
-//                    sum = sum.add(dt.getDI());
-//                }
-//                if (dt.getVA() != null) {
-//                    sum = sum.add(dt.getVA());
-//                }
-//                if (dt.getN1_THI() != null) {
-//                    sum = sum.add(dt.getN1_THI());
-//                }
-//                if (sum.compareTo(max) > 0) {
-//                    max = sum;
-//                    best = dt;
-//                }
-//            }
-//            if (best != null) {
-//                finalList.add(best);
-//            }
-//        }
-//        if (keyCache == null) {
-//            keyCache = new HashSet<>();
-//            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
-//                keyCache.add(buildKey(item));
-//            }
-//        }
-//        List<DiemThiDTO> newList = new ArrayList<>();
-//        for (DiemThiDTO dt : finalList) {
-//            String key = buildKeyVSAT(dt);
-//            if (keyCacheVSAT.contains(key)) {
-//                continue;
-//            }
-//            newList.add(dt);
-//            keyCacheVSAT.add(key);
-//        }
-//        if (!newList.isEmpty()) {
-//            diemThiDao.saveAll(newList);
-//        }
-//        return newList.size();
-//    }
     public int importVSAT(String filePath) {
-
         List<DiemThiDTO> importList = readFileVSAT(filePath);
-
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-
-        if (keyCacheVSAT == null) {
-            keyCacheVSAT = new HashSet<>();
-
+//        if (keyCache == null) {
+            keyCache = new HashSet<>();
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
-
                 if (!"VSAT".equals(item.getD_phuongthuc())) {
                     continue;
                 }
-
-                keyCacheVSAT.add(buildKeyVSAT(item));
+                keyCache.add(buildKey(item));
             }
-        }
-
+//        }
         List<DiemThiDTO> newList = new ArrayList<>();
-
         for (DiemThiDTO dt : importList) {
-
-            // đếm số môn có điểm
             int soMon = 0;
-
             if (dt.getTO() != null) {
                 soMon++;
             }
@@ -619,31 +553,22 @@ public class DiemThiBUS {
             if (dt.getN1_THI() != null) {
                 soMon++;
             }
-
-            // bỏ đợt dưới 3 môn
             if (soMon < 3) {
                 continue;
             }
-
             String key = buildKeyVSAT(dt);
-
-            // tránh trùng
-            if (keyCacheVSAT.contains(key)) {
+            if (keyCache.contains(key)) {
                 continue;
             }
-
             newList.add(dt);
-            keyCacheVSAT.add(key);
+            keyCache.add(key);
         }
-
-        if (!newList.isEmpty()) {
-            diemThiDao.saveAll(newList);
+        if (newList.isEmpty()) {
+            return -1;
         }
-
+        diemThiDao.saveAll(newList);
         return newList.size();
     }
-
-
 
     // đọc file ĐGNL
     public List<DiemThiDTO> readFileDGNL(String filePath) {
@@ -654,6 +579,7 @@ public class DiemThiBUS {
             Sheet sheet = work.getSheetAt(1);
             Row headerRow = sheet.getRow(0);
             int cccdCol = getColumnIndex(headerRow, "CMND");
+            int dotthi = getColumnIndex(headerRow, "DOTTHI");
             int diemCol = getColumnIndex(headerRow, "DIEM");
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
@@ -695,32 +621,32 @@ public class DiemThiBUS {
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-        if (keyCache == null) {
+//        if (keyCache == null) {
             keyCache = new HashSet<>();
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
                 keyCache.add(buildKey(item));
             }
-        }
+//        }
         List<DiemThiDTO> newList = new ArrayList<>();
         for (DiemThiDTO dt : importList) {
             if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
                 continue;
             }
             String key = buildKey(dt);
-            // tránh trùng DB + file
             if (!keyCache.contains(key)) {
                 newList.add(dt);
                 keyCache.add(key);
             }
         }
-        if (!newList.isEmpty()) {
-            diemThiDao.saveAll(newList);
+        if (newList.isEmpty()) {
+            return -1;
         }
+        diemThiDao.saveAll(newList);
         return newList.size();
     }
 
     // đọc file
-    public List<DiemThiDTO> readFile(String filePath) {
+    public List<DiemThiDTO> readFileTHPT(String filePath) {
         List<DiemThiDTO> list = new ArrayList<>();
         try {
             FileInputStream fis = new FileInputStream(new File(filePath));
@@ -789,17 +715,17 @@ public class DiemThiBUS {
     }
 
     // import điểm thi
-    public int importFromExcel(String filePath) {
-        List<DiemThiDTO> importList = readFile(filePath);
+    public int importTHPT(String filePath) {
+        List<DiemThiDTO> importList = readFileTHPT(filePath);
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-        if (keyCache == null) {
+//        if (keyCache == null) {
             keyCache = new HashSet<>();
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
                 keyCache.add(buildKey(item));
             }
-        }
+//        }
         List<DiemThiDTO> newList = new ArrayList<>();
         for (DiemThiDTO dt : importList) {
             if (dt.getCccd() == null || dt.getCccd().trim().isEmpty()) {
@@ -812,9 +738,10 @@ public class DiemThiBUS {
                 keyCache.add(key);
             }
         }
-        if (!newList.isEmpty()) {
-            diemThiDao.saveAll(newList);
+        if (newList.isEmpty()) {
+            return -1;
         }
+        diemThiDao.saveAll(newList);
         return newList.size();
     }
     public String convertPhuongThuc(String pt) {
@@ -830,22 +757,5 @@ public class DiemThiBUS {
             default:
                 return "";
         }
-    }
-    
-    public HashMap<String, HashMap<String, DiemThiDTO>> vsatMap() {
-        HashMap<String, HashMap<String, DiemThiDTO>> map = new HashMap<>();
-        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            if (!"VSAT".equals(dt.getD_phuongthuc())) {
-                continue;
-            }
-            String cccd = dt.getCccd();
-            String dotThi = dt.getDotthi();
-            if (cccd == null || dotThi == null) {
-                continue;
-            }
-            map.putIfAbsent(cccd, new HashMap<>());
-            map.get(cccd).put(dotThi, dt);
-        }
-        return map;
     }
 }

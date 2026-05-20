@@ -1,8 +1,13 @@
 package GUI.Panel;
 
 import BUS.DiemThiBUS;
+import BUS.ThiSinhBUS;
 import DTO.DiemThiDTO;
+import DTO.ThiSinhDTO;
 import GUIDialog.AddDiemThiDialog;
+import GUIDialog.ChiTietDiemTHPTDialog;
+import GUIDialog.ChiTietDiemVSATDialog;
+import GUIDialog.ChiTietDiemĐGNLDialog;
 import GUIDialog.EditDiemThiDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.BorderLayout;
@@ -35,6 +40,7 @@ import util.Table_design;
  */
 public class DiemThiPanel extends javax.swing.JPanel {
     private DiemThiBUS diemThiB = new DiemThiBUS();
+    private ThiSinhBUS thisinhB = new ThiSinhBUS();
     JTextF_design jtf_design = new JTextF_design();
     Table_design table_design = new Table_design();
     Combobox_design cbb_design = new Combobox_design();
@@ -74,6 +80,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
         btn_sua.setIcon(new FlatSVGIcon("./resources/icon/edit.svg", 0.2f));
         btn_loc.setIcon(new FlatSVGIcon("./resources/icon/filter.svg", 0.2f));
         btn_xoa.setIcon(new FlatSVGIcon("./resources/icon/delete.svg", 0.2f));
+        btn_chitiet.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
     }
     public void loadTenPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
@@ -238,6 +245,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
         btn_add = new javax.swing.JButton();
         btn_sua = new javax.swing.JButton();
         btn_xoa = new javax.swing.JButton();
+        btn_chitiet = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         table_diem = new javax.swing.JTable();
         field_cccd = new javax.swing.JTextField();
@@ -318,6 +326,12 @@ public class DiemThiPanel extends javax.swing.JPanel {
         btn_xoa.setText("Xóa điểm");
         btn_xoa.addActionListener(this::btn_xoaActionPerformed);
 
+        btn_chitiet.setBackground(new java.awt.Color(0, 0, 255));
+        btn_chitiet.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        btn_chitiet.setForeground(new java.awt.Color(255, 255, 255));
+        btn_chitiet.setText("Chi tiết điểm");
+        btn_chitiet.addActionListener(this::btn_chitietActionPerformed);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -327,21 +341,25 @@ public class DiemThiPanel extends javax.swing.JPanel {
                 .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(459, 459, 459)
+                .addGap(244, 244, 244)
                 .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(343, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_sua, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_xoa, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -409,7 +427,7 @@ public class DiemThiPanel extends javax.swing.JPanel {
                 .addComponent(btn_loc, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(9, 9, 9)
                 .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 1070, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -438,32 +456,25 @@ public class DiemThiPanel extends javax.swing.JPanel {
     private void btn_importActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_importActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn file Excel");
-
         int result = fileChooser.showOpenDialog(this);
         if (result != JFileChooser.APPROVE_OPTION) {
             return;
         }
-
         File file = fileChooser.getSelectedFile();
         String filePath = file.getAbsolutePath();
-
         // ===== LOADING DIALOG =====
         JDialog loadingDialog = new JDialog();
         loadingDialog.setTitle("Đang xử lý...");
         loadingDialog.setSize(300, 120);
         loadingDialog.setLocationRelativeTo(this);
         loadingDialog.setLayout(new BorderLayout());
-
         JLabel text = new JLabel("Đang import điểm thi...", JLabel.CENTER);
         text.setFont(new Font("Segoe UI", Font.BOLD, 14));
         text.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
-
         loadingDialog.add(text, BorderLayout.CENTER);
         loadingDialog.pack();
         loadingDialog.setLocationRelativeTo(this);
         loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-
-        // ===== BACKGROUND TASK =====
         SwingWorker<Void, Void> worker = new SwingWorker<>() {
             int count = 0;
             String message = "";
@@ -471,35 +482,31 @@ public class DiemThiPanel extends javax.swing.JPanel {
             @Override
             protected Void doInBackground() {
                 try {
-                    // log debug
-                    System.out.println("Đang import: " + file.getName());
-
                     count = diemThiB.importExcel(filePath);
-
-                    if (count == 0) {
-                        message = "File không có dữ liệu!";
-                    } else {
-                        message = "Import thành công " + count + " dòng điểm!";
+                    switch (count) {
+                        case -1:
+                            message = "File bị trùng toàn bộ dữ liệu!";
+                            break;
+                        case 0:
+                            message = "File không có dữ liệu!";
+                            break;
+                        default:
+                            message = "Import thành công " + count + " dòng điểm!";
+                            break;
                     }
-
                 } catch (Exception e) {
                     e.printStackTrace();
                     message = "Lỗi khi import file!";
                 }
                 return null;
             }
-
             @Override
             protected void done() {
                 loadingDialog.dispose(); // tắt loading
-
                 JOptionPane.showMessageDialog(null, message);
-
-                // reload lại bảng
                 dataTable(diemThiB.getList());
             }
         };
-
         worker.execute();
         loadingDialog.setVisible(true);
     }//GEN-LAST:event_btn_importActionPerformed
@@ -573,39 +580,82 @@ public class DiemThiPanel extends javax.swing.JPanel {
 
     private void btn_xoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xoaActionPerformed
         int row = table_diem.getSelectedRow();
-        if(row == -1) {
+        if (row == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa");
             return;
         }
-        
         int confirm = JOptionPane.showConfirmDialog(this, "Bạn có muốn xóa điểm thi này không?", "Xác nhận xóa",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.ERROR_MESSAGE);
-        if(confirm != JOptionPane.OK_OPTION) {
+        if (confirm != JOptionPane.OK_OPTION) {
             return;
         }
-        
         int id = Integer.parseInt(
-            table_diem.getValueAt(row, 24).toString()
+                table_diem.getValueAt(row, 24).toString()
         );
 
         DiemThiDTO dt = diemThiB.findById(id);
 
-        if(dt == null) {
-            JOptionPane.showMessageDialog(this, 
-                "Không tìm thấy dữ liệu");
+        if (dt == null) {
+            JOptionPane.showMessageDialog(this,
+                    "Không tìm thấy dữ liệu");
             return;
         }
-        if(diemThiB.delete(dt) == 1) {
-            JOptionPane.showMessageDialog(this, "Xóa điểm thành công","Thông báo",JOptionPane.INFORMATION_MESSAGE);
+        if (diemThiB.delete(dt) == 1) {
+            JOptionPane.showMessageDialog(this, "Xóa điểm thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             dataTable(diemThiB.getList());
         } else {
-            JOptionPane.showMessageDialog(this, "Xóa thất bại","Lỗi",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Xóa thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_btn_xoaActionPerformed
+
+    private void btn_chitietActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_chitietActionPerformed
+        int row = table_diem.getSelectedRow();
+
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn điểm để xem chi tiết!");
+            return;
+        }
+
+        // lấy đúng dữ liệu từ bảng
+        String cccd = table_diem.getValueAt(row, 0).toString();
+        String phuongthuc = table_diem.getValueAt(row, 2).toString();
+        Object dotthiObj = table_diem.getValueAt(row, 25);
+        String dotthi;
+        if (dotthiObj == null) {
+            dotthi = null;
+        } else {
+            dotthi = dotthiObj.toString();
+        }
+
+        // tạo key giống hệt Map trong BUS
+        String key = cccd + "_" + phuongthuc + "_" + dotthi;
+
+        HashMap<String, DiemThiDTO> diemthiMap = diemThiB.diemthiMap2();
+
+        DiemThiDTO dt = diemthiMap.get(key);
+        ThiSinhDTO ts = thisinhB.findByCCCD(cccd);
+        if (dt == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy chi tiết điểm!");
+            return;
+        }
+
+        // mở dialog xem chi tiết (nếu bạn đã có)
+        if (phuongthuc.equals("THPT")) {
+            Window parentWindow = SwingUtilities.getWindowAncestor(this);
+            new ChiTietDiemTHPTDialog((Frame) parentWindow, true, dt, ts).setVisible(true);
+        } else if (phuongthuc.equals("ĐGNL")) {
+            Window parentWindow = SwingUtilities.getWindowAncestor(this);
+            new ChiTietDiemĐGNLDialog((Frame) parentWindow, true, dt, ts).setVisible(true);
+        } else {
+            Window parentWindow = SwingUtilities.getWindowAncestor(this);
+            new ChiTietDiemVSATDialog((Frame) parentWindow, true, dt, ts).setVisible(true);
+        }
+    }//GEN-LAST:event_btn_chitietActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
+    private javax.swing.JButton btn_chitiet;
     private javax.swing.JButton btn_import;
     private javax.swing.JButton btn_loc;
     private javax.swing.JButton btn_refresh;

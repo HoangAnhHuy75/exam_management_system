@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -43,9 +44,12 @@ public class DiemCongPanel extends javax.swing.JPanel {
     JButton_design btn_design = new JButton_design();
     NganhBUS ngBus = new NganhBUS();
     DiemCongBUS diemCongB = new DiemCongBUS();
-    public DiemCongPanel() {
+     Set<String> permissions;
+    public DiemCongPanel( Set<String> permissions) {
         initComponents();
         khoiTao();
+         this.permissions =permissions;
+        applyPermissions();
     }
 
     public void khoiTao() {
@@ -60,6 +64,34 @@ public class DiemCongPanel extends javax.swing.JPanel {
     public void designButton(){
         btn_design.setUpBtn(btn_lammoi, Color.WHITE, Color.WHITE);
     }
+     public void applyPermissions() {
+    boolean canCreate =  permissions.contains("diemcong.create");
+    boolean canUpdate = permissions.contains("diemcong.update");
+    boolean canDelete = permissions.contains("diemcong.delete");
+
+    if (!canCreate) {
+        replaceActionWithDeny(btn_them);
+        replaceActionWithDeny(btn_import);
+    }
+    if (!canUpdate) replaceActionWithDeny(btn_sua);
+    if (!canDelete) replaceActionWithDeny(btn_xoa);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
     public void designCBB(){
         cbb_design.setUpComBoBox(cbb_maNganh);
         cbb_design.setUpComBoBox(cbb_maToHop);

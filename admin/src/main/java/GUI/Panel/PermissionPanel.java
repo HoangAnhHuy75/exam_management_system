@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Frame;
 import java.awt.Window;
 import java.util.ArrayList;
+import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -30,18 +31,47 @@ public class PermissionPanel extends javax.swing.JPanel {
     private Table_design table_design = new Table_design();
     private JTextF_design jtf_design = new JTextF_design();
     private JButton_design btn_design = new JButton_design();
-
-    public PermissionPanel() {
+    Set<String> permissions;
+    public PermissionPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
+         this.permissions =permissions;
+        applyPermissions();
     }
-
+    
     public void khoiTao() {
         dataTable(permissionBUS.getAllRole());
         setUpJtf();
         setIcon();
     }
+     public void applyPermissions() {
+    boolean canCreate =  permissions.contains("user.create");
+    boolean canUpdate = permissions.contains("user.update");
+    boolean canDelete = permissions.contains("user.delete");
 
+    if (!canCreate) {
+        replaceActionWithDeny(btn_add);
+    }
+    if (!canUpdate) replaceActionWithDeny(btn_update);
+    if (!canDelete) replaceActionWithDeny(btn_delete);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
+    
     // ===== Setup UI =====
     public void setUpJtf() {
         jtf_design.setUpJTF(jtf_timkiem);

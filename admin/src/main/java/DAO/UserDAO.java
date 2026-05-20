@@ -17,15 +17,15 @@ import util.HibernateUtil;
  */
 public class UserDAO {
     // ===== Lấy tất cả =====
-    public ArrayList<UserDTO> getAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<UserDTO> query = session.createQuery("FROM UserDTO", UserDTO.class);
-            return new ArrayList<>(query.list());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+        public ArrayList<UserDTO> getAll() {
+            try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+                Query<UserDTO> query = session.createQuery("FROM UserDTO", UserDTO.class);
+                return new ArrayList<>(query.list());
+            } catch (Exception e) {
+                e.printStackTrace();
+                return new ArrayList<>();
+            }
         }
-    }
     // ===== Tìm theo username =====
     public UserDTO findByUsername(String username) {
     if (username == null || username.trim().isEmpty()) {

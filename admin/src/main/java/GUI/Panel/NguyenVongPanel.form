@@ -46,6 +46,9 @@
           <Group type="102" attributes="0">
               <Component id="major_header" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
+<<<<<<< HEAD
+              <Component id="jScrollPane1" pref="367" max="32767" attributes="0"/>
+=======
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jLabel13" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel14" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -60,6 +63,7 @@
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" min="-2" pref="466" max="-2" attributes="0"/>
+>>>>>>> b76aea07b6a016ec0239f43623f4808beb5c3cf9
           </Group>
       </Group>
     </DimensionLayout>

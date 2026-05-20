@@ -70,16 +70,6 @@ public class LoginFrame extends JFrame {
         JButton eyeBtn = buildEyeButton();
         JPanel passPanel = buildInputPanel("lock", txtPass, eyeBtn);
  
-        // ── Forgot password ───────────────────────────────────────────────
-        JLabel forgot = new JLabel("Quên mật khẩu?");
-        forgot.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        forgot.setForeground(new Color(30, 120, 220));
-        forgot.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
- 
-        JPanel forgotRow = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        forgotRow.setOpaque(false);
-        forgotRow.setMaximumSize(new Dimension(Integer.MAX_VALUE, 22));
-        forgotRow.add(forgot);
  
         // ── Login button — full width, tall ───────────────────────────────
         JButton btnLogin = new JButton("Đăng nhập") {
@@ -119,12 +109,19 @@ public class LoginFrame extends JFrame {
         form.add(Box.createVerticalStrut(14));
         form.add(passPanel);
         form.add(Box.createVerticalStrut(8));
-        form.add(forgotRow);
         form.add(Box.createVerticalStrut(16));
         form.add(btnLogin);
  
         setContentPane(form);
         setVisible(true);
+        form.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    .put(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_ENTER, 0), "login");
+form.getActionMap().put("login", new javax.swing.AbstractAction() {
+    @Override
+    public void actionPerformed(java.awt.event.ActionEvent e) {
+        handleLogin();
+    }
+});
     }
  
     // ── Input panel ───────────────────────────────────────────────────────
@@ -269,11 +266,6 @@ public class LoginFrame extends JFrame {
 
         UserDTO user =
                 userBUS.login(username, password);
-
-        JOptionPane.showMessageDialog(
-                this,
-                "Đăng nhập thành công!"
-        );
 
         new Main(user).setVisible(true);
 

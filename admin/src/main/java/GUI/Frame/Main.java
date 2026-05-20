@@ -19,7 +19,7 @@ import GUI.Panel.ToHopNganhPanel;
 import GUI.Panel.TohopPanel;
 import GUI.Panel.TrangChuPanel;
 import GUI.Panel.UserPanel;
-import GUI.Panel.XetTuyenPanel;
+import GUI.Panel.ThongKePanel;
 import GUI.Panel.XetTuyenPanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
@@ -44,23 +44,22 @@ public class Main extends javax.swing.JFrame {
     /**
      * Creates new form Main
      */
-    TrangChuPanel trangChuPanel = new TrangChuPanel();
-    NganhPanel nganhPanel = new NganhPanel();
-    TohopPanel toHopPanel = new TohopPanel();
-    UserPanel userPanel = new UserPanel();
-    ToHopNganhPanel tohop_nganh_panel = new ToHopNganhPanel();
-    DiemCongPanel diemCongPanel = new DiemCongPanel();
-    DiemThiPanel diemThiPanel = new DiemThiPanel();
-    XetTuyenPanel xettuyenPanel = new XetTuyenPanel();
-    ThiSinhPanel thisinhPanel = new ThiSinhPanel();
-    NguyenVongPanel nguyenvongPanel = new NguyenVongPanel();
-    JButton[] btns = new JButton[12];
+    ThongKePanel thongKePanel;
+    NganhPanel nganhPanel;
+    TohopPanel toHopPanel;
+    UserPanel userPanel;
+    ToHopNganhPanel tohop_nganh_panel;
+    DiemCongPanel diemCongPanel;
+    DiemThiPanel diemThiPanel;
+    ThiSinhPanel thisinhPanel;
+    NguyenVongPanel nguyenvongPanel;
+    PermissionPanel permissionPanel;
+    XetTuyenPanel xettuyenPanel;
+    JButton[] btns ;
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
     DiemThiBUS dtBus = new DiemThiBUS();
-    NganhBUS ngBus = new NganhBUS();
-    PermissionPanel permissionPanel = new PermissionPanel();
 
     public Main(UserDTO user) {
         initComponents();
@@ -75,14 +74,34 @@ public class Main extends javax.swing.JFrame {
     private void init(UserDTO user) {
         this.currentUser = user;
         buildPermissionSet(user);
+        initPanels();
         addPanels();
         khoiTao();
         applyRole();
         customScrollBar();
     }
-
+    public void khoiTao() {
+        khoiTaoBtns();
+        actionJButtonMenu();
+        styleAllButtonMenu();
+        setIcon();
+        setBorder();
+    }
+    private void initPanels() {
+        thongKePanel    = new ThongKePanel();
+        nganhPanel       = new NganhPanel(permissions);
+        toHopPanel       = new TohopPanel(permissions);
+        userPanel        = new UserPanel(permissions);
+        tohop_nganh_panel= new ToHopNganhPanel(permissions);
+        diemCongPanel    = new DiemCongPanel(permissions);
+        diemThiPanel     = new DiemThiPanel(permissions);
+        thisinhPanel     = new ThiSinhPanel(permissions);
+        nguyenvongPanel  = new NguyenVongPanel(permissions);
+        permissionPanel  = new PermissionPanel(permissions);
+        xettuyenPanel = new XetTuyenPanel();
+    }
     private void addPanels() {
-        main.add(trangChuPanel, "TrangChu");
+        main.add(thongKePanel, "TrangChu");
         main.add(nganhPanel, "Nganh");
         main.add(toHopPanel, "ToHop");
         main.add(tohop_nganh_panel, "ToHop_Nganh");
@@ -92,17 +111,18 @@ public class Main extends javax.swing.JFrame {
         main.add(userPanel, "User");
         main.add(nguyenvongPanel, "NguyenVong");
         main.add(permissionPanel, "PhanQuyen");
-        main.add(xettuyenPanel,"XetTuyen");
+         main.add(xettuyenPanel,"XetTuyen");
 
         hideAllPanels();
-        trangChuPanel.setVisible(true);
+        thongKePanel.setVisible(true);
     }
 
     private void buildPermissionSet(UserDTO user) {
         permissions.clear();
 
-        if (user.getRoles() == null)
+        if (user.getRoles() == null) {
             return;
+        }
 
         for (RoleDTO role : user.getRoles()) {
             // Lưu tên role dạng "ROLE_ADMIN", "ROLE_STAFF", ...
@@ -183,26 +203,41 @@ public class Main extends javax.swing.JFrame {
     }
 
     private void applyRole() {
+    // Luôn enable
+    setMenuBtnState(btn_home,             true);
+    setMenuBtnState(btn_logout,           true);
 
-        if ("ADMIN".equalsIgnoreCase(role)) {
+    // Theo permission
+    setMenuBtnState(btn_major,            permissions.contains("nganh.read"));
+    setMenuBtnState(btn_combination,      permissions.contains("tohop.read"));
+    setMenuBtnState(btn_combination_major,permissions.contains("nganh_tohop.read"));
+    setMenuBtnState(btn_thisinh,          permissions.contains("thisinh.read"));
+    setMenuBtnState(btn_diemthi,          permissions.contains("diemthi.read"));
+    setMenuBtnState(btn_diemcong,         permissions.contains("diemcong.read"));
+    setMenuBtnState(btn_nvxt,             permissions.contains("nguyenvong.read"));
+    setMenuBtnState(btn_user,             permissions.contains("user.read"));
+    setMenuBtnState(btn_permission,       permissions.contains("ROLE_ADMIN"));
+    setMenuBtnState(btn_xettuyen, permissions.contains("nguyenvong.read"));
+}
+    private void setMenuBtnState(JButton btn, boolean hasPermission) {
+    btn.setVisible(true); // luôn hiện
+    btn.setEnabled(hasPermission);
 
-            // Ẩn nút user
-            btn_user.setVisible(false);
-
-            // tránh lỗi nếu vẫn cố truy cập
-            userPanel.setVisible(false);
-        }
+    if (hasPermission) {
+        btn.setBackground(Color.WHITE);
+        btn.setForeground(Color.BLACK);
+        btn.setToolTipText(null);
+    } else {
+        // Giao diện xám — không bấm được
+        btn.setBackground(new Color(240, 240, 240));
+        btn.setForeground(new Color(180, 180, 180));
+        btn.setToolTipText("Bạn không có quyền truy cập");
     }
-
-    public void khoiTao() {
-        khoiTaoBtns();
-        actionJButtonMenu();
-        styleAllButtonMenu();
-        setIcon();
-        setBorder();
-    }
+}
+    
 
     public void khoiTaoBtns() {
+        btns = new JButton[12];
         btns[0] = btn_home;
         btns[1] = btn_major;
         btns[2] = btn_combination;
@@ -216,7 +251,6 @@ public class Main extends javax.swing.JFrame {
         btns[10] = btn_permission;
         btns[11] = btn_logout;
     }
-
     private void hideAllPanels() {
         for (Component c : main.getComponents()) {
             c.setVisible(false);
@@ -245,14 +279,14 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void setBackgroundJButton(JButton btn) {
-        if (currentActiveBtn != null && currentActiveBtn != btn) {
-            currentActiveBtn.setBackground(null);
-            currentActiveBtn.setOpaque(false);
-        }
-        btn.setBackground(new Color(100, 149, 237));
-        btn.setOpaque(true);
-        currentActiveBtn = btn;
+    if (currentActiveBtn != null && currentActiveBtn != btn) {
+        currentActiveBtn.setBackground(Color.WHITE);
+        currentActiveBtn.repaint();
     }
+    btn.setBackground(new Color(100, 149, 237));
+    btn.repaint();
+    currentActiveBtn = btn;
+}
 
     public void actionJButtonMenu() {
         Component[] cpns = panel_bottom_menu.getComponents();
@@ -270,32 +304,31 @@ public class Main extends javax.swing.JFrame {
     }
 
     public void styleButtonMenu(JButton btn) {
-        btn.setFocusPainted(false);
-        btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
-        btn.setBackground(Color.WHITE);
-        btn.setHorizontalAlignment(SwingConstants.LEFT);
-        btn.setIconTextGap(10);
-        btn.setContentAreaFilled(false);
+    // Bypass FlatLaf hoàn toàn
+    btn.setUI(new javax.swing.plaf.basic.BasicButtonUI());
 
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) {
-                if (btn == currentActiveBtn) {
-                    btn.setBackground(new Color(100, 149, 237));
-                    return;
-                }
-                btn.setOpaque(true);
-                btn.setBackground(new Color(173, 216, 230));
-            }
+    btn.setFocusPainted(false);
+    btn.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 10));
+    btn.setHorizontalAlignment(SwingConstants.LEFT);
+    btn.setIconTextGap(10);
+    btn.setOpaque(true);
+    btn.setContentAreaFilled(true);
+    btn.setBackground(Color.WHITE);
+    btn.setForeground(Color.BLACK);
 
-            public void mouseExited(java.awt.event.MouseEvent e) {
-                if (btn == currentActiveBtn) {
-                    btn.setBackground(new Color(100, 149, 237));
-                    return;
-                }
-                btn.setOpaque(false);
-            }
-        });
-    }
+    btn.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseEntered(java.awt.event.MouseEvent e) {
+            if (btn == currentActiveBtn) return;
+            if (!btn.isEnabled()) return;
+            btn.setBackground(new Color(173, 216, 230));
+        }
+        public void mouseExited(java.awt.event.MouseEvent e) {
+            if (btn == currentActiveBtn) return;
+            if (!btn.isEnabled()) return;
+            btn.setBackground(Color.WHITE);
+        }
+    });
+}
 
     public void setBtnMenu() {
         for (JButton btn : btns) {
@@ -558,20 +591,21 @@ public class Main extends javax.swing.JFrame {
     private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_majorActionPerformed
         hideAllPanels();
         nganhPanel.setVisible(true);
-        nganhPanel.dataTable(ngBus.getListN());
     }// GEN-LAST:event_btn_majorActionPerformed
 
     private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_homeActionPerformed
         hideAllPanels();
-        trangChuPanel.setVisible(true);
-    }// GEN-LAST:event_btn_homeActionPerformed
+        thongKePanel.refreshData();
+        thongKePanel.setVisible(true);
+    }                                        
+
 
     private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_combinationActionPerformed
         hideAllPanels();
         toHopPanel.setVisible(true);
     }// GEN-LAST:event_btn_combinationActionPerformed
 
-    private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_combination_majorActionPerformed
+    private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         hideAllPanels();
         tohop_nganh_panel.setVisible(true);
     }// GEN-LAST:event_btn_combination_majorActionPerformed
@@ -607,11 +641,11 @@ public class Main extends javax.swing.JFrame {
         }
     }// GEN-LAST:event_btn_logoutActionPerformed
 
-    private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_nvxtActionPerformed
+    private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {                                         
         hideAllPanels();
         nguyenvongPanel.setVisible(true);
     }// GEN-LAST:event_btn_nvxtActionPerformed
-
+    
     private void btn_permissionActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_permissionActionPerformed
         hideAllPanels();
         permissionPanel.setVisible(true);

@@ -17,6 +17,7 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
@@ -48,9 +49,12 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
     /**
      * Creates new form ToHopNganhPanel
      */
-    public ToHopNganhPanel() {
+    Set<String> permissions ;
+    public ToHopNganhPanel(Set<String> permissions) {
         initComponents();
         khoiTao();
+        this.permissions =permissions;
+        applyPermissions();
     }
     public void khoiTao() {
         dataTable(toH_ng_Bus.getAll());
@@ -58,6 +62,34 @@ public class ToHopNganhPanel extends javax.swing.JPanel {
         setIcon();
         setUpBtn();
     }
+     public void applyPermissions() {
+    boolean canCreate =  permissions.contains("nganh_tohop.create");
+    boolean canUpdate = permissions.contains("nganh_tohop.update");
+    boolean canDelete = permissions.contains("nganh_tohop.delete");
+
+    if (!canCreate) {
+        replaceActionWithDeny(btn_add);
+        replaceActionWithDeny(btn_import);
+    }
+    if (!canUpdate) replaceActionWithDeny(btn_update);
+    if (!canDelete) replaceActionWithDeny(btn_delete);
+}
+
+private void replaceActionWithDeny(javax.swing.JButton btn) {
+    // Xóa tất cả listener cũ
+    for (java.awt.event.ActionListener al : btn.getActionListeners()) {
+        btn.removeActionListener(al);
+    }
+    // Thêm listener thông báo
+    btn.addActionListener(e ->
+        JOptionPane.showMessageDialog(
+            this,
+            "Bạn không có quyền thực hiện chức năng này!",
+            "Từ chối truy cập",
+            JOptionPane.WARNING_MESSAGE
+        )
+    );
+}
 
     
     public void setUpJtf(){

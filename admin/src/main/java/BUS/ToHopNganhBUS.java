@@ -2,9 +2,20 @@ package BUS;
 
 import DAO.ToHopNganhDAO;
 import DTO.ToHopNganhDTO;
+import java.io.File;
+import java.io.FileInputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import org.apache.poi.ss.usermodel.Cell;
+import static org.apache.poi.ss.usermodel.CellType.BOOLEAN;
+import static org.apache.poi.ss.usermodel.CellType.NUMERIC;
+import static org.apache.poi.ss.usermodel.CellType.STRING;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class ToHopNganhBUS {
     private NganhBUS nganhBus = new NganhBUS();
@@ -43,55 +54,20 @@ public class ToHopNganhBUS {
     
     // tìm 1 ngành
     public ToHopNganhDTO findOneByTHNganh(String tb_key) {
-
-    for(ToHopNganhDTO t : tohopnganhDao.getAll()) {
-        if(t.getTb_keys().equals(tb_key)) {
-            return t;
+        for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
+            if (t.getTb_keys().equals(tb_key)) {
+                return t;
+            }
         }
-    }
         return null;
     }
-    
-     public int getIdbyIndex(int index){
+
+    public int getIdbyIndex(int index) {
         ArrayList<ToHopNganhDTO> list = tohopnganhDao.getAll();
-        if(index >=0 && index < list.size())
+        if (index >= 0 && index < list.size()) {
             return list.get(index).getId();
+        }
         return -1;
-    }
-
-    // Import Excel (nếu sau này bạn có)
-    public int importList(List<ToHopNganhDTO> importList) {
-        if (importList == null || importList.isEmpty()) {
-            return 0;
-        }
-        // map dữ liệu đã có
-        HashMap<String, Boolean> existingMap = new HashMap<>();
-        for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
-            if (t.getManganh() != null && t.getMatohop() != null) {
-                String key = (t.getManganh() + "_" + t.getMatohop()).toLowerCase().trim();
-                existingMap.put(key, true);
-            }
-        }
-        ArrayList<ToHopNganhDTO> newList = new ArrayList<>();
-        for (ToHopNganhDTO t : importList) {
-            if (t.getManganh() == null || t.getMatohop() == null) {
-                continue;
-            }
-            String key = (t.getManganh().trim() + "_" + t.getMatohop().trim()).toLowerCase();
-            if (!existingMap.containsKey(key)) {
-                // chuẩn hóa
-                t.setManganh(t.getManganh().trim());
-                t.setMatohop(t.getMatohop().trim());
-
-                newList.add(t);
-                existingMap.put(key, true);
-            }
-        }
-        if (!newList.isEmpty()) {
-            tohopnganhDao.insertList(newList);
-            tohopnganhList.addAll(newList);
-        }
-        return newList.size();
     }
 
     // Tìm theo mã ngành
@@ -110,41 +86,31 @@ public class ToHopNganhBUS {
         return tohopnganhDao.findByMaToHop(maToHop);
     }
 
-    // Map manganh_matohop -> DTO
-    public HashMap<String, ToHopNganhDTO> map() {
-        return tohopnganhDao.toHopNganhMap();
-    }
-
     // Tìm kiếm
     public ArrayList<ToHopNganhDTO> timkiem(String maNganh, String maToHop) {
         ArrayList<ToHopNganhDTO> result = new ArrayList<>();
-
         String mn = maNganh != null ? maNganh.toLowerCase() : "";
         String th = maToHop != null ? maToHop.toLowerCase() : "";
-
         for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
             boolean matchMN = mn.isEmpty() || t.getManganh().toLowerCase().contains(mn);
             boolean matchTH = th.isEmpty() || t.getMatohop().toLowerCase().contains(th);
-
             if (matchMN && matchTH) {
                 result.add(t);
             }
         }
-
         return result;
     }
     
     public ArrayList<ToHopNganhDTO> timkiemText(String text) {
-        String textFind = text.toLowerCase();
+        String textFind = text.toLowerCase().trim();
         ArrayList<ToHopNganhDTO> result = new ArrayList<>();
-
+        HashMap<String,String> tenNganhByMaNganhMap = nganhBus.getTenNganhByMaNganhMap();
         for (ToHopNganhDTO t : tohopnganhDao.getAll()) {
-            String tenNganh = nganhBus.getTenNganhByMaNganh(t.getManganh());
+            String tenNganh = tenNganhByMaNganhMap.get(t.getManganh());
             if (t.getManganh().toLowerCase().contains(textFind) || t.getMatohop().toLowerCase().contains(textFind) || tenNganh.toLowerCase().contains(textFind)) {
                 result.add(t);
             }
         }
-
         return result;
     }
 
@@ -153,19 +119,146 @@ public class ToHopNganhBUS {
         if (manganh == null || matohop == null) {
             return false;
         }
-
         String key = (manganh.trim() + "_" + matohop.trim()).toLowerCase();
-
         return tohopnganhDao.getAll().stream().anyMatch(t
                 -> t.getManganh() != null && t.getMatohop() != null
                 && (t.getManganh().trim() + "_" + t.getMatohop().trim())
                         .toLowerCase().equals(key)
         );
     }
+    
+    private String getCell(Row row, int index) {
+        if (index == -1) {
+            return null;
+        }
+        Cell cell = row.getCell(index);
+        if (cell == null) {
+            return null;
+        }
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                double num = cell.getNumericCellValue();
+
+                // tránh 1.0 -> 1
+                if (num == (long) num) {
+                    return String.valueOf((long) num);
+                } else {
+                    return String.valueOf(num);
+                }
+            case BOOLEAN:
+                return String.valueOf(cell.getBooleanCellValue());
+            default:
+                return cell.toString().trim();
+        }
+    }
+    
+    public int getColumnIndex(Row headerRow, String columnName) {
+        for (Cell cell : headerRow) {
+            if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
+                return cell.getColumnIndex();
+            }
+        }
+        return -1;
+    }
+    
+
+    public Object[] parseMonAndHeSo(String matohop) {
+        if (matohop == null || !matohop.contains("(")) {
+            return new Object[]{
+                new String[]{"", "", ""},
+                new Integer[]{0, 0, 0}
+            };
+        }
+        try {
+            String inside = matohop.substring(
+                    matohop.indexOf("(") + 1,
+                    matohop.indexOf(")")
+            );
+            String[] parts = inside.split(",");
+            String[] mons = new String[3];
+            Integer[] hs = new Integer[3];
+            for (int i = 0; i < 3; i++) {
+                if (i < parts.length) {
+                    String[] p = parts[i].split("-");
+                    mons[i] = p.length > 0 ? p[0] : "";
+                    try {
+                        hs[i] = p.length > 1 ? Integer.parseInt(p[1]) : 0;
+                    } catch (Exception e) {
+                        hs[i] = 0;
+                    }
+                } else {
+                    mons[i] = "";
+                    hs[i] = 0;
+                }
+            }
+            return new Object[]{mons, hs};
+        } catch (Exception e) {
+            return new Object[]{
+                new String[]{"", "", ""},
+                new Integer[]{0, 0, 0}
+            };
+        }
+    }
+    
+    public List<ToHopNganhDTO> readFile(String filePath) {
+        List<ToHopNganhDTO> list = new ArrayList<>();
+        try {
+            FileInputStream fis = new FileInputStream(new File(filePath));
+            Workbook workbook = new XSSFWorkbook(fis);
+            Sheet sheet = workbook.getSheetAt(0);
+            Row headerRow = sheet.getRow(0);
+            int maNganhCol = getColumnIndex(headerRow, "MANGANH");
+            int maToHopCol = getColumnIndex(headerRow, "MA_TO_HOP");
+            int dolechCol = getColumnIndex(headerRow, "Độ lệch");
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) {
+                    continue;
+                }
+                String maNganh = getCell(row, maNganhCol);
+                String maToHop = getCell(row, maToHopCol);
+                if (maNganh == null || maToHop == null) {
+                    continue;
+                }
+                ToHopNganhDTO dto = new ToHopNganhDTO();
+                dto.setManganh(maNganh);
+                dto.setMatohop(maToHop.substring(0,3));
+                // tạo tb_keys từ 2 field
+                String tbKeys = maNganh + "_" + maToHop.substring(0,3);
+                dto.setTb_keys(tbKeys);
+
+                // ===== PARSE MÔN + HỆ SỐ =====
+                Object[] result = parseMonAndHeSo(maToHop);
+                String[] mons = (String[]) result[0];
+                Integer[] hs = (Integer[]) result[1];
+                dto.setTh_mon1(mons[0]);
+                dto.setHsmon1(hs[0]);
+                dto.setTh_mon2(mons[1]);
+                dto.setHsmon2(hs[1]);
+                dto.setTh_mon3(mons[2]);
+                dto.setHsmon3(hs[2]);
+                // ===== ĐỘ LỆCH =====
+                String dl = getCell(row, dolechCol);
+                if (dl != null && !dl.isEmpty()) {
+                    try {
+                        dto.setDolech(new BigDecimal(dl));
+                    } catch (Exception e) {
+                        dto.setDolech(BigDecimal.ZERO);
+                    }
+                }
+                list.add(dto);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public int importFromExcel(String filePath) {
         // B1: đọc dữ liệu từ Excel (DAO)
-        List<ToHopNganhDTO> importList = tohopnganhDao.importFromExcel(filePath);
+        List<ToHopNganhDTO> importList = readFile(filePath);
 
         // B2: kiểm tra list
         if (importList == null || importList.isEmpty()) {

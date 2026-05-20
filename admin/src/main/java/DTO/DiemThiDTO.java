@@ -5,10 +5,16 @@ import java.math.BigDecimal;
 import javax.persistence.*;
 
 @Entity
+//@Table(
+//        name = "xt_diemthixettuyen",
+//        uniqueConstraints = {
+//            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc"})
+//        }
+//)
 @Table(
-        name = "xt_diemthixetuyen",
+        name = "xt_diemthixettuyen",
         uniqueConstraints = {
-            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc"})
+            @UniqueConstraint(columnNames = {"cccd", "d_phuongthuc", "dotthi"})
         }
 )
 public class DiemThiDTO implements Serializable {

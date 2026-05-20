@@ -32,6 +32,12 @@ public class NganhDTO {
     @Column(name = "n_diemtrungtuyen")
     private BigDecimal nDiemTrungTuyen;
 
+    @Column(name = "n_diemtrungtuyenvsat")
+    private BigDecimal nDiemTrungTuyenVSAT;
+
+    @Column(name = "n_diemtrungtuyendgnl")
+    private BigDecimal nDiemTrungTuyenDGNL;
+    
     @Column(name = "n_tuyenthang")
     private String nTuyenThang;
 
@@ -115,6 +121,22 @@ public class NganhDTO {
 
     public void setNDiemTrungTuyen(BigDecimal nDiemTrungTuyen) {
         this.nDiemTrungTuyen = nDiemTrungTuyen;
+    }
+
+    public BigDecimal getNDiemTrungTuyenVSAT() {
+        return nDiemTrungTuyenVSAT;
+    }
+
+    public void setNDiemTrungTuyenVSAT(BigDecimal nDiemTrungTuyenVSAT) {
+        this.nDiemTrungTuyenVSAT = nDiemTrungTuyenVSAT;
+    }
+
+    public BigDecimal getNDiemTrungTuyenDGNL() {
+        return nDiemTrungTuyenDGNL;
+    }
+
+    public void setNDiemTrungTuyenDGNL(BigDecimal nDiemTrungTuyenDGNL) {
+        this.nDiemTrungTuyenDGNL = nDiemTrungTuyenDGNL;
     }
 
     public String getNTuyenThang() {

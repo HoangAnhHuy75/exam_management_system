@@ -149,16 +149,22 @@ public class NguyenVongDAO {
 
     public void insertList(List<NguyenVongDTO> list) {
         Transaction tx = null;
-        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
-            for (NguyenVongDTO nv : list) {
-                session.save(nv);
+            int batchSize = 50;
+            for (int i = 0; i < list.size(); i++) {
+                session.save(list.get(i));
+                if (i % batchSize == 0) {
+                    session.flush();
+                    session.clear();
+                }
             }
             tx.commit();
         } catch (Exception e) {
             if (tx != null) {
                 tx.rollback();
             }
+
             e.printStackTrace();
         }
     }
@@ -307,6 +313,21 @@ public class NguyenVongDAO {
 
         } catch (Exception e) {
             if (tx != null) tx.rollback();
+            e.printStackTrace();
+        }
+    }
+    
+    public void deleteAll() {
+        Transaction tx = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            tx = session.beginTransaction();
+            Query query = session.createQuery("DELETE FROM NguyenVongDTO");
+            query.executeUpdate();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
             e.printStackTrace();
         }
     }

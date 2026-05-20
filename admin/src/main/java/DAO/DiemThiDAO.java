@@ -107,6 +107,19 @@ public class DiemThiDAO {
             return new ArrayList<>();
         }
     }
+// tìm id điểm thi  
+    public DiemThiDTO findById(int id) {
+
+        try(Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            return session.get(DiemThiDTO.class, id);
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return null;
+        }
+    }
     
     public void updateAll(List<DiemThiDTO> list) {
         Transaction tx = null;

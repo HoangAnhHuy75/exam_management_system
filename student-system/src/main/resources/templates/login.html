@@ -3,56 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu kết quả trúng tuyển - Admission Portal</title>
+    <style th:replace="~{header :: header-style}"></style>
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
 
-    <title>Đăng nhập - Admission Portal</title>
+    <!-- Giữ nguyên link CSS của bạn -->
     <link rel="stylesheet" th:href="@{/css/login.css}">
+
+   
 </head>
+
+<header th:replace="~{header :: header}"
+        th:with="activePage='register', portalName=${portalName}">
+</header>
 <body>
 
 <div class="container">
     <!-- Header / Logo -->
     <div class="logo">
-        <h1>The Academic Architect</h1>
-        <p>Cổng Tuyển sinh Đại học Chính thức</p>
+        <h1>Tra cứu kết quả xét tuyển</h1>
+        <p>Hệ thống Tra cứu Kết quả Xét tuyển Chính thức</p>
     </div>
 
-    <!-- Card đăng nhập -->
+    <!-- Card Tra cứu -->
     <div class="card">
-        <h2>Đăng nhập hệ thống</h2>
-        <p>Sử dụng mã số CCCD / Định danh cá nhân và mật khẩu để truy cập hồ sơ của bạn.</p>
+        <h2>Tra cứu kết quả</h2>
+        <p class="instruction">
+            Vui lòng nhập số <strong>CCCD</strong> và <strong>Ngày sinh</strong> (mật khẩu mặc định) để xem kết quả xét tuyển chính thức của bạn.
+        </p>
 
-        <!-- Thông báo lỗi -->
-        <div class="error" th:if="${error}">
-            <p th:text="${error}"></p>
+        <!-- Thông báo lỗi (Sai CCCD hoặc mật khẩu) -->
+        <div class="error" th:if="${error}"
+             style="background: #fef2f2; color: #dc2626; padding: 12px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #fee2e2;">
+            <span th:text="${error}"></span>
         </div>
 
-        <form th:action="@{/login}" method="post">
+        <form th:action="@{/tracuuketqua}" method="post">
             <div class="form-group">
                 <label>SỐ CCCD / MÃ ĐỊNH DANH</label>
                 <input type="text"
                        name="cccd"
-                       placeholder="00120300XXXX"
-                       required>
+                       placeholder="Nhập 12 số CCCD"
+                       required
+                       autocomplete="username">
             </div>
 
             <div class="form-group">
-                <label>MẬT KHẨU</label>
+                <label>MẬT KHẨU (NGÀY SINH)</label>
                 <input type="password"
                        name="password"
-                       placeholder="Nhập mật khẩu"
-                       required>
+                       placeholder="định dạng ddmmyyyy"
+                       required
+                       autocomplete="current-password">
             </div>
 
-            <button type="submit" class="btn">Đăng nhập →</button>
+            <button type="submit" class="btn">
+                Xem kết quả ngay
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </button>
         </form>
 
-        <!-- Link đăng ký (nếu cần) -->
-        <div class="register-link">
-            Chưa có tài khoản?
-            <a th:href="@{/register}">Đăng ký ngay</a>
-        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px; color: #9ca3af; font-size: 0.8rem;">
+        <p>© 2026 The Academic Architect Portal. Tất cả quyền được bảo lưu.</p>
     </div>
 </div>
 
 </body>
+<script th:replace="~{header :: header-script}"></script>
+
 </html>

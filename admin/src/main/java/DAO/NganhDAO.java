@@ -87,4 +87,24 @@ public class NganhDAO {
             e.printStackTrace();
         }
     }
+    
+    public int countThiSinhByMaNganh(String maNganh) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            String hql = "SELECT COUNT(DISTINCT nv.nvCccd) "
+                    + "FROM NguyenVongDTO nv "
+                    + "WHERE nv.nvManganh = :maNganh";
+
+            Query<Long> query = session.createQuery(hql, Long.class);
+            query.setParameter("maNganh", maNganh);
+
+            Long count = query.uniqueResult();
+
+            return count != null ? count.intValue() : 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0;
+        }
+    }
 }

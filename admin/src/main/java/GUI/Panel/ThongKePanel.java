@@ -44,7 +44,18 @@ public class ThongKePanel extends JPanel {
 
         initUI();
     }
+    public void refreshData() {
 
+    loadData();
+
+    removeAll();
+
+    initUI();
+
+    revalidate();
+
+    repaint();
+}
     private void loadData() {
 
         tongThiSinh    = thongKeBUS.getSoLuongThiSinh();

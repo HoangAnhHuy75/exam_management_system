@@ -5,12 +5,12 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 
 @Entity
-@Table(name = "xt_tohop") // tên bảng trong database
+@Table(name = "xt_tohop")
 public class ToHopDTO implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "idtohop") // tên cột trong DB
+    @Column(name = "idtohop")
     private int idtohop;
 
     @Column(name = "matohop")

@@ -142,4 +142,22 @@ public class ThiSinhDAO {
             return new ArrayList<>();
         }
     }
+    
+    public List<ThiSinhDTO> getThiSinhByMaNganh(String maNganh) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<ThiSinhDTO> query = session.createQuery(
+                    "SELECT ts "
+                    + "FROM ThiSinhDTO ts "
+                    + "JOIN NguyenVongDTO nv "
+                    + "ON ts.cccd = nv.nvCccd "
+                    + "WHERE nv.nvManganh = :maNganh",
+                    ThiSinhDTO.class
+            );
+            query.setParameter("maNganh", maNganh);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 }

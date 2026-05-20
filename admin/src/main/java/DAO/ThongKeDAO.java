@@ -100,7 +100,7 @@ public class ThongKeDAO {
         Long count = session.createQuery(
                 "SELECT COUNT(DISTINCT nvCccd) " +
                 "FROM NguyenVongDTO " +
-                "WHERE nvKetqua = 'Trúng tuyển'",
+                "WHERE nvKetqua = 'Đậu'",
                 Long.class
         ).uniqueResult();
 

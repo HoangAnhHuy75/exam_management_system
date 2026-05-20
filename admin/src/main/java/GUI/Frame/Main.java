@@ -5,6 +5,7 @@
 package GUI.Frame;
 
 import BUS.DiemThiBUS;
+import BUS.NganhBUS;
 import DTO.PermissionDTO;
 import DTO.RoleDTO;
 import DTO.UserDTO;
@@ -19,6 +20,7 @@ import GUI.Panel.TohopPanel;
 import GUI.Panel.TrangChuPanel;
 import GUI.Panel.UserPanel;
 import GUI.Panel.ThongKePanel;
+import GUI.Panel.XetTuyenPanel;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,7 +32,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
-
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 /**
  *
  * @author kiman
@@ -50,19 +54,19 @@ public class Main extends javax.swing.JFrame {
     ThiSinhPanel thisinhPanel;
     NguyenVongPanel nguyenvongPanel;
     PermissionPanel permissionPanel;
-    
+    XetTuyenPanel xettuyenPanel;
     JButton[] btns ;
     JButton currentActiveBtn = null;
     Border etchedBorder = BorderFactory.createEtchedBorder();
     private String role;
     DiemThiBUS dtBus = new DiemThiBUS();
-    
 
     public Main(UserDTO user) {
         initComponents();
         this.setTitle("Quản lý xét tuyển thí sinh");
         init(user);
     }
+
     // ===== Permission state =====
     private UserDTO currentUser;
     private Set<String> permissions = new HashSet<>();
@@ -74,6 +78,7 @@ public class Main extends javax.swing.JFrame {
         addPanels();
         khoiTao();
         applyRole();
+        customScrollBar();
     }
     public void khoiTao() {
         khoiTaoBtns();
@@ -93,6 +98,7 @@ public class Main extends javax.swing.JFrame {
         thisinhPanel     = new ThiSinhPanel(permissions);
         nguyenvongPanel  = new NguyenVongPanel(permissions);
         permissionPanel  = new PermissionPanel(permissions);
+        xettuyenPanel = new XetTuyenPanel();
     }
     private void addPanels() {
         main.add(thongKePanel, "TrangChu");
@@ -105,6 +111,7 @@ public class Main extends javax.swing.JFrame {
         main.add(userPanel, "User");
         main.add(nguyenvongPanel, "NguyenVong");
         main.add(permissionPanel, "PhanQuyen");
+         main.add(xettuyenPanel,"XetTuyen");
 
         hideAllPanels();
         thongKePanel.setVisible(true);
@@ -133,6 +140,67 @@ public class Main extends javax.swing.JFrame {
             }
         }
     }
+    
+    private void customScrollBar() {
+
+        jScrollPane1.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(180, 180, 180);
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            private JButton createZeroButton() {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                button.setMinimumSize(new Dimension(0, 0));
+                button.setMaximumSize(new Dimension(0, 0));
+                return button;
+            }
+
+            @Override
+            protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
+                Graphics2D g2 = (Graphics2D) g.create();
+
+                g2.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON);
+
+                g2.setColor(new Color(160, 160, 160));
+
+                g2.fillRoundRect(
+                        r.x + 3,
+                        r.y,
+                        r.width - 6,
+                        r.height,
+                        10,
+                        10);
+
+                g2.dispose();
+            }
+
+            @Override
+            protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
+                // nền track trong suốt
+            }
+        });
+
+        JScrollBar bar = jScrollPane1.getVerticalScrollBar();
+        bar.setPreferredSize(new Dimension(8, Integer.MAX_VALUE));
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.getViewport().setBackground(Color.WHITE);
+    }
 
     private void applyRole() {
     // Luôn enable
@@ -149,6 +217,7 @@ public class Main extends javax.swing.JFrame {
     setMenuBtnState(btn_nvxt,             permissions.contains("nguyenvong.read"));
     setMenuBtnState(btn_user,             permissions.contains("user.read"));
     setMenuBtnState(btn_permission,       permissions.contains("ROLE_ADMIN"));
+    setMenuBtnState(btn_xettuyen, permissions.contains("nguyenvong.read"));
 }
     private void setMenuBtnState(JButton btn, boolean hasPermission) {
     btn.setVisible(true); // luôn hiện
@@ -168,20 +237,20 @@ public class Main extends javax.swing.JFrame {
     
 
     public void khoiTaoBtns() {
-    btns = new JButton[11];
-    btns[0]  = btn_home;
-    btns[1]  = btn_major;
-    btns[2]  = btn_combination;
-    btns[3]  = btn_combination_major;
-    btns[4]  = btn_thisinh;
-    btns[5]  = btn_diemthi;
-    btns[6]  = btn_diemcong;
-    btns[7]  = btn_nvxt;
-    btns[8]  = btn_user;
-    btns[9]  = btn_permission;
-    btns[10] = btn_logout;
-}
-
+        btns = new JButton[12];
+        btns[0] = btn_home;
+        btns[1] = btn_major;
+        btns[2] = btn_combination;
+        btns[3] = btn_combination_major;
+        btns[4] = btn_thisinh;
+        btns[5] = btn_diemthi;
+        btns[6] = btn_diemcong;
+        btns[7] = btn_nvxt;
+        btns[8] = btn_xettuyen;
+        btns[9] = btn_user;
+        btns[10] = btn_permission;
+        btns[11] = btn_logout;
+    }
     private void hideAllPanels() {
         for (Component c : main.getComponents()) {
             c.setVisible(false);
@@ -199,6 +268,9 @@ public class Main extends javax.swing.JFrame {
         btn_diemcong.setIcon(new FlatSVGIcon("./resources/icon/addpoint.svg", 0.33f));
         btn_nvxt.setIcon(new FlatSVGIcon("./resources/icon/checklist.svg", 0.33f));
         btn_user.setIcon(new FlatSVGIcon("./resources/icon/key.svg", 0.33f));
+        btn_xettuyen.setIcon(new FlatSVGIcon("./resources/icon/xettuyen.svg", 0.33f));
+        btn_permission.setIcon(new FlatSVGIcon("./resources/icon/phanquyen.svg", 0.33f));
+        btn_logout.setIcon(new FlatSVGIcon("./resources/icon/dangxuat.svg", 0.33f));
     }
 
     public void setBorder() {
@@ -288,10 +360,16 @@ public class Main extends javax.swing.JFrame {
      * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        logo_school = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jScrollPane1 = new javax.swing.JScrollPane();
         panel_bottom_menu = new javax.swing.JPanel();
         btn_combination = new javax.swing.JButton();
         btn_major = new javax.swing.JButton();
@@ -304,16 +382,54 @@ public class Main extends javax.swing.JFrame {
         btn_user = new javax.swing.JButton();
         btn_logout = new javax.swing.JButton();
         btn_permission = new javax.swing.JButton();
-        jPanel2 = new javax.swing.JPanel();
-        logo_school = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        btn_xettuyen = new javax.swing.JButton();
         main = new javax.swing.JLayeredPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setPreferredSize(new java.awt.Dimension(240, 470));
+        jPanel1.setLayout(null);
+
+        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        jLabel1.setText("ACADEMIC LEDGER");
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(153, 153, 153));
+        jLabel2.setText("Admin Management");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(13, 13, 13)
+                .addComponent(logo_school, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel2))
+                    .addComponent(logo_school, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(47, Short.MAX_VALUE))
+        );
+
+        jPanel1.add(jPanel2);
+        jPanel2.setBounds(0, 0, 240, 140);
 
         panel_bottom_menu.setBackground(new java.awt.Color(255, 255, 255));
 
@@ -394,6 +510,13 @@ public class Main extends javax.swing.JFrame {
             }
         });
 
+        btn_xettuyen.setText("Xét tuyển");
+        btn_xettuyen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xettuyenActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panel_bottom_menuLayout = new javax.swing.GroupLayout(panel_bottom_menu);
         panel_bottom_menu.setLayout(panel_bottom_menuLayout);
         panel_bottom_menuLayout.setHorizontalGroup(
@@ -411,7 +534,8 @@ public class Main extends javax.swing.JFrame {
                     .addComponent(btn_nvxt, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                     .addComponent(btn_user, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
                     .addComponent(btn_logout, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                    .addComponent(btn_permission, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                    .addComponent(btn_permission, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                    .addComponent(btn_xettuyen, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         panel_bottom_menuLayout.setVerticalGroup(
@@ -434,65 +558,20 @@ public class Main extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(btn_nvxt, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(btn_xettuyen, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btn_user, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_permission, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btn_logout, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(252, Short.MAX_VALUE))
         );
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane1.setViewportView(panel_bottom_menu);
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
-        jLabel1.setText("ACADEMIC LEDGER");
-
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(153, 153, 153));
-        jLabel2.setText("Admin Management");
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addComponent(logo_school, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2))
-                    .addComponent(logo_school, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(41, Short.MAX_VALUE))
-        );
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panel_bottom_menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(131, 131, 131)
-                .addComponent(panel_bottom_menu, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        jPanel1.add(jScrollPane1);
+        jScrollPane1.setBounds(0, 140, 240, 760);
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.LINE_START);
 
@@ -504,25 +583,32 @@ public class Main extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_majorActionPerformed
+    private void btn_xettuyenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xettuyenActionPerformed
+        hideAllPanels();
+        xettuyenPanel.setVisible(true);
+    }//GEN-LAST:event_btn_xettuyenActionPerformed
+
+    private void btn_majorActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_majorActionPerformed
         hideAllPanels();
         nganhPanel.setVisible(true);
-    }//GEN-LAST:event_btn_majorActionPerformed
+    }// GEN-LAST:event_btn_majorActionPerformed
 
-    private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_homeActionPerformed
+    private void btn_homeActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_homeActionPerformed
         hideAllPanels();
+        thongKePanel.refreshData();
         thongKePanel.setVisible(true);
-    }//GEN-LAST:event_btn_homeActionPerformed
+    }                                        
 
-    private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combinationActionPerformed
+
+    private void btn_combinationActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_combinationActionPerformed
         hideAllPanels();
         toHopPanel.setVisible(true);
-    }//GEN-LAST:event_btn_combinationActionPerformed
+    }// GEN-LAST:event_btn_combinationActionPerformed
 
-    private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_combination_majorActionPerformed
+    private void btn_combination_majorActionPerformed(java.awt.event.ActionEvent evt) {                                                      
         hideAllPanels();
         tohop_nganh_panel.setVisible(true);
-    }//GEN-LAST:event_btn_combination_majorActionPerformed
+    }// GEN-LAST:event_btn_combination_majorActionPerformed
 
     private void btn_diemthiActionPerformed(java.awt.event.ActionEvent evt) {
         hideAllPanels();
@@ -530,23 +616,22 @@ public class Main extends javax.swing.JFrame {
         diemThiPanel.dataTable(dtBus.getList());
     }
 
-    private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_diemcongActionPerformed
+    private void btn_diemcongActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_diemcongActionPerformed
         hideAllPanels();
         diemCongPanel.setVisible(true);
-    }//GEN-LAST:event_btn_diemcongActionPerformed
+    }// GEN-LAST:event_btn_diemcongActionPerformed
 
-    private void btn_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_userActionPerformed
+    private void btn_userActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_userActionPerformed
         hideAllPanels();
         userPanel.setVisible(true);
-    }//GEN-LAST:event_btn_userActionPerformed
+    }// GEN-LAST:event_btn_userActionPerformed
 
-    private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_logoutActionPerformed
+    private void btn_logoutActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_logoutActionPerformed
         int confirm = javax.swing.JOptionPane.showConfirmDialog(
                 this,
                 "Bạn có chắc chắn muốn đăng xuất?",
                 "Xác nhận đăng xuất",
-                javax.swing.JOptionPane.YES_NO_OPTION
-        );
+                javax.swing.JOptionPane.YES_NO_OPTION);
 
         if (confirm == javax.swing.JOptionPane.YES_OPTION) {
             this.dispose(); // đóng màn hình Main
@@ -554,22 +639,22 @@ public class Main extends javax.swing.JFrame {
             // mở lại màn hình đăng nhập
             new LoginFrame().setVisible(true);
         }
-    }//GEN-LAST:event_btn_logoutActionPerformed
+    }// GEN-LAST:event_btn_logoutActionPerformed
 
-    private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_nvxtActionPerformed
+    private void btn_nvxtActionPerformed(java.awt.event.ActionEvent evt) {                                         
         hideAllPanels();
         nguyenvongPanel.setVisible(true);
-    }//GEN-LAST:event_btn_nvxtActionPerformed
-
-    private void btn_permissionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_permissionActionPerformed
+    }// GEN-LAST:event_btn_nvxtActionPerformed
+    
+    private void btn_permissionActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_btn_permissionActionPerformed
         hideAllPanels();
         permissionPanel.setVisible(true);
         permissionPanel.loadData();
-    }//GEN-LAST:event_btn_permissionActionPerformed
+    }// GEN-LAST:event_btn_permissionActionPerformed
+
     private void btn_thisinhActionPerformed(java.awt.event.ActionEvent evt) {
         hideAllPanels();
         thisinhPanel.setVisible(true);
-
     }
 
     /**
@@ -577,9 +662,13 @@ public class Main extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+        // <editor-fold defaultstate="collapsed" desc=" Look and feel setting code
+        // (optional) ">
+        /*
+         * If Nimbus (introduced in Java SE 6) is not available, stay with the default
+         * look and feel.
+         * For details see
+         * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -597,7 +686,7 @@ public class Main extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        //</editor-fold>
+        // </editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -622,10 +711,12 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JButton btn_permission;
     private javax.swing.JButton btn_thisinh;
     private javax.swing.JButton btn_user;
+    private javax.swing.JButton btn_xettuyen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel logo_school;
     private javax.swing.JLayeredPane main;
     private javax.swing.JPanel panel_bottom_menu;

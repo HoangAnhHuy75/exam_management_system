@@ -1,0 +1,404 @@
+/* Layout chính */
+.tc-wrap {
+    padding: 30px 15px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.tc-content {
+    width: 100%;
+    max-width: 1000px;
+}
+
+.tc-container {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+.tc-body {
+    padding: 20px 30px;
+}
+
+/* Tabs */
+.tabs-header {
+    display: flex;
+    border-bottom: 1px solid #dee2e6;
+    background: #f8f9fa;
+}
+
+.tab-btn {
+    padding: 12px 25px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    color: #495057;
+}
+/* ==========================================================================
+   1. ROOT VARIABLES
+   ========================================================================== */
+:root {
+    /* Colors - University Brand */
+    --primary-color: #003366;
+    --primary-light: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary-color: #a50000;
+
+    /* Semantic Colors */
+    --success: #10b981;
+    --error: #ef4444;
+    --warning: #f59e0b;
+    --info: #3b82f6;
+
+    /* Neutrals */
+    --bg-body: #f4f7f9;
+    --bg-card: #ffffff;
+    --bg-alt: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+
+    /* Layout */
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.05);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==========================================================================
+   2. RESET + BASE
+   ========================================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Be Vietnam Pro', 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* ==========================================================================
+   3. MAIN LAYOUT
+   ========================================================================== */
+.tc-wrap {
+    padding: 2rem 1rem;
+    min-height: calc(100vh - 74px); /* Trừ đi chiều cao header */
+    display: flex;
+    justify-content: center;
+}
+
+.tc-content {
+    width: 100%;
+    max-width: 900px;
+}
+
+.tc-container {
+    background: var(--bg-card);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+}
+
+.tc-body {
+    padding: 1.5rem 2.5rem 2.5rem;
+}
+
+/* ==========================================================================
+   4. PAGE HEADER
+   ========================================================================== */
+.page-header {
+    padding: 2rem 2.5rem 1.5rem;
+    background: var(--bg-alt);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.page-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 8px;
+}
+
+.page-header h2 i {
+    width: 28px;
+    height: 28px;
+    color: var(--primary-light);
+}
+
+.description {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   5. NAVIGATION & INFO
+   ========================================================================== */
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 1.5rem 2.5rem 0.5rem;
+    padding: 8px 16px;
+    background: var(--bg-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: var(--transition);
+}
+
+.nav-link:hover {
+    background: var(--white);
+    color: var(--primary-light);
+    border-color: var(--primary-light);
+    transform: translateX(-4px);
+}
+
+.nganh-info {
+    margin: 1rem 2.5rem;
+    padding: 1rem 1.5rem;
+    background: #eff6ff; /* Light blue info */
+    border-left: 4px solid var(--primary-light);
+    border-radius: 8px;
+}
+
+/* ==========================================================================
+   6. TABLES (Result Table)
+   ========================================================================== */
+.detail-result-table {
+    margin-top: 1rem;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+}
+
+.detail-result-table table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+}
+
+.detail-result-table th {
+    background: var(--bg-alt);
+    padding: 14px 20px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.detail-result-table td {
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 0.95rem;
+}
+
+.detail-result-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Formula row styling */
+.detail-result-table td:nth-child(2) {
+    font-family: 'JetBrains Mono', 'Consolas', monospace;
+    color: var(--primary-color);
+    font-weight: 500;
+}
+
+/* Final Score Row */
+.final-score {
+    background-color: #f1f5f9;
+}
+
+.final-score td {
+    font-weight: 800 !important;
+    color: var(--primary-color) !important;
+    font-size: 1.1rem !important;
+}
+
+/* ==========================================================================
+   7. RESULT BOX (Bottom Alerts)
+   ========================================================================== */
+.result-box {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: var(--bg-alt);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-color);
+    line-height: 2;
+}
+
+.result-box strong {
+    color: var(--text-main);
+    margin-right: 10px;
+    font-size: 1.1rem;
+}
+
+/* Status Badges within result box */
+.result-box span {
+    padding: 4px 12px;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.result-box span[style*="color: green"] {
+    background: var(--success-bg, #ecfdf5);
+    color: #065f46 !important;
+    border: 1px solid #10b981;
+}
+
+.result-box span[style*="color: red"] {
+    background: var(--error-bg, #fef2f2);
+    color: #991b1b !important;
+    border: 1px solid #ef4444;
+}
+
+/* ==========================================================================
+   11. ANIMATION
+   ========================================================================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   12. RESPONSIVE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .tc-body {
+        padding: 1.5rem;
+    }
+
+    .page-header, .nav-link, .nganh-info {
+        margin-left: 1.5rem;
+        margin-right: 1.5rem;
+    }
+
+    .page-header {
+        padding: 1.5rem;
+    }
+
+    .detail-result-table th,
+    .detail-result-table td {
+        padding: 12px 15px;
+        font-size: 0.85rem;
+    }
+
+    .final-score td {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .page-header h2 {
+        font-size: 1.2rem;
+    }
+
+    /* Table mobile view: Stack content if needed */
+    .detail-result-table table,
+    .detail-result-table thead,
+    .detail-result-table tbody,
+    .detail-result-table th,
+    .detail-result-table td,
+    .detail-result-table tr {
+        display: block;
+    }
+
+    .detail-result-table thead {
+        display: none;
+    }
+
+    .detail-result-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--border-color);
+        padding: 10px 15px;
+    }
+
+    .detail-result-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        color: var(--text-muted);
+    }
+
+    .final-score {
+        border: 2px solid var(--primary-light);
+    }
+}
+.tab-btn.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+/* Form */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.tc-form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.tc-form-group input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+/* Bảng chi tiết điểm (Dựa trên ảnh) */
+.detail-result-table {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.detail-result-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.detail-result-table th,
+.detail-result-table td {
+    border: 1px solid #dee2e6;
+    padding: 12px;
+    text-align: left;
+}
+
+.detail-result-table th {
+    background-color: #f8f9fa;
+}
+
+.final-score {
+    font-weight: bold;
+    background-color: #f1f8ff;
+    color: #0056b3;
+}

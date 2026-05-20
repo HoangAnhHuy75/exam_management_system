@@ -77,20 +77,17 @@ public class DiemThiBUS {
 
     //kiểm tra trùng cccd
     public boolean checkDup(DiemThiDTO dt) {
-
         if (keyCache == null) {
             keyCache = new HashSet<>();
-
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
                 keyCache.add(buildKey(item));
             }
         }
-
         return keyCache.contains(buildKey(dt));
     }
 
     private String buildKey(DiemThiDTO dt) {
-        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim();
+        return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim() + "_" + dt.getDotthi();
     }
 
     public int importExcel(String filePath) {
@@ -169,25 +166,20 @@ public class DiemThiBUS {
     }
 
     // tìm 1 cccd
-    public DiemThiDTO findOneByCCCD(String cccd) {
-        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            if (dt.getCccd().equals(cccd)) {
-                return dt;
-            }
-        }
-        return null;
+    public DiemThiDTO findById(int idDiemThi) {
+        return diemThiDao.findById(idDiemThi);
     }
 
     //filter theo phương thức xét tuyển
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
-        String ptText = convertPhuongThuc(pt);
+//        String ptText = convertPhuongThuc(pt);
         ArrayList<DiemThiDTO> list = new ArrayList<>();
 
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             if (dt.getD_phuongthuc() == null) {
                 continue;
             }
-            if (dt.getD_phuongthuc().equalsIgnoreCase(ptText)) {
+            if (dt.getD_phuongthuc().equalsIgnoreCase(pt)) {
                 list.add(dt);
             }
         }
@@ -283,6 +275,8 @@ public class DiemThiBUS {
                 return dt.getDI();
             case "Văn":
                 return dt.getVA();
+            case "GDCD":
+                return dt.getGDCD();
             case "CNCN":
                 return dt.getCNCN();
             case "CNNN":
@@ -295,6 +289,14 @@ public class DiemThiBUS {
                 return dt.getNK1();
             case "NK2":
                 return dt.getNK2();
+            case "NK3":
+                return dt.getNK3();
+            case "NK4":
+                return dt.getNK4();
+            case "NK5":
+                return dt.getNK5();
+            case "NK6":
+                return dt.getNK6();
             case "NL1":
                 return dt.getNL1();
             case "N1_THI":
@@ -484,85 +486,160 @@ public class DiemThiBUS {
     }
     
     // import VSAT
+//    public int importVSAT(String filePath) {
+//
+//        List<DiemThiDTO> importList = readFileVSAT(filePath);
+//        if (importList == null || importList.isEmpty()) {
+//            return 0;
+//        }
+//        HashMap<String, HashMap<String, DiemThiDTO>> group = new HashMap<>();
+//
+//        for (DiemThiDTO dt : importList) {
+//            String cccd = dt.getCccd();
+//            String dot = dt.getDotthi(); // từ Excel
+//
+//            if (cccd == null) {
+//                continue;
+//            }
+//            group.putIfAbsent(cccd, new HashMap<>());
+//            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
+//            byDot.put(dot, dt);
+//        }
+//        List<DiemThiDTO> finalList = new ArrayList<>();
+//        for (String cccd : group.keySet()) {
+//            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
+//            BigDecimal max = BigDecimal.valueOf(-1);
+//            DiemThiDTO best = null;
+//            for (DiemThiDTO dt : byDot.values()) {
+//
+//                BigDecimal sum = BigDecimal.ZERO;
+//
+//                if (dt.getTO() != null) {
+//                    sum = sum.add(dt.getTO());
+//                }
+//                if (dt.getLI() != null) {
+//                    sum = sum.add(dt.getLI());
+//                }
+//                if (dt.getHO() != null) {
+//                    sum = sum.add(dt.getHO());
+//                }
+//                if (dt.getSI() != null) {
+//                    sum = sum.add(dt.getSI());
+//                }
+//                if (dt.getSU() != null) {
+//                    sum = sum.add(dt.getSU());
+//                }
+//                if (dt.getDI() != null) {
+//                    sum = sum.add(dt.getDI());
+//                }
+//                if (dt.getVA() != null) {
+//                    sum = sum.add(dt.getVA());
+//                }
+//                if (dt.getN1_THI() != null) {
+//                    sum = sum.add(dt.getN1_THI());
+//                }
+//                if (sum.compareTo(max) > 0) {
+//                    max = sum;
+//                    best = dt;
+//                }
+//            }
+//            if (best != null) {
+//                finalList.add(best);
+//            }
+//        }
+//        if (keyCache == null) {
+//            keyCache = new HashSet<>();
+//            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
+//                keyCache.add(buildKey(item));
+//            }
+//        }
+//        List<DiemThiDTO> newList = new ArrayList<>();
+//        for (DiemThiDTO dt : finalList) {
+//            String key = buildKeyVSAT(dt);
+//            if (keyCacheVSAT.contains(key)) {
+//                continue;
+//            }
+//            newList.add(dt);
+//            keyCacheVSAT.add(key);
+//        }
+//        if (!newList.isEmpty()) {
+//            diemThiDao.saveAll(newList);
+//        }
+//        return newList.size();
+//    }
     public int importVSAT(String filePath) {
 
         List<DiemThiDTO> importList = readFileVSAT(filePath);
+
         if (importList == null || importList.isEmpty()) {
             return 0;
         }
-        HashMap<String, HashMap<String, DiemThiDTO>> group = new HashMap<>();
+
+        if (keyCacheVSAT == null) {
+            keyCacheVSAT = new HashSet<>();
+
+            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
+
+                if (!"VSAT".equals(item.getD_phuongthuc())) {
+                    continue;
+                }
+
+                keyCacheVSAT.add(buildKeyVSAT(item));
+            }
+        }
+
+        List<DiemThiDTO> newList = new ArrayList<>();
 
         for (DiemThiDTO dt : importList) {
-            String cccd = dt.getCccd();
-            String dot = dt.getDotthi(); // từ Excel
 
-            if (cccd == null) {
+            // đếm số môn có điểm
+            int soMon = 0;
+
+            if (dt.getTO() != null) {
+                soMon++;
+            }
+            if (dt.getLI() != null) {
+                soMon++;
+            }
+            if (dt.getHO() != null) {
+                soMon++;
+            }
+            if (dt.getSI() != null) {
+                soMon++;
+            }
+            if (dt.getSU() != null) {
+                soMon++;
+            }
+            if (dt.getDI() != null) {
+                soMon++;
+            }
+            if (dt.getVA() != null) {
+                soMon++;
+            }
+            if (dt.getN1_THI() != null) {
+                soMon++;
+            }
+
+            // bỏ đợt dưới 3 môn
+            if (soMon < 3) {
                 continue;
             }
-            group.putIfAbsent(cccd, new HashMap<>());
-            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
-            byDot.put(dot, dt);
-        }
-        List<DiemThiDTO> finalList = new ArrayList<>();
-        for (String cccd : group.keySet()) {
-            HashMap<String, DiemThiDTO> byDot = group.get(cccd);
-            BigDecimal max = BigDecimal.valueOf(-1);
-            DiemThiDTO best = null;
-            for (DiemThiDTO dt : byDot.values()) {
 
-                BigDecimal sum = BigDecimal.ZERO;
-
-                if (dt.getTO() != null) {
-                    sum = sum.add(dt.getTO());
-                }
-                if (dt.getLI() != null) {
-                    sum = sum.add(dt.getLI());
-                }
-                if (dt.getHO() != null) {
-                    sum = sum.add(dt.getHO());
-                }
-                if (dt.getSI() != null) {
-                    sum = sum.add(dt.getSI());
-                }
-                if (dt.getSU() != null) {
-                    sum = sum.add(dt.getSU());
-                }
-                if (dt.getDI() != null) {
-                    sum = sum.add(dt.getDI());
-                }
-                if (dt.getVA() != null) {
-                    sum = sum.add(dt.getVA());
-                }
-                if (dt.getN1_THI() != null) {
-                    sum = sum.add(dt.getN1_THI());
-                }
-                if (sum.compareTo(max) > 0) {
-                    max = sum;
-                    best = dt;
-                }
-            }
-            if (best != null) {
-                finalList.add(best);
-            }
-        }
-        if (keyCache == null) {
-            keyCache = new HashSet<>();
-            for (DiemThiDTO item : diemThiDao.getAllDiem()) {
-                keyCache.add(buildKey(item));
-            }
-        }
-        List<DiemThiDTO> newList = new ArrayList<>();
-        for (DiemThiDTO dt : finalList) {
             String key = buildKeyVSAT(dt);
+
+            // tránh trùng
             if (keyCacheVSAT.contains(key)) {
                 continue;
             }
+
             newList.add(dt);
             keyCacheVSAT.add(key);
         }
+
         if (!newList.isEmpty()) {
             diemThiDao.saveAll(newList);
         }
+
         return newList.size();
     }
 
@@ -740,7 +817,6 @@ public class DiemThiBUS {
         }
         return newList.size();
     }
-
     public String convertPhuongThuc(String pt) {
         switch (pt) {
             case "Tuyển thẳng":
@@ -754,5 +830,22 @@ public class DiemThiBUS {
             default:
                 return "";
         }
+    }
+    
+    public HashMap<String, HashMap<String, DiemThiDTO>> vsatMap() {
+        HashMap<String, HashMap<String, DiemThiDTO>> map = new HashMap<>();
+        for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
+            if (!"VSAT".equals(dt.getD_phuongthuc())) {
+                continue;
+            }
+            String cccd = dt.getCccd();
+            String dotThi = dt.getDotthi();
+            if (cccd == null || dotThi == null) {
+                continue;
+            }
+            map.putIfAbsent(cccd, new HashMap<>());
+            map.get(cccd).put(dotThi, dt);
+        }
+        return map;
     }
 }

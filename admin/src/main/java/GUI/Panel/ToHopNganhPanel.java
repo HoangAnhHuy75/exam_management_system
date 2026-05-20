@@ -18,6 +18,7 @@ import java.awt.Window;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.HashMap;
 import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -127,10 +128,10 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
                 return false;
             }
         };
-
+        HashMap<String,String> tenNganhByMaNganhMap = nganhBus.getTenNganhByMaNganhMap();
         for (ToHopNganhDTO t : list) {
 
-            String tenNganh = nganhBus.getTenNganhByMaNganh(t.getManganh());
+            String tenNganh = tenNganhByMaNganhMap.get(t.getManganh());
 
             model.addRow(new Object[]{
                 t.getManganh(),
@@ -447,7 +448,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
     private void btn_timkiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_timkiemActionPerformed
         String text = jtf_timkiem.getText();
         dataTable(toH_ng_Bus.timkiemText(text));
-
     }//GEN-LAST:event_btn_timkiemActionPerformed
 
     private void btn_refreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_refreshActionPerformed

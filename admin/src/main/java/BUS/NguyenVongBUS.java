@@ -354,7 +354,7 @@ public class NguyenVongBUS {
         return quyDoiMonVSAT(mon, raw, listQD);
     }
 
-    private BigDecimal tinhDiemVSAT(Object[] row,DiemThiDTO dt,List<BangQuyDoiDTO> listQD1,List<BangQuyDoiDTO> listQD2,List<BangQuyDoiDTO> listQD3) {
+    private BigDecimal tinhDiemVSAT(Object[] row, DiemThiDTO dt, List<BangQuyDoiDTO> listQD1, List<BangQuyDoiDTO> listQD2, List<BangQuyDoiDTO> listQD3) {
         String mon1 = (String) row[1];
         String mon2 = (String) row[2];
         String mon3 = (String) row[3];
@@ -377,10 +377,10 @@ public class NguyenVongBUS {
                 .divide(BigDecimal.valueOf(w), 4, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(3));
     }
-    
+
     public void xetTuyen() {
         List<NguyenVongDTO> listNV = nvDAO.getAll();
-        HashMap<String, DiemThiDTO> diemThiMap = dtBus.diemthiMap();
+        HashMap<String, DiemThiDTO> thpt_dgnl_Map = dtBus.thpt_dgnl_Map();
         HashMap<String, HashMap<String, DiemThiDTO>> vsatMap = dtBus.vsatMap();
         HashMap<String, ThiSinhDTO> thisinhMap = tsBus.thisinhMap();
         HashMap<String, DiemCongDTO> diemCongMap = dcBus.diemcongMap();
@@ -393,17 +393,12 @@ public class NguyenVongBUS {
             NganhDTO nganh = nganhMap.get(maNganh);
             String cccd = nv.getNvCccd();
             ThiSinhDTO ts = thisinhMap.get(cccd);
-            DiemThiDTO dtTHPT = diemThiMap.get(cccd + "_THPT");
-            DiemThiDTO dtDGNL = diemThiMap.get(cccd + "_ĐGNL");
-//            DiemThiDTO dtVSAT = diemThiMap.get(cccd + "_VSAT");
+            DiemThiDTO dtTHPT = thpt_dgnl_Map.get(cccd + "_THPT");
+            DiemThiDTO dtDGNL = thpt_dgnl_Map.get(cccd + "_ĐGNL");
             HashMap<String, DiemThiDTO> vsatByDot = vsatMap.get(cccd);
-//            if (dtTHPT == null && dtDGNL == null && dtVSAT == null) {
-//                continue;
-//            }
-if (dtTHPT == null && dtDGNL == null
-        && (vsatByDot == null || vsatByDot.isEmpty())) {
-    continue;
-}
+            if (dtTHPT == null && dtDGNL == null && (vsatByDot == null || vsatByDot.isEmpty())) {
+                continue;
+            }
             List<Object[]> list = getDanhSachToHop(maNganh, cache);
             BigDecimal max = BigDecimal.ZERO;
             BigDecimal diem_cong = BigDecimal.ZERO;

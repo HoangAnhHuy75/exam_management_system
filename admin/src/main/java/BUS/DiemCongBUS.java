@@ -176,7 +176,7 @@ public class DiemCongBUS {
             int cccdCol = getColumnIndex(header, "CCCD");
             int diemCol = getColumnIndex(header, "Điểm cộng");
             int diemquydoiCol = getColumnIndex(header, "Điểm quy đổi");
-            HashMap<String, DiemThiDTO> diemthiMap = dtBus.diemthiMap();
+            HashMap<String, DiemThiDTO> diemthiMap = dtBus.thpt_dgnl_Map();
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) {

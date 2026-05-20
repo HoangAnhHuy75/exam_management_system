@@ -274,11 +274,16 @@ public class DiemThiBUS {
         return dt.getCccd().trim() + "_" + dt.getD_phuongthuc().trim() + "_" + dt.getDotthi();
     }
 
-    public HashMap<String, DiemThiDTO> diemthiMap() {
+    public HashMap<String, DiemThiDTO> thpt_dgnl_Map() {
         HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            diemthiMap.put(dt.getCccd() + "_" + dt.getD_phuongthuc(), dt);
+            // bỏ qua VSAT
+            if ("VSAT".equals(dt.getD_phuongthuc())) {
+                continue;
+            }
+            diemthiMap.put(dt.getCccd() + "_" + dt.getD_phuongthuc(),dt);
         }
+
         return diemthiMap;
     }
 

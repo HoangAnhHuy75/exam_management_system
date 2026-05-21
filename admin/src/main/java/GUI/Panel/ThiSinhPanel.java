@@ -9,6 +9,7 @@ import BUS.ThiSinhBUS;
 import DTO.NganhDTO;
 import DTO.ThiSinhDTO;
 import GUIDialog.AddThiSinhDialog;
+import GUIDialog.ChiTietFullDiem;
 import GUIDialog.DetailThiSinhDialog;
 import GUIDialog.UpdateThiSinhDialog;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -151,6 +152,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_import.setIcon(new FlatSVGIcon("./resources/icon/import.svg", 0.2f));
         btn_refresh.setIcon(new FlatSVGIcon("./resources/icon/refresh.svg", 0.25f));
         btn_chitiet.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
+        btn_xem_chitietDiem.setIcon(new FlatSVGIcon("./resources/icon/view.svg", 0.2f));
         jtf_design.setUpJTF(jtf_timkiem);
         btn_design.setUpBtn(btn_refresh, Color.white, Color.white);
     }
@@ -249,6 +251,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         btn_delete = new javax.swing.JButton();
         btn_chitiet = new javax.swing.JButton();
         btn_import = new javax.swing.JButton();
+        btn_xem_chitietDiem = new javax.swing.JButton();
         jtf_timkiem = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel5 = new javax.swing.JLabel();
@@ -367,6 +370,14 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             }
         });
 
+        btn_xem_chitietDiem.setBackground(new java.awt.Color(0, 255, 204));
+        btn_xem_chitietDiem.setText("Chi tiết điểm");
+        btn_xem_chitietDiem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_xem_chitietDiemActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -382,18 +393,22 @@ public class ThiSinhPanel extends javax.swing.JPanel {
                 .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(72, 72, 72))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btn_xem_chitietDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(54, 54, 54))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(27, 27, 27)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btn_xem_chitietDiem, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btn_import, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_edit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_delete, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btn_chitiet, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(22, Short.MAX_VALUE))
         );
 
@@ -650,7 +665,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             return;
         }
         
-        String cccd = thisinh_table.getValueAt(row,0).toString();
+        String cccd = thisinh_table.getValueAt(row,1).toString();
 
         ThiSinhDTO ts = thisinhBus.findByCCCD(cccd);
 
@@ -717,6 +732,17 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         new DetailThiSinhDialog((Frame) parentWindow, true, this, thisinh).setVisible(true);
     }//GEN-LAST:event_btn_chitietActionPerformed
 
+    private void btn_xem_chitietDiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_xem_chitietDiemActionPerformed
+        int row = thisinh_table.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn thí sinh!");
+            return;
+        }
+        String cccd = thisinh_table.getValueAt(row, 1).toString();
+        Window parentWindow = SwingUtilities.getWindowAncestor(this);
+        new ChiTietFullDiem((Frame) parentWindow, true, cccd).setVisible(true);
+    }//GEN-LAST:event_btn_xem_chitietDiemActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btn_add;
@@ -726,6 +752,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
     private javax.swing.JButton btn_filter;
     private javax.swing.JButton btn_import;
     private javax.swing.JButton btn_refresh;
+    private javax.swing.JButton btn_xem_chitietDiem;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JComboBox<String> jComboBox3;

@@ -164,7 +164,7 @@ public class DiemThiBUS {
         return rs;
     }
 
-    // tìm 1 cccd
+
     public DiemThiDTO findById(int idDiemThi) {
         return diemThiDao.findById(idDiemThi);
     }
@@ -173,7 +173,6 @@ public class DiemThiBUS {
     public ArrayList<DiemThiDTO> filterByPTXT(String pt) {
 //        String ptText = convertPhuongThuc(pt);
         ArrayList<DiemThiDTO> list = new ArrayList<>();
-
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
             if (dt.getD_phuongthuc() == null) {
                 continue;
@@ -250,13 +249,13 @@ public class DiemThiBUS {
     }
 
     private String buildKeyVSAT(DiemThiDTO dt) {
-        return dt.getCccd().trim() + "_VSAT_" + (dt.getDotthi() == null ? "" : dt.getDotthi().trim());
+        return dt.getCccd().trim() + "_PT3_" + (dt.getDotthi() == null ? "" : dt.getDotthi().trim());
     }
 
     public HashMap<String, HashMap<String, DiemThiDTO>> vsatMap() {
         HashMap<String, HashMap<String, DiemThiDTO>> map = new HashMap<>();
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            if (!"VSAT".equals(dt.getD_phuongthuc())) {
+            if (!"PT3".equals(dt.getD_phuongthuc())) {
                 continue;
             }
             String cccd = dt.getCccd();
@@ -277,13 +276,11 @@ public class DiemThiBUS {
     public HashMap<String, DiemThiDTO> thpt_dgnl_Map() {
         HashMap<String, DiemThiDTO> diemthiMap = new HashMap<>();
         for (DiemThiDTO dt : diemThiDao.getAllDiem()) {
-            // bỏ qua VSAT
-            if ("VSAT".equals(dt.getD_phuongthuc())) {
+            if ("PT3".equals(dt.getD_phuongthuc())) {
                 continue;
             }
             diemthiMap.put(dt.getCccd() + "_" + dt.getD_phuongthuc(),dt);
         }
-
         return diemthiMap;
     }
 
@@ -503,7 +500,7 @@ public class DiemThiBUS {
                 if (dto == null) {
                     dto = new DiemThiDTO();
                     dto.setCccd(cccd.trim());
-                    dto.setD_phuongthuc("VSAT");
+                    dto.setD_phuongthuc("PT3");
                     dto.setDotthi(dotthi);
                     map.put(key, dto);
                 }
@@ -525,7 +522,7 @@ public class DiemThiBUS {
 //        if (keyCache == null) {
             keyCache = new HashSet<>();
             for (DiemThiDTO item : diemThiDao.getAllDiem()) {
-                if (!"VSAT".equals(item.getD_phuongthuc())) {
+                if (!"PT3".equals(item.getD_phuongthuc())) {
                     continue;
                 }
                 keyCache.add(buildKey(item));
@@ -607,7 +604,7 @@ public class DiemThiBUS {
                 if (old == null || diem.compareTo(old.getNL1()) > 0) {
                     DiemThiDTO dto = new DiemThiDTO();
                     dto.setCccd(cccd.trim());
-                    dto.setD_phuongthuc("ĐGNL");
+                    dto.setD_phuongthuc("PT2");
                     dto.setNL1(diem);
                     map.put(cccd, dto);
                 }
@@ -691,7 +688,7 @@ public class DiemThiBUS {
 
                 DiemThiDTO dto = new DiemThiDTO();
                 dto.setCccd(cccd);
-                dto.setD_phuongthuc("THPT");
+                dto.setD_phuongthuc("PT4");
                 dto.setTO(parseBigDecimal(getCell(row, toanCol)));
                 dto.setVA(parseBigDecimal(getCell(row, vaCol)));
                 dto.setLI(parseBigDecimal(getCell(row, liCol)));

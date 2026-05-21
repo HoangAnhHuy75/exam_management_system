@@ -10,6 +10,7 @@ import DTO.NguyenVongDTO;
 import DTO.XetTuyenDTO;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -47,68 +48,22 @@ public class XetTuyenBUS {
     public XetTuyenDTO findOne(String cccd, String maNganh) {
 
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
-
-            boolean matchCCCD = xt.getCccd() != null
-                    && xt.getCccd().equalsIgnoreCase(cccd);
-
-            boolean matchMaNganh = xt.getMaNganh() != null
-                    && xt.getMaNganh().equalsIgnoreCase(maNganh);
-
+            boolean matchCCCD = xt.getCccd() != null&& xt.getCccd().equalsIgnoreCase(cccd);
+            boolean matchMaNganh = xt.getMaNganh() != null&& xt.getMaNganh().equalsIgnoreCase(maNganh);
             if (matchCCCD && matchMaNganh) {
                 return xt;
             }
         }
-
         return null;
     }
 
     // Map CCCD -> XetTuyenDTO
     public HashMap<String, XetTuyenDTO> xetTuyenMap() {
-
         HashMap<String, XetTuyenDTO> map = new HashMap<>();
-
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
             map.put(xt.getCccd(), xt);
         }
-
         return map;
-    }
-
-    // Tìm kiếm text
-    public List<XetTuyenDTO> timKiemText(String text) {
-
-        String textFind = text.toLowerCase();
-
-        List<XetTuyenDTO> result = new ArrayList<>();
-
-        for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
-
-            String cccd = xt.getCccd() != null
-                    ? xt.getCccd().toLowerCase()
-                    : "";
-
-            String maNganh = xt.getMaNganh() != null
-                    ? xt.getMaNganh().toLowerCase()
-                    : "";
-
-            String ketQua = xt.getKetQua() != null
-                    ? xt.getKetQua().toLowerCase()
-                    : "";
-
-            String phuongThuc = xt.getPhuongThuc() != null
-                    ? xt.getPhuongThuc().toLowerCase()
-                    : "";
-
-            if (cccd.contains(textFind)
-                    || maNganh.contains(textFind)
-                    || ketQua.contains(textFind)
-                    || phuongThuc.contains(textFind)) {
-
-                result.add(xt);
-            }
-        }
-
-        return result;
     }
 
     // Lấy id theo index
@@ -126,6 +81,7 @@ public class XetTuyenBUS {
     public void tienHanhXetTuyen() {
         xtDao.deleteAll();
         List<XetTuyenDTO> insertList = new ArrayList<>();
+        HashMap<String, NganhDTO> nganhMap = nganhBus.nganhMap();
         // nhóm theo ngành + phương thức
         HashMap<String, List<NguyenVongDTO>> map = new HashMap<>();
         for (NguyenVongDTO nv : nvBus.getList()) {
@@ -141,72 +97,45 @@ public class XetTuyenBUS {
                 insertList.add(xt);
                 continue;
             }
-
-            String key = nv.getNvManganh()
-                    + "_"
-                    + nv.getTtPhuongthuc();
-
+            String key = nv.getNvManganh()+ "_"+ nv.getTtPhuongthuc();
             map.putIfAbsent(key, new ArrayList<>());
             map.get(key).add(nv);
         }
 
         // duyệt từng nhóm
         for (String key : map.keySet()) {
-
             List<NguyenVongDTO> ds = map.get(key);
-
             if (ds.isEmpty()) {
                 continue;
             }
-
             String maNganh = ds.get(0).getNvManganh();
             String phuongThuc = ds.get(0).getTtPhuongthuc();
-
-            // lấy ngành
-            NganhDTO nganh = null;
-
-            for (NganhDTO n : nganhBus.getListN()) {
-
-                if (n.getMaNganh().equals(maNganh)) {
-                    nganh = n;
-                    break;
-                }
-            }
-
+            NganhDTO nganh = nganhMap.get(maNganh);
             if (nganh == null) {
                 continue;
             }
-
-            // chỉ tiêu theo phương thức
             int chiTieu = 0;
 
             switch (phuongThuc) {
 
-                case "THPT":
+                case "PT4":
                     chiTieu = nganh.getSlTHPT();
                     break;
 
-                case "ĐGNL":
+                case "PT2":
                     chiTieu = nganh.getSlDGNL();
                     break;
 
-                case "VSAT":
+                case "PT3":
                     chiTieu = nganh.getSlVSAT();
                     break;
             }
 
             // sort giảm dần điểm
-            ds.sort((a, b) -> {
-
-                int cmp = b.getDiemXettuyen()
-                        .compareTo(a.getDiemXettuyen());
-
-                if (cmp != 0) {
-                    return cmp;
-                }
-
-                return Integer.compare(a.getNvTt(), b.getNvTt());
-            });
+            ds.sort(
+    Comparator.comparing(NguyenVongDTO::getDiemXettuyen, Comparator.reverseOrder())
+        .thenComparingInt(NguyenVongDTO::getNvTt)
+);
 
             // xét kết quả
             for (int i = 0; i < ds.size(); i++) {
@@ -241,15 +170,15 @@ public class XetTuyenBUS {
 
             switch (phuongThuc) {
 
-                case "THPT":
+                case "PT4":
                     nganh.setNDiemTrungTuyen(diemChuan);
                     break;
 
-                case "ĐGNL":
+                case "PT2":
                     nganh.setNDiemTrungTuyenDGNL(diemChuan);
                     break;
 
-                case "VSAT":
+                case "PT3":
                     nganh.setNDiemTrungTuyenVSAT(diemChuan);
                     break;
             }
@@ -264,15 +193,9 @@ public class XetTuyenBUS {
         ArrayList<XetTuyenDTO> result = new ArrayList<>();
         HashMap<String, String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
-
-            boolean matchTenNganh = (tenNganh == null || tenNganh.equals("Tất cả"))
-                    || mapTenNganh.get(xt.getMaNganh()).equals(tenNganh);
-
-            boolean matchPT = (phuongThuc == null || phuongThuc.equals("Tất cả"))
-                    || xt.getPhuongThuc().equals(phuongThuc);
-
-            boolean matchKQ = (kq == null || kq.equals("Tất cả"))
-                    || xt.getKetQua().equals(kq);
+            boolean matchTenNganh = (tenNganh == null || tenNganh.equals("Tất cả")) || mapTenNganh.get(xt.getMaNganh()).equals(tenNganh);
+            boolean matchPT = (phuongThuc == null || phuongThuc.equals("Tất cả")) || xt.getPhuongThuc().equals(phuongThuc);
+            boolean matchKQ = (kq == null || kq.equals("Tất cả")) || xt.getKetQua().equals(kq);
             boolean matchText = t.equals("") || xt.getCccd().toLowerCase().contains(t) || mapTenNganh.get(xt.getMaNganh()).toLowerCase().contains(t);
             if (matchTenNganh && matchPT && matchKQ && matchText) {
                 result.add(xt);
@@ -285,10 +208,8 @@ public class XetTuyenBUS {
         String t = text.toLowerCase();
         List<XetTuyenDTO> result = new ArrayList<>();
         HashMap<String, String> mapTenNganh = nganhBus.getTenNganhByMaNganhMap();
-
         for (XetTuyenDTO xt : xtDao.getAllXetTuyen()) {
-            if ((xt.getCccd() != null && xt.getCccd().toLowerCase().contains(t))
-                    || (xt.getMaNganh() != null && mapTenNganh.get(xt.getMaNganh()).toLowerCase().contains(t))) {
+            if ((xt.getCccd() != null && xt.getCccd().toLowerCase().contains(t)) || (xt.getMaNganh() != null && mapTenNganh.get(xt.getMaNganh()).toLowerCase().contains(t))) {
                 result.add(xt);
             }
         }

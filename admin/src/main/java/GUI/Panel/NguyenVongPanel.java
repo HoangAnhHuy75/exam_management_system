@@ -116,7 +116,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                 new String[] {
                         "STT", "CCCD", "Tên ngành", "NV",
                         "Điểm THXT", "Điểm UT", "Điểm cộng", "Điểm XT",
-                        "Kết quả", "Phương thức", "NV Key"
+                        "Kết quả", "Phương thức","Tổ hợp", "NV Key"
                 }) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -137,6 +137,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
                     nv.getDiemXettuyen(),
                     nv.getNvKetqua(),
                     nv.getTtPhuongthuc(),
+                    nv.getTtThm(),
                     nv.getNvKeys()
             });
         }
@@ -162,7 +163,7 @@ public class NguyenVongPanel extends javax.swing.JPanel {
 
     public void loadPTCombobox() {
         jComboBox11.addItem("Tất cả");
-        String[] arrPhuongThuc = { "ĐGNL", "VSAT", "THPT" };
+        String[] arrPhuongThuc = { "PT2", "PT3", "PT4" };
         for (String pt : arrPhuongThuc) {
             jComboBox11.addItem(pt);
         }

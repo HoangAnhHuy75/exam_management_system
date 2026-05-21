@@ -195,7 +195,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
 
-        jPanel1.setBackground(new java.awt.Color(224, 224, 224));
+        jPanel1.setBackground(new java.awt.Color(245, 245, 245));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Thêm điểm thi tuyển sinh");
@@ -207,14 +207,14 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
-                .addGap(284, 284, 284))
+                .addGap(286, 286, 286))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addGap(26, 26, 26)
                 .addComponent(jLabel1)
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
@@ -601,15 +601,15 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(76, 76, 76)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -743,7 +743,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
         DiemThiDTO dt = new DiemThiDTO();
 
         dt.setCccd(Cccd);
-        dt.setD_phuongthuc(phuongthuc);
+        dt.setD_phuongthuc(diemThiBus.convertPhuongThuc(phuongthuc));
 
         dt.setTO(to);
         dt.setLI(li);
@@ -807,7 +807,7 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         // chỉ VSAT có đợt thi
         if (phuongthuc.equals("VSAT")) {
-             dt.setDotthi(dotThi);
+            dt.setDotthi(dotThi);
             dt.setGDCD(null);
             
             dt.setCNCN(null);
@@ -829,16 +829,16 @@ public class AddDiemThiDialog extends javax.swing.JDialog {
 
         // insert
         if (diemThiBus.insert(dt) == 1) {
-
+            
             JOptionPane.showMessageDialog(this,
                     "Thêm điểm thành công",
                     "Thông báo",
                     JOptionPane.INFORMATION_MESSAGE);
-
+            
             diemThiPanel.dataTable(diemThiBus.getList());
-
+            
             this.dispose();
-
+            
         } else {
 
             JOptionPane.showMessageDialog(this,

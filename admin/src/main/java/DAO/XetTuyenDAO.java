@@ -114,37 +114,37 @@ public class XetTuyenDAO {
 
     // Insert danh sách
     // Insert danh sách
-public void insertList(List<XetTuyenDTO> list) {
+    public void insertList(List<XetTuyenDTO> list) {
 
-    Transaction tx = null;
+        Transaction tx = null;
 
-    try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
-        tx = session.beginTransaction();
+            tx = session.beginTransaction();
 
-        for (int i = 0; i < list.size(); i++) {
+            for (int i = 0; i < list.size(); i++) {
 
-            session.save(list.get(i));
+                session.save(list.get(i));
 
-            // batch mỗi 50 dòng
-            if (i % 50 == 0) {
+                // batch mỗi 50 dòng
+                if (i % 50 == 0) {
 
-                session.flush();
-                session.clear();
+                    session.flush();
+                    session.clear();
+                }
             }
+
+            tx.commit();
+
+        } catch (Exception e) {
+
+            if (tx != null) {
+                tx.rollback();
+            }
+
+            e.printStackTrace();
         }
-
-        tx.commit();
-
-    } catch (Exception e) {
-
-        if (tx != null) {
-            tx.rollback();
-        }
-
-        e.printStackTrace();
     }
-}
 
     // Xóa toàn bộ dữ liệu
     public int deleteAll() {

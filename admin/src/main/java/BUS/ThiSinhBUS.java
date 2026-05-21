@@ -55,12 +55,10 @@ public class ThiSinhBUS {
         return -1; 
     }
 
-    // ===== Delete =====
     public int delete(ThiSinhDTO t) {
         return thiSinhDAO.delete(t);
     }
 
-    // ===== Tìm theo CCCD =====
     public ThiSinhDTO findByCCCD(String cccd) {
         if (cccd == null || cccd.trim().isEmpty()) {
             return null;
@@ -154,7 +152,6 @@ public class ThiSinhBUS {
 
         return null;
     }
-    // ===== Import Excel =====
 
     public List<ThiSinhDTO> readFile(String filePath) {
         List<ThiSinhDTO> list = new ArrayList<>();
@@ -197,7 +194,6 @@ public class ThiSinhBUS {
         return list;
     }
 
-    // ===== Import Excel =====
     public int importFromExcel(String filePath) {
         List<ThiSinhDTO> importList = readFile(filePath);
         if (importList == null || importList.isEmpty()) {
@@ -223,7 +219,6 @@ public class ThiSinhBUS {
         return newList.size();
     }
 
-    // ===== Check trùng CCCD =====
     public boolean checkDupCCCD(String cccd) {
         if (cccd == null) {
             return false;
@@ -246,39 +241,20 @@ public class ThiSinhBUS {
         return result;
     }
     
-    public ArrayList<ThiSinhDTO> filterHasNganh(String text,String gt, String kv,String maNganh, String ns) {
+    public ArrayList<ThiSinhDTO> filterHasNganh(String text, String gt, String kv, String maNganh, String ns) {
         String t = text.toLowerCase().trim();
-
-    ArrayList<ThiSinhDTO> result = new ArrayList<>();
-
-    // lấy danh sách thí sinh thuộc ngành trước
-    List<ThiSinhDTO> listTSByNganh = thiSinhDAO.getThiSinhByMaNganh(maNganh);
-
-    for (ThiSinhDTO ts : listTSByNganh) {
-
-        boolean matchGT =
-                gt.equals("Tất cả")
-                || ts.getGioiTinh().equals(gt);
-
-        boolean matchKV =
-                kv.equals("Tất cả")
-                || ts.getKhuVuc().equals(kv);
-
-        boolean matchNS =
-                ns.equals("Tất cả")
-                || ts.getNoiSinh().toLowerCase().contains(ns.toLowerCase());
-
-        boolean matchText =
-                t.equals("")
-                || ts.getCccd().toLowerCase().contains(t)
-                || ts.getTen().toLowerCase().contains(t);
-
-        if (matchGT && matchKV && matchNS && matchText) {
-            result.add(ts);
+        ArrayList<ThiSinhDTO> result = new ArrayList<>();
+        List<ThiSinhDTO> listTSByNganh = thiSinhDAO.getThiSinhByMaNganh(maNganh);
+        for (ThiSinhDTO ts : listTSByNganh) {
+            boolean matchGT = gt.equals("Tất cả") || ts.getGioiTinh().equals(gt);
+            boolean matchKV = kv.equals("Tất cả") || ts.getKhuVuc().equals(kv);
+            boolean matchNS = ns.equals("Tất cả") || ts.getNoiSinh().toLowerCase().contains(ns.toLowerCase());
+            boolean matchText = t.equals("") || ts.getCccd().toLowerCase().contains(t) || ts.getTen().toLowerCase().contains(t);
+            if (matchGT && matchKV && matchNS && matchText) {
+                result.add(ts);
+            }
         }
-    }
-
-    return result;
+        return result;
     }
 
     public ArrayList<ThiSinhDTO> searchText(String text) {

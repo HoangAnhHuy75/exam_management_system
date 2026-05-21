@@ -830,7 +830,7 @@ public class EditDiemThiDialog extends javax.swing.JDialog {
         
         dt.setCccd(cccd);
 //    dt.setSobaodanh(sbd);
-        dt.setD_phuongthuc(phuongThuc);
+        dt.setD_phuongthuc(diemThiBus.convertPhuongThuc(phuongThuc));
         
         dt.setTO(to);
         dt.setLI(li);

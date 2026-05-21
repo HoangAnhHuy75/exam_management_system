@@ -98,9 +98,9 @@ public class ThongKeDAO {
     try (Session session = HibernateUtil.getSessionFactory().openSession()) {
 
         Long count = session.createQuery(
-                "SELECT COUNT(DISTINCT nvCccd) " +
-                "FROM NguyenVongDTO " +
-                "WHERE nvKetqua = 'Đậu'",
+                "SELECT COUNT(cccd) " +
+                "FROM XetTuyenDTO " +
+                "WHERE ketQua = 'Đậu'",
                 Long.class
         ).uniqueResult();
 

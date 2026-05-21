@@ -16,35 +16,28 @@ public class BangQuyDoiService {
     private BangQuyDoiRepository repo;
     @Autowired
     private BangChenhLechService chenhLechService;
-    public double tinhDiemUuTien(String phuongThuc,
-                                 double diem,
-                                 String toHopThiSinh,
-                                 String toHopGoc,
-                                 double diemDoiTuong,
-                                 double diemKhuVuc,
-                                 double diemCongThanhTich) {
+    public double tinhDiemUuTien(
+            double diem,
+            double diemTHG,
+            double diemDoiTuong,
+            double diemKhuVuc,
+            double diemCongThanhTich) {
 
-        double diemQuyDoi;
 
-        if ("THPT".equalsIgnoreCase(phuongThuc) || "VSAT".equalsIgnoreCase(phuongThuc)) {
-            diemQuyDoi = diem;
-        } else {
-            diemQuyDoi = tinhDiemQuyDoi(phuongThuc, diem, toHopThiSinh, toHopGoc);
-        }
-        // ------------------------
+
 
         double MĐUT = diemDoiTuong + diemKhuVuc;
 
         if (MĐUT < 0) MĐUT = 0;
 
-        double tongDiem = diemQuyDoi + diemCongThanhTich;
+        double tongDiem = diemTHG + diemCongThanhTich;
 
         double diemUuTien;
 
         if (tongDiem < 22.5) {
             diemUuTien = MĐUT;
         } else {
-            diemUuTien = ((30.0 - tongDiem) / 7.5) * MĐUT;
+            diemUuTien = ((30.0 - diem - diemCongThanhTich) / 7.5) * MĐUT;
         }
 
         if (diemUuTien < 0) {
@@ -138,7 +131,7 @@ public class BangQuyDoiService {
         if (diem <= 0) return 0.0;
 
         // 2. Tìm khoảng chính xác (A <= diem <= B)
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem , toHopGoc)
                 .stream().findFirst().orElse(null);
 
         // 3. Nếu không thấy khoảng chính xác
@@ -238,7 +231,7 @@ public class BangQuyDoiService {
 
     public double diemd(String phuongThuc, double diem, String toHopGoc) {
         if (diem <= 0) return 0.0;
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, "A01")
                 .stream().findFirst()
                 .orElseGet(() -> {
                     BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);

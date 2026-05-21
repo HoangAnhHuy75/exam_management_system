@@ -120,7 +120,7 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
     public void loadTenPhuongThucToComboBox() {
         cbb_phuongthuc.removeAllItems(); // xóa dữ liệu cũ
         cbb_phuongthuc.addItem("Bộ lọc PT");
-        String[] ptxt = {"Tuyển thẳng", "ĐGNL", "THPT", "VSAT"};
+        String[] ptxt = {"PT1", "PT2", "PT3", "PT4"};
         for(String pt : ptxt){
             cbb_phuongthuc.addItem(pt);
         }
@@ -675,10 +675,10 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         }
 
         // mở dialog xem chi tiết (nếu bạn đã có)
-        if (phuongthuc.equals("THPT")) {
+        if (phuongthuc.equals("PT4")) {
             Window parentWindow = SwingUtilities.getWindowAncestor(this);
             new ChiTietDiemTHPTDialog((Frame) parentWindow, true, dt, ts).setVisible(true);
-        } else if (phuongthuc.equals("ĐGNL")) {
+        } else if (phuongthuc.equals("PT2")) {
             Window parentWindow = SwingUtilities.getWindowAncestor(this);
             new ChiTietDiemĐGNLDialog((Frame) parentWindow, true, dt, ts).setVisible(true);
         } else {

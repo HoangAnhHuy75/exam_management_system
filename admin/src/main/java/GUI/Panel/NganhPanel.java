@@ -584,12 +584,33 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         int chiTieu = Integer.parseInt(major_table.getValueAt(vitriRow, 3).toString());
 
         java.math.BigDecimal diemSan = new java.math.BigDecimal(major_table.getValueAt(vitriRow, 4).toString());
-        Object value = major_table.getValueAt(vitriRow, 5);
+        Object value1 = major_table.getValueAt(vitriRow, 5);
         java.math.BigDecimal diemTrungTuyen = null;
-
-        if (value != null && !value.toString().trim().isEmpty()) {
-            diemTrungTuyen = new java.math.BigDecimal(value.toString());
+        if (value1 != null && !value1.toString().trim().isEmpty()) {
+            diemTrungTuyen = new java.math.BigDecimal(value1.toString());
         }
+        
+        Object value2 = major_table.getValueAt(vitriRow, 6);
+        java.math.BigDecimal diemTrungTuyenĐGNL = null;
+        if (value2 != null && !value2.toString().trim().isEmpty()) {
+            diemTrungTuyenĐGNL = new java.math.BigDecimal(value2.toString());
+        }
+
+        Object value3 = major_table.getValueAt(vitriRow, 7);
+        java.math.BigDecimal diemTrungTuyenVSAT = null;
+        if (value3 != null && !value3.toString().trim().isEmpty()) {
+            diemTrungTuyenVSAT = new java.math.BigDecimal(value3.toString());
+        }
+        
+        Object value4 = major_table.getValueAt(vitriRow, 8);
+        String slDKY;
+
+        if (value4 != null && !value4.toString().trim().isEmpty()) {
+            slDKY = value4.toString();
+        }else{
+            slDKY = "";
+        }
+        
         String xtt = major_table.getValueAt(vitriRow, 9).toString();
         String dgnl = major_table.getValueAt(vitriRow,10).toString();
         String thpt = major_table.getValueAt(vitriRow, 11).toString();
@@ -609,6 +630,8 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         nganh.setNChiTieu(chiTieu);
         nganh.setNDiemSan(diemSan);
         nganh.setNDiemTrungTuyen(diemTrungTuyen);
+        nganh.setNDiemTrungTuyenDGNL(diemTrungTuyenĐGNL);
+        nganh.setNDiemTrungTuyenVSAT(diemTrungTuyenVSAT);
         nganh.setNTuyenThang(xtt);
         nganh.setNDGNL(dgnl);
         nganh.setNTHPT(thpt);
@@ -620,7 +643,7 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
 
         // Mở dialog
         Window parentWindow = SwingUtilities.getWindowAncestor(this);
-        new DetailNganhDialog((Frame) parentWindow, true, this, nganh).setVisible(true);
+        new DetailNganhDialog((Frame) parentWindow, true, this, nganh,slDKY).setVisible(true);
     }//GEN-LAST:event_btn_chitietActionPerformed
 
 

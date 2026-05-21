@@ -119,17 +119,22 @@ public class DiemCongBUS {
         return list;
     }
     
-    
-    public HashMap<String, DiemCongDTO> diemcongMap(){
-        HashMap<String,DiemCongDTO> diemcongMap = new HashMap<>();
-        for(DiemCongDTO dc : diemCongDao.getAllDiemCong()){
+    public HashMap<String, DiemCongDTO> diemcongMap() {
+        HashMap<String, DiemCongDTO> diemcongMap = new HashMap<>();
+        for (DiemCongDTO dc : diemCongDao.getAllDiemCong()) {
             diemcongMap.put(dc.getDc_keys(), dc);
         }
         return diemcongMap;
     }
-    
-    
 
+    public HashMap<String, BigDecimal> diemchungchiMap() {
+        HashMap<String, BigDecimal> diemchungchiMap = new HashMap<>();
+        for (DiemCongDTO dc : diemCongDao.getAllDiemCong()) {
+            diemchungchiMap.put(dc.getTs_cccd(), dc.getDiemCC());
+        }
+        return diemchungchiMap;
+    }
+    
     public int getColumnIndex(Row headerRow, String columnName) {
         for (Cell cell : headerRow) {
             if (cell.getStringCellValue().trim().equalsIgnoreCase(columnName)) {
@@ -151,18 +156,10 @@ public class DiemCongBUS {
             case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
-                return String.valueOf((long) cell.getNumericCellValue());
+                return String.valueOf(cell.getNumericCellValue());
             default:
                 return cell.toString().trim();
         }
-    }
-    
-    public HashMap<String, BigDecimal> diemchungchiMap() {
-        HashMap<String, BigDecimal> diemchungchiMap = new HashMap<>();
-        for (DiemCongDTO dc : diemCongDao.getAllDiemCong()) {
-            diemchungchiMap.put(dc.getTs_cccd(), dc.getDiemCC());
-        }
-        return diemchungchiMap;
     }
 
     public List<DiemCongDTO> readFileCC(String filePath) {
@@ -177,6 +174,7 @@ public class DiemCongBUS {
             int diemCol = getColumnIndex(header, "Điểm cộng");
             int diemquydoiCol = getColumnIndex(header, "Điểm quy đổi");
             HashMap<String, DiemThiDTO> diemthiMap = dtBus.thpt_dgnl_Map();
+            HashMap<String, HashMap<String, DiemThiDTO>> vsatMap = dtBus.vsatMap();
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
                 if (row == null) {
@@ -197,10 +195,19 @@ public class DiemCongBUS {
                     diemCC = BigDecimal.ZERO;
                 }
                 BigDecimal diemquydoi = new BigDecimal(diemquydoiStr);
-                DiemThiDTO dt = diemthiMap.get(cccd+"_THPT");
-                if (dt != null) {
-                    dt.setN1_CC(diemquydoi);
-                    listQuyDoiN1.add(dt);
+                // PT4
+                DiemThiDTO dtTHPT = diemthiMap.get(cccd + "_PT4");
+                if (dtTHPT != null) {
+                    dtTHPT.setN1_CC(diemquydoi);
+                    listQuyDoiN1.add(dtTHPT);
+                }
+                // PT3
+                HashMap<String, DiemThiDTO> vsatByDot = vsatMap.get(cccd);
+                if (vsatByDot != null) {
+                    for (DiemThiDTO dtVSAT : vsatByDot.values()) {
+                        dtVSAT.setN1_CC(diemquydoi);
+                        listQuyDoiN1.add(dtVSAT);
+                    }
                 }
                 DiemCongDTO dc = new DiemCongDTO();
                 dc.setTs_cccd(cccd);

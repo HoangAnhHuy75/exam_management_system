@@ -2,6 +2,8 @@ package admissions.student_system.controller;
 
 import admissions.student_system.entity.NguyenVong;
 import admissions.student_system.entity.Student;
+import admissions.student_system.entity.XetTuyen;
+import admissions.student_system.repository.XetTuyenRepository;
 import admissions.student_system.service.AuthenService;
 import admissions.student_system.service.NguyenVongService;
 import org.springframework.ui.Model;
@@ -22,6 +24,8 @@ public class AuthenViewController {
 
     @Autowired
     private NguyenVongService nguyenVongService;
+    @Autowired
+    private XetTuyenRepository xetTuyenRepository;
 
     @GetMapping("/login")
     public String dm() {
@@ -43,27 +47,52 @@ public class AuthenViewController {
             // 1. Thực hiện login và định dạng ngày sinh trong Service
             Student student = authenService.login(cccd, password);
 
-            // 2. Lấy dữ liệu nguyện vọng (Sử dụng cccd đã trim từ đối tượng student)
+// 2. Lấy dữ liệu nguyện vọng và xét tuyển
             List<NguyenVong> danhSachNv = nguyenVongService.getAllByCccd(student.getCccd());
+            List<XetTuyen> danhSachXt = xetTuyenRepository.findByCccd(student.getCccd());
 
-            // Gửi dữ liệu ra View
+// 3. CẬP NHẬT KẾT QUẢ CHO TỪNG NGUYỆN VỌNG THEO KẾT QUẢ XÉT TUYỂN
+            if (danhSachNv != null && danhSachXt != null) {
+                for (NguyenVong nv : danhSachNv) {
+                    // Tìm dòng xét tuyển có cùng mã ngành với nguyện vọng này
+                    Optional<XetTuyen> xtTuongUng = danhSachXt.stream()
+                            .filter(xt -> xt.getMaNganh() != null && xt.getMaNganh().equalsIgnoreCase(nv.getNvManganh()))
+                            .findFirst();
+
+                    if (xtTuongUng.isPresent()) {
+                        String ketQuaXt = xtTuongUng.get().getKetQua();
+                        // Nếu bảng xét tuyển ghi là "Đậu", ta chuẩn hóa thành "Trúng tuyển" để đồng bộ với View HTML
+                        if ("Đậu".equalsIgnoreCase(ketQuaXt) || "Trúng tuyển".equalsIgnoreCase(ketQuaXt)) {
+                            nv.setNvKetqua("Trúng tuyển");
+                        } else {
+                            nv.setNvKetqua(ketQuaXt); // Ví dụ: "Trượt", "Tạch",...
+                        }
+                    } else {
+                        nv.setNvKetqua("Chưa có kết quả");
+                    }
+                }
+            }
+
+// Gửi dữ liệu thông tin thí sinh ra View
             model.addAttribute("student", student);
             model.addAttribute("danhSachNv", danhSachNv);
-            model.addAttribute("studentName", student.getTen());            model.addAttribute("cccd", student.getCccd());
+            model.addAttribute("studentName", student.getTen());
+            model.addAttribute("cccd", student.getCccd());
 
-
-
+// 4. XỬ LÝ KHỐI BANNER TRÚNG TUYỂN CHÍNH
             if (danhSachNv == null || danhSachNv.isEmpty()) {
-                model.addAttribute("message", "Thí sinh chưa đăng ký nguyện vọng xét tuyển.");
+                model.addAttribute("message", "Thí sinh chưa có dữ liệu nguyện vọng.");
+                model.addAttribute("ketQua", "KHONG_TRUNG_TUYEN");
             } else {
-                // 3. Tìm nguyện vọng trúng tuyển (Ưu tiên nguyện vọng có số thứ tự NvTt nhỏ nhất)
-                Optional<NguyenVong> trungTuyen = danhSachNv.stream()
-                        .filter(nv -> "Trúng tuyển".equalsIgnoreCase(nv.getNvKetqua()))
-                        .min(Comparator.comparingInt(NguyenVong::getNvTt));
+                // Tìm xem trong danh sách Nguyện Vọng của thí sinh, có nguyện vọng nào đã được cập nhật thành "Trúng tuyển" không
+                // Đồng thời sắp xếp hoặc chọn nguyện vọng có thứ tự ưu tiên nhỏ nhất (nv_tt) nếu trúng tuyển nhiều ngành
+                Optional<NguyenVong> nvTrungTuyen = danhSachNv.stream()
+                        .filter(nv -> "Trúng tuyển".equals(nv.getNvKetqua()))
+                        .min(Comparator.comparingInt(NguyenVong::getNvTt)); // Lấy nguyện vọng số 1, số 2 cao nhất
 
-                if (trungTuyen.isPresent()) {
+                if (nvTrungTuyen.isPresent()) {
                     model.addAttribute("ketQua", "TRUNG_TUYEN");
-                    model.addAttribute("nv", trungTuyen.get());
+                    model.addAttribute("nv", nvTrungTuyen.get()); // ĐẨY ĐÚNG ĐỐI TƯỢNG NGUYỆN VỌNG VỚI KEY "nv" RA VIEW
                 } else {
                     model.addAttribute("ketQua", "KHONG_TRUNG_TUYEN");
                 }

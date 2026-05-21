@@ -10,10 +10,11 @@ public class DetailNganhDialog extends javax.swing.JDialog {
     NganhPanel nganhPanel;
     NganhBUS nganhBus = new NganhBUS();
     ToHopBUS tohopBus = new ToHopBUS();
-    public DetailNganhDialog(java.awt.Frame parent, boolean modal, NganhPanel nganhPanel, NganhDTO nganhDto) {
+    public DetailNganhDialog(java.awt.Frame parent, boolean modal, NganhPanel nganhPanel, NganhDTO nganhDto, String SLDK) {
         super(parent, modal);
         initComponents();
         this.setTitle("Xem chi tiết ngành");
+        jtf_slnv.setText(SLDK);
         this.setLocationRelativeTo(null);
         this.nganhPanel=nganhPanel;
         this.nganhDto = nganhDto;
@@ -35,7 +36,7 @@ public class DetailNganhDialog extends javax.swing.JDialog {
 
         // Điểm sàn
         if (nganhDto.getNDiemSan() != null) {
-            jtf_diemsan.setText(nganhDto.getNDiemSan().toString());
+            jtf_đtt_đgnl.setText(nganhDto.getNDiemSan().toString());
         }
 
         // Combobox tổ hợp
@@ -46,6 +47,8 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jcheck_dgnl.setSelected("Y".equals(nganhDto.getNDGNL()));
         jcheck_thpt.setSelected("Y".equals(nganhDto.getNTHPT()));
         jcheck_vsat.setSelected("Y".equals(nganhDto.getNVSAT()));
+        jtf_dtt_vsat.setText(nganhDto.getNDiemTrungTuyenVSAT() != null ? String.valueOf(nganhDto.getNDiemTrungTuyenVSAT()) : "");
+        jtf_đtt_đgnl.setText(nganhDto.getNDiemTrungTuyenDGNL() != null ? String.valueOf(nganhDto.getNDiemTrungTuyenDGNL()) : "");
 
         // Số lượng
         jtf_sltt.setText(nganhDto.getSlXTT() == null ? "" : nganhDto.getSlXTT().toString());
@@ -107,15 +110,21 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jtf_thpt = new javax.swing.JTextField();
         jLabel9 = new javax.swing.JLabel();
         jLabel10 = new javax.swing.JLabel();
-        jtf_diemsan = new javax.swing.JTextField();
+        jtf_đtt_đgnl = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jtf_tohop = new javax.swing.JTextField();
         jtf_dtt = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
+        jLabel12 = new javax.swing.JLabel();
+        jtf_diemsan1 = new javax.swing.JTextField();
+        jLabel13 = new javax.swing.JLabel();
+        jtf_slnv = new javax.swing.JTextField();
+        jLabel14 = new javax.swing.JLabel();
+        jtf_dtt_vsat = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(224, 224, 224));
+        jPanel1.setBackground(new java.awt.Color(245, 245, 245));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setText("Xem chi tiết ngành tuyển sinh");
@@ -124,17 +133,17 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(197, 197, 197)
                 .addComponent(jLabel1)
-                .addGap(190, 190, 190))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(21, 21, 21)
                 .addComponent(jLabel1)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
@@ -171,22 +180,22 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jcheck_dgnl.setText("ĐGNL");
         jcheck_dgnl.addActionListener(this::jcheck_dgnlActionPerformed);
         jPanel2.add(jcheck_dgnl);
-        jcheck_dgnl.setBounds(150, 330, 97, 36);
+        jcheck_dgnl.setBounds(190, 400, 97, 36);
 
         jcheck_tuyenthang.setText("Tuyển thẳng");
         jcheck_tuyenthang.addActionListener(this::jcheck_tuyenthangActionPerformed);
         jPanel2.add(jcheck_tuyenthang);
-        jcheck_tuyenthang.setBounds(30, 330, 97, 36);
+        jcheck_tuyenthang.setBounds(40, 400, 97, 36);
 
         jcheck_vsat.setText("VSAT");
         jcheck_vsat.addActionListener(this::jcheck_vsatActionPerformed);
         jPanel2.add(jcheck_vsat);
-        jcheck_vsat.setBounds(410, 330, 92, 36);
+        jcheck_vsat.setBounds(480, 400, 92, 36);
 
         jcheck_thpt.setText("THPT");
         jcheck_thpt.addActionListener(this::jcheck_thptActionPerformed);
         jPanel2.add(jcheck_thpt);
-        jcheck_thpt.setBounds(280, 330, 95, 36);
+        jcheck_thpt.setBounds(340, 400, 95, 36);
 
         jLabel6.setText("SL Tuyển Thẳng");
         jPanel2.add(jLabel6);
@@ -200,9 +209,9 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jtf_manganh);
         jtf_manganh.setBounds(120, 30, 150, 31);
 
-        jLabel7.setText("Điểm trúng tuyển");
+        jLabel7.setText("Điểm trúng tuyển THPT");
         jPanel2.add(jLabel7);
-        jLabel7.setBounds(350, 280, 100, 16);
+        jLabel7.setBounds(320, 280, 130, 16);
 
         jLabel8.setText("SL  ĐGNL");
         jPanel2.add(jLabel8);
@@ -220,13 +229,13 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jLabel9);
         jLabel9.setBounds(350, 160, 100, 16);
 
-        jLabel10.setText("Điểm sàn");
+        jLabel10.setText("Điểm trúng tuyển ĐGNL");
         jPanel2.add(jLabel10);
-        jLabel10.setBounds(40, 280, 60, 16);
+        jLabel10.setBounds(470, 330, 130, 16);
 
-        jtf_diemsan.setEditable(false);
-        jPanel2.add(jtf_diemsan);
-        jtf_diemsan.setBounds(120, 270, 150, 30);
+        jtf_đtt_đgnl.setEditable(false);
+        jPanel2.add(jtf_đtt_đgnl);
+        jtf_đtt_đgnl.setBounds(470, 350, 150, 30);
 
         jButton2.setBackground(new java.awt.Color(255, 0, 0));
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -234,7 +243,7 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jButton2.setText("Thoát");
         jButton2.addActionListener(this::jButton2ActionPerformed);
         jPanel2.add(jButton2);
-        jButton2.setBounds(260, 390, 90, 40);
+        jButton2.setBounds(280, 460, 90, 30);
 
         jtf_tohop.setEditable(false);
         jPanel2.add(jtf_tohop);
@@ -248,19 +257,43 @@ public class DetailNganhDialog extends javax.swing.JDialog {
         jPanel2.add(jLabel11);
         jLabel11.setBounds(350, 220, 100, 16);
 
+        jLabel12.setText("Điểm sàn");
+        jPanel2.add(jLabel12);
+        jLabel12.setBounds(40, 280, 60, 16);
+
+        jtf_diemsan1.setEditable(false);
+        jPanel2.add(jtf_diemsan1);
+        jtf_diemsan1.setBounds(120, 270, 150, 30);
+
+        jLabel13.setText("Số lượng nguyện vọng");
+        jPanel2.add(jLabel13);
+        jLabel13.setBounds(260, 330, 130, 16);
+
+        jtf_slnv.setEditable(false);
+        jPanel2.add(jtf_slnv);
+        jtf_slnv.setBounds(260, 350, 150, 30);
+
+        jLabel14.setText("Điểm trúng tuyển V-SAT");
+        jPanel2.add(jLabel14);
+        jLabel14.setBounds(30, 330, 130, 16);
+
+        jtf_dtt_vsat.setEditable(false);
+        jPanel2.add(jtf_dtt_vsat);
+        jtf_dtt_vsat.setBounds(30, 350, 150, 30);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 648, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 460, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(69, 69, 69)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 510, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
@@ -304,6 +337,9 @@ public class DetailNganhDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -320,13 +356,16 @@ public class DetailNganhDialog extends javax.swing.JDialog {
     private javax.swing.JCheckBox jcheck_vsat;
     private javax.swing.JTextField jtf_chitieu;
     private javax.swing.JTextField jtf_dgnl;
-    private javax.swing.JTextField jtf_diemsan;
+    private javax.swing.JTextField jtf_diemsan1;
     private javax.swing.JTextField jtf_dtt;
+    private javax.swing.JTextField jtf_dtt_vsat;
     private javax.swing.JTextField jtf_manganh;
+    private javax.swing.JTextField jtf_slnv;
     private javax.swing.JTextField jtf_sltt;
     private javax.swing.JTextField jtf_tennganh;
     private javax.swing.JTextField jtf_thpt;
     private javax.swing.JTextField jtf_tohop;
     private javax.swing.JTextField jtf_vsat;
+    private javax.swing.JTextField jtf_đtt_đgnl;
     // End of variables declaration//GEN-END:variables
 }

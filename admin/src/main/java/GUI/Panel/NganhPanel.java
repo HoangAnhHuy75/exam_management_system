@@ -82,7 +82,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         dataTable(nganhB.getListN());
         designJTF();
         designCBB();
-        loadSortChiTietCombobox();
         setIcon();
         designButton();
     }
@@ -92,7 +91,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
     public void designCBB() {
         cbb_design.setUpComBoBox(jComboBox1);
         cbb_design.setUpComBoBox(jComboBox2);
-        cbb_design.setUpComBoBox(jComboBox3);
     }
 
     public void setIcon() {
@@ -158,13 +156,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
             jComboBox1.addItem(pt);
         }
     }
-    public void loadSortChiTietCombobox() {
-        jComboBox3.addItem("Tất cả");
-        String[] sortsChitieu = {"Chỉ tiêu giảm dần", "Chỉ tiêu tăng dần"};
-        for (String sort : sortsChitieu) {
-            jComboBox3.addItem(sort);
-        }
-    }
     public void loadToHopGocCombobox(){
         jComboBox2.removeAllItems();
         jComboBox2.addItem("Tất cả");
@@ -204,8 +195,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         jComboBox2 = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         major_filter = new javax.swing.JButton();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(204, 204, 204));
         setPreferredSize(new java.awt.Dimension(1300, 800));
@@ -374,9 +363,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
-        jLabel2.setText("Sắp xếp theo chỉ tiêu");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -384,23 +370,19 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jtf_timkiem, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(25, 25, 25)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(118, 118, 118)
                         .addComponent(major_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(major_search, javax.swing.GroupLayout.DEFAULT_SIZE, 1300, Short.MAX_VALUE)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -413,21 +395,19 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
                 .addGap(11, 11, 11)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel2))
+                    .addComponent(jLabel4))
                 .addGap(4, 4, 4)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jtf_timkiem)
-                    .addComponent(jComboBox2)
-                    .addComponent(jComboBox1)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(major_filter, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(btn_refresh, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jComboBox3))
+                    .addComponent(jComboBox1)
+                    .addComponent(jComboBox2))
                 .addGap(18, 18, 18)
                 .addComponent(major_search, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 555, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -480,7 +460,6 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
         jtf_timkiem.setText("");
         jComboBox1.setSelectedItem("Tất cả");
         jComboBox2.setSelectedItem("Tất cả");
-        jComboBox3.setSelectedItem("Tất cả");
     }//GEN-LAST:event_btn_refreshActionPerformed
 
     private void major_updateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_major_updateActionPerformed
@@ -653,9 +632,7 @@ private void replaceActionWithDeny(javax.swing.JButton btn) {
     private javax.swing.JButton btn_refresh;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;

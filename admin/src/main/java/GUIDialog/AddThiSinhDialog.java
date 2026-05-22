@@ -7,7 +7,6 @@ package GUIDialog;
 import BUS.ThiSinhBUS;
 import DTO.ThiSinhDTO;
 import GUI.Panel.ThiSinhPanel;
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -386,16 +385,6 @@ public class AddThiSinhDialog extends javax.swing.JDialog {
             return;
         }
 
-// Lấy năm
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(ngaysinh);
-        int nam = cal.get(Calendar.YEAR);
-
-// Check năm > 2008
-        if (nam > 2008) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Năm sinh phải <= 2008");
-            return;
-        }
         if (noisinh == null || noisinh.trim().isEmpty() || noisinh.equals("Tất cả")) {
             javax.swing.JOptionPane.showMessageDialog(this, "Vui lòng chọn nơi sinh");
             return;

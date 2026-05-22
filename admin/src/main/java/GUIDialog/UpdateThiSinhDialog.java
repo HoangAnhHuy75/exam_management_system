@@ -333,18 +333,6 @@ public class UpdateThiSinhDialog extends javax.swing.JDialog {
             return;
         }
         
-
-        // Lấy năm
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(ngaysinh);
-        int nam = cal.get(Calendar.YEAR);
-
-        // Check năm > 2008
-        if (nam > 2008) {
-            javax.swing.JOptionPane.showMessageDialog(this, "Năm sinh phải <= 2008");
-            return;
-        }
-        
         if (!dt.equals("")) {
             if (!dt.matches("^0\\d{9}$")) {
                 javax.swing.JOptionPane.showMessageDialog(this, "Số điện thoại không đúng định dạng");

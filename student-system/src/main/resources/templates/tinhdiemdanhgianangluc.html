@@ -75,7 +75,7 @@
 
                             <tr class="final-score">
                                 <td>Điểm xét tuyển</td>
-                                <td th:text="${res_tongDiem}">0</td>
+                                <td th:text="${#numbers.formatDecimal(res_tongDiem, 1, 2)}">0</td>
                             </tr>
 
                             </tbody>

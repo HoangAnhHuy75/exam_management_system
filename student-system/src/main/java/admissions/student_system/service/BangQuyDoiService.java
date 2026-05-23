@@ -231,7 +231,7 @@ public class BangQuyDoiService {
 
     public double diemd(String phuongThuc, double diem, String toHopGoc) {
         if (diem <= 0) return 0.0;
-        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, "A01")
+        BangQuyDoi row = repo.findKhoangChuaDiem(phuongThuc, diem, toHopGoc)
                 .stream().findFirst()
                 .orElseGet(() -> {
                     BangQuyDoi nearest = repo.findTiemCanDuoi(phuongThuc, toHopGoc, diem);

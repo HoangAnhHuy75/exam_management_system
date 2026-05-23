@@ -73,7 +73,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
         setUpIcon();
         loadDataTable(thisinhBus.getAll());
         setUpPlaceholder();
-        loadComboboxGT();
+        loadComboboxDT();
         loadComboboxKhuVuc();
         loadComboboxTinhThanh();
     }
@@ -116,11 +116,11 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             jComboBox1.addItem(a);
         }
     }
-    public void loadComboboxGT() {
+    public void loadComboboxDT() {
         jComboBox2.addItem("Tất cả");
-        String[] gioitinhs = {"Nam", "Nữ"};
-        for (String gt : gioitinhs) {
-            jComboBox2.addItem(gt);
+        String[] doituong = {"01", "06a","06b"};
+        for (String dt : doituong) {
+            jComboBox2.addItem(dt);
         }
     }
     public void loadComboboxTinhThanh(){
@@ -426,7 +426,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
         jLabel5.setText("Khu vực");
 
-        jLabel6.setText("Giới tính");
+        jLabel6.setText("Đối tượng");
 
         jLabel8.setText("Nơi sinh");
 
@@ -568,7 +568,7 @@ public class ThiSinhPanel extends javax.swing.JPanel {
 
     private void btn_filterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_filterActionPerformed
         String text = (String) jtf_timkiem.getText();
-        String gt = (String) jComboBox2.getSelectedItem();
+        String dt = (String) jComboBox2.getSelectedItem();
         String kv = (String) jComboBox1.getSelectedItem();
         String ns = (String) jComboBox3.getSelectedItem();
         String tenNganh = (String) jComboBox4.getSelectedItem();
@@ -578,9 +578,9 @@ public class ThiSinhPanel extends javax.swing.JPanel {
             maNganh = nganhMap.get(tenNganh);
         }
         if (maNganh != null) {
-            loadDataTable(thisinhBus.filterHasNganh(text, gt, kv, maNganh, ns));
+            loadDataTable(thisinhBus.filterHasNganh(text, dt, kv, maNganh, ns));
         } else {
-            loadDataTable(thisinhBus.filterNoNganh(text, gt, kv, ns));
+            loadDataTable(thisinhBus.filterNoNganh(text, dt, kv, ns));
         }
     }//GEN-LAST:event_btn_filterActionPerformed
 

@@ -261,7 +261,7 @@ public class NguyenVongBUS {
     }
     
     private DiemCongDTO getDiemCong(String cccd,String maNganh,String matohop,HashMap<String, DiemCongDTO> diemCongMap) {
-        String keyDCFull = cccd + "_" + maNganh + "_" + matohop;
+        String keyDCFull = cccd + "_" + matohop;
         String keyCC = cccd + "_CC";
         DiemCongDTO dc = diemCongMap.get(keyDCFull);
         if (dc == null) {
@@ -510,7 +510,7 @@ public class NguyenVongBUS {
                                 diem_cong = diemUTXT.add(diemCC);
                                 diem_utqd = diemUT;
                                 bestDiemTHXT = diemTHXT;
-                                bestToHop = matohop;
+                                bestToHop = nganh.getNToHopGoc();
                                 bestPhuongThuc = "PT2";
                             }
                         }
@@ -540,7 +540,7 @@ public class NguyenVongBUS {
                             BigDecimal diemXetTuyen = diemTruocUT.add(diemUT);
                             if (diemXetTuyen.compareTo(max) > 0) {
                                 max = diemXetTuyen;
-                                diem_cong = diemUTXT;
+                                diem_cong = hasTA ? diemUTXT : diemUTXT.add(diemCC);
                                 diem_utqd = diemUT;
                                 bestDiemTHXT = diemTHXT;
                                 bestToHop = matohop;

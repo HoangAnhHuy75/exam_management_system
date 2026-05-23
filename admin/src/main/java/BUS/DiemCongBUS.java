@@ -327,7 +327,7 @@ public class DiemCongBUS {
                     dc.setDiemCC(diemCC);
                     dc.setDiemTong(diemCC.add(utxt));
                     dc.setPhuongthuc("THPT");
-                    dc.setDc_keys(cccd + "_" + maNganh + "_" + maToHop);
+                    dc.setDc_keys(cccd + "_" + maToHop);
                     diemCongList.add(dc);
                 }
             }

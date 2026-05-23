@@ -35,7 +35,7 @@ public class DiemCongDTO implements Serializable{
     @Column(name = "ghichu")
     private String ghichu;
     
-    @Column(name = "dc_keys", unique = true, nullable = false)
+    @Column(name = "dc_keys", nullable = false)
     private String dc_keys;
 
     public DiemCongDTO(Integer iddiemcong, String ts_cccd, String manganh, String matohop
